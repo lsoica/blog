@@ -1,0 +1,72 @@
+[
+  
+  {
+    "title": "Probabilities",
+    "url": "/posts/probabilities/",
+    "categories": "",
+    "tags": "",
+    "date": "2024-09-26 17:34:33 +0300",
+    
+
+
+
+
+
+    
+    "snippet": "jekyll-jupyter-notebook20240926-84493-fe08ovIn [2]:print(\"Hello\")HelloIn [ ]: ",
+    "content": "jekyll-jupyter-notebook20240926-84493-fe08ovIn [2]:print(\"Hello\")HelloIn [ ]: "
+  },
+  
+  {
+    "title": "Probabilities",
+    "url": "/posts/probabilities/",
+    "categories": "Blogging, Tutorial",
+    "tags": "learning neural networks",
+    "date": "2024-01-03 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "Jupyter Notebooks        ",
+    "content": "Jupyter Notebooks        "
+  },
+  
+  {
+    "title": " Neural Networks Backpropagation",
+    "url": "/posts/backpropagation/",
+    "categories": "Blogging, Tutorial",
+    "tags": "learning neural networks",
+    "date": "2024-01-03 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "GradientVideoThe gradient captures all the partial derivative information of a scalar-valued multivariable function. Created by Grant Sanderson.A vector of partial derivatives for a multivariate fu...",
+    "content": "GradientVideoThe gradient captures all the partial derivative information of a scalar-valued multivariable function. Created by Grant Sanderson.A vector of partial derivatives for a multivariate function.Gives the direction of steepest ascent (descent) of the function.The directional derivativeThe directional derivative is the dot product between the gradient and the unit vector in that direction.In our case we have the C as the cost function, and the partial derivatives for the weights and biases. We want to descent the gradient of the cost function.The dimensionality of the gradient space is given by the number of weights and biases for the model.The chain ruleThe chain rule tells us that the derivative of a composite function is equal to the product of the derivatives of each of its parts.df(g(x))/dx = df/dg * dg/dxWe have a cost function L, and we want to find the partial derivative of L with respect to each parameter. We can do that by using the chain rule:if L = fg, and f=h+k =&gt; dL/df = g, dL/dg = f, df/dh = 1, df/dk = 1. Using the chain rule, dL/dh = dL/dfdf/dh and so on. dL/dh is the gradient of h; how much does h impact the gradient descent.Remarks:  a plus sign distributes the gradient of a parent to its children.  we can only influence leaf nodes during gradinet descent. In the example above, we can only influence h,k and g  because a parameter can be referenced more than once, the gradients have to be summed up instead of overwritted at parameter level.NeuronWe have n inputs, x-es each with a weight, w-s. And a bias b. Then we have an activation function f, a squashing function. The value of the neuron is f(sum(xi*wi) + b).LayerA set of n neuronsMLP: multi-layer perceptronA chaining of multiple layers: An input layer, 0 to multiple hidden layers and the output layer. Each neuron in Layer n is connected to each neuron in Layer n-1.A forward pass: we take a set of input values and forward pass through the entire network. There’s an activation function at the end with the main goal of squashing the values. Why do we need squashing: to make sure that the output is bounded between 0 and 1. We call the output of this layer the activations. Multiple samples are processed in parallel in a batch and a loss or cost function is computed over the predictions of each sample versus the extected values.Backward propagation is called on the loss function to calculate the gradients for each parameter over the entire batch. Based on the gradients, we update the parameters in the direction that reduces the loss (the gradient descent).How to choose a proper learning rate?Instead of a static learning rate, build a dynamic learning rate with the powers of 10 between -3 and 0; 1000 of themlre = torch.linspace(-3, 0, 1000)lrs = 10**lreThis will be between 0.001 and 1, but exponentiated.Run a training loop with the dynamic learning rate, save the loss and plot it. You get something like this:So the best rate is between the -1 and -0.5 exponent of 10.How to arrange the dataHave 3 splits for the dataset:  Training set (80%) - used to optimize the parameters  Validation set (10%) - used for development of the hiperparameters (size of the emb, batch etc)  Test set (10%) - used at the end to test the final model.LogitsThe logits are the raw output of the neural network before passing them through an activation function.Activation functionsAn activation function is used to introduce non-linearity in the model, and it’s usually applied at the end of the linear part of the network. Examples of activation functions are: ReLU, LeakyReLU, ELU, SELU, Sigmoid, Tanh and many more.The distribution for a not-normalized activation function for 32 samples on 200 newuronsThis is triggered by the preactivations that are widely distributed. Whatever is lower than -1 is squashed into -1 and whatever is higher than +1 is squashed into +1.The problem is that during differentiatiation, in 1 and -1, it goes to 0 and makes the network untrainable, that newuron will not learn anything. It’s called a dead neuron.How to solve it: normalize at initialization the parameters that contribute to the preactivations:W1 = torch.randn((block_size * n_embed, n_hidden), generator=g) * 0.2b1 = torch.randn(n_hidden, generator=g) * 0.01SoftmaxThe softmax is a normalizing function that converts the logits into probabilities. At the beginning the softmax can be confidently wrong. That’s because the parameters are not normalized and the preactivations are widely distributed.How to solve it: normalize at initialization the parameters that contribute to the logits, hence softmax:W2 = torch.randn((n_hidden, vocab_size), generator=g) * 0.01b2 = torch.randn(vocab_size, generator=g) * 0NormalizationHow to get rid of the magic numbers used in the previous examples? What we want is a unit gaussian data distribution. That means, a standard deviation of one.Divide the parameters by the square root of the fan-in. The fan-in is the number of inputs that a neuron receives. Multiple it with a gain, that in case of tanh is 5/3. See torch.nn.initBatch normalizationNormalize the preactivation to be unit gaussian. The mean and standard deviation are computed over the batch dimension.    hpreact = bngain * ((hpreact - hpreact.mean(0, keepdim=True))/hpreact.std(0, keepdim=True)) + bnbiasbngain and bnbias are learnable parameters introduced in order to allow the training to go outside of the unit gaussian."
+  },
+  
+  {
+    "title": "Learning Neural Nets",
+    "url": "/posts/learning-neural-networks/",
+    "categories": "Blogging, Tutorial",
+    "tags": "learning neural networks",
+    "date": "2024-01-02 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "Linear Algebra            Link      Description                  Linear Algebra      3Blue1Brown Series on Linear Algebra              Mathematics for Machine Learning      Imperial College London ...",
+    "content": "Linear Algebra            Link      Description                  Linear Algebra      3Blue1Brown Series on Linear Algebra              Mathematics for Machine Learning      Imperial College London Course on  Mathematics for Machine Learning              A Mathematical Framework for Transformer Circuits      Anthropic’s Mathematical Framework for Transformers      Calculus            Link      Description                  Calculus      3Blue1Brown’s series on calculus.              MIT Calculus 1A: Differentiation      Calculus 1A by MIT.              Understanding Calculus: Problems, Solutions, and Tips      A course offering various problems, solutions, and tips for understanding calculus.      Differentiable Programming            Link      Description                  Google Deepmind: The Elements of Differentiable Programming      The mathematical frameworks that underpins “Differentiable Programming”      Neural Networks            Link      Description                  Before Language Models - N-Ggram      An article on the Wikipedia page for Word n-gram language model.              Neural Networks      3Blue1Brown’s series on neural networks.              Karpathy’s Neural Networks: Zero to Hero      Andrej Karpathy’s series on neural networks              Build GPT from scratch      Andrej Karpathy: Let’s build GPT: from scratch, in code, spelled out.      Lanuage modelingLanguage Modeling"
+  }
+  
+]
+
