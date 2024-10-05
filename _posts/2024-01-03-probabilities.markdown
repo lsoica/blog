@@ -12,4 +12,4 @@ media_subpath: '/posts/20240103'
 
 # Jupyter Notebooks
 
-{% jupyter_notebook "main.ipynb" %}
+{% jupyter_notebook "../../assets/probabilities.ipynb" %}

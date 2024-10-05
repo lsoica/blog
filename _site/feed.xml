@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-09-26T17:34:33+03:00</updated>
+  <updated>2024-10-05T11:39:22+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -20,73 +20,53 @@
 
   
   <entry>
-    <title>Probabilities</title>
-    <link href="http://localhost:4000/posts/probabilities/" rel="alternate" type="text/html" title="Probabilities" />
-    <published>2024-09-26T17:34:33+03:00</published>
+    <title>Recurrent neural networks</title>
+    <link href="http://localhost:4000/posts/recurrent-neural-networks/" rel="alternate" type="text/html" title="Recurrent neural networks" />
+    <published>2024-10-03T12:08:03+03:00</published>
   
-    <updated>2024-09-26T17:34:33+03:00</updated>
+    <updated>2024-10-03T12:08:03+03:00</updated>
   
-    <id>http://localhost:4000/posts/probabilities/</id>
-    <content src="http://localhost:4000/posts/probabilities/" />
+    <id>http://localhost:4000/posts/recurrent-neural-networks/</id>
+    <content src="http://localhost:4000/posts/recurrent-neural-networks/" />
     <author>
-      <name>Laurentiu SOICA</name>
+      <name>Laurentiu Soica</name>
     </author>
 
   
     
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
   
 
-  <summary>&amp;amp;lt;!DOCTYPE html&amp;amp;gt;
+  <summary>Recurrent neural networks.</summary>
 
+  </entry>
 
+  
+  <entry>
+    <title>Optimizations</title>
+    <link href="http://localhost:4000/posts/optimizations/" rel="alternate" type="text/html" title="Optimizations" />
+    <published>2024-10-03T12:08:03+03:00</published>
+  
+    <updated>2024-10-03T12:08:03+03:00</updated>
+  
+    <id>http://localhost:4000/posts/optimizations/</id>
+    <content src="http://localhost:4000/posts/optimizations/" />
+    <author>
+      <name>Laurentiu Soica</name>
+    </author>
 
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
 
-jekyll-jupyter-notebook20240926-84493-fe08ov
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-In [2]:
-
-
-print(&amp;quot;Hello&amp;quot;)
-
-
-
-
-
-
-
-
-
-
-
-
-Hello
-
-
-
-
-
-
-
-
-
-
-In [ ]:</summary>
+  <summary>Optimizations.</summary>
 
   </entry>
 

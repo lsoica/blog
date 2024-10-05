@@ -1,11 +1,11 @@
 [
   
   {
-    "title": "Probabilities",
-    "url": "/posts/probabilities/",
-    "categories": "",
-    "tags": "",
-    "date": "2024-09-26 17:34:33 +0300",
+    "title": "Recurrent neural networks",
+    "url": "/posts/recurrent-neural-networks/",
+    "categories": "Blogging, Tutorial",
+    "tags": "learning neural networks",
+    "date": "2024-10-03 12:08:03 +0300",
     
 
 
@@ -13,8 +13,25 @@
 
 
     
-    "snippet": "jekyll-jupyter-notebook20240926-84493-fe08ovIn [2]:print(\"Hello\")HelloIn [ ]: ",
-    "content": "jekyll-jupyter-notebook20240926-84493-fe08ovIn [2]:print(\"Hello\")HelloIn [ ]: "
+    "snippet": "QuantizationSparsityTorch compilerJupyter Notebooks        ReferencesGPU MODE IRL 2024 Keynotes",
+    "content": "QuantizationSparsityTorch compilerJupyter Notebooks        ReferencesGPU MODE IRL 2024 Keynotes"
+  },
+  
+  {
+    "title": "Optimizations",
+    "url": "/posts/optimizations/",
+    "categories": "Blogging, Tutorial",
+    "tags": "learning neural networks",
+    "date": "2024-10-03 12:08:03 +0300",
+    
+
+
+
+
+
+    
+    "snippet": "QuantizationSparsityTorch compilerJupyter Notebooks        ReferencesGPU MODE IRL 2024 Keynotes",
+    "content": "QuantizationSparsityTorch compilerJupyter Notebooks        ReferencesGPU MODE IRL 2024 Keynotes"
   },
   
   {
