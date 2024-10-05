@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-05T12:05:58+03:00</updated>
+  <updated>2024-10-05T12:14:44+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -76,7 +76,7 @@
     <link href="http://localhost:4000/posts/recurrent-neural-networks/" rel="alternate" type="text/html" title="Recurrent neural networks" />
     <published>2024-10-03T12:08:03+03:00</published>
   
-    <updated>2024-10-03T12:08:03+03:00</updated>
+    <updated>2024-10-05T12:07:06+03:00</updated>
   
     <id>http://localhost:4000/posts/recurrent-neural-networks/</id>
     <content src="http://localhost:4000/posts/recurrent-neural-networks/" />
@@ -102,7 +102,7 @@
     <link href="http://localhost:4000/posts/optimizations/" rel="alternate" type="text/html" title="Optimizations" />
     <published>2024-10-03T12:08:03+03:00</published>
   
-    <updated>2024-10-03T12:08:03+03:00</updated>
+    <updated>2024-10-05T12:07:06+03:00</updated>
   
     <id>http://localhost:4000/posts/optimizations/</id>
     <content src="http://localhost:4000/posts/optimizations/" />
@@ -128,7 +128,7 @@
     <link href="http://localhost:4000/posts/backpropagation/" rel="alternate" type="text/html" title=" Neural Networks Backpropagation" />
     <published>2024-01-03T11:08:03+02:00</published>
   
-    <updated>2024-01-03T11:08:03+02:00</updated>
+    <updated>2024-10-05T12:07:06+03:00</updated>
   
     <id>http://localhost:4000/posts/backpropagation/</id>
     <content src="http://localhost:4000/posts/backpropagation/" />
