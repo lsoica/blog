@@ -6,7 +6,7 @@ author: Laurentiu Soica
 date:   2024-10-03 11:08:03 +0200
 categories: [Blogging, Tutorial]
 tags: [learning neural networks]
-pin: true
+pin: false
 media_subpath: '/posts/20241003'
 ---
 

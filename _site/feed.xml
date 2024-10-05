@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-05T11:39:22+03:00</updated>
+  <updated>2024-10-05T12:05:58+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,58 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Learning Neural Nets</title>
+    <link href="http://localhost:4000/posts/learning-neural-networks/" rel="alternate" type="text/html" title="Learning Neural Nets" />
+    <published>2024-10-05T01:08:03+03:00</published>
+  
+    <updated>2024-10-05T01:08:03+03:00</updated>
+  
+    <id>http://localhost:4000/posts/learning-neural-networks/</id>
+    <content src="http://localhost:4000/posts/learning-neural-networks/" />
+    <author>
+      <name>Laurentiu Soica</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Learning the foundational mathematical framework for AI, Neural Networks, ML and DL.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Probabilities</title>
+    <link href="http://localhost:4000/posts/probabilities/" rel="alternate" type="text/html" title="Probabilities" />
+    <published>2024-10-04T12:08:03+03:00</published>
+  
+    <updated>2024-10-04T12:08:03+03:00</updated>
+  
+    <id>http://localhost:4000/posts/probabilities/</id>
+    <content src="http://localhost:4000/posts/probabilities/" />
+    <author>
+      <name>Laurentiu Soica</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Probabilities.</summary>
+
+  </entry>
 
   
   <entry>
@@ -72,32 +124,6 @@
 
   
   <entry>
-    <title>Probabilities</title>
-    <link href="http://localhost:4000/posts/probabilities/" rel="alternate" type="text/html" title="Probabilities" />
-    <published>2024-01-03T11:08:03+02:00</published>
-  
-    <updated>2024-01-03T11:08:03+02:00</updated>
-  
-    <id>http://localhost:4000/posts/probabilities/</id>
-    <content src="http://localhost:4000/posts/probabilities/" />
-    <author>
-      <name>Laurentiu Soica</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Probabilities.</summary>
-
-  </entry>
-
-  
-  <entry>
     <title> Neural Networks Backpropagation</title>
     <link href="http://localhost:4000/posts/backpropagation/" rel="alternate" type="text/html" title=" Neural Networks Backpropagation" />
     <published>2024-01-03T11:08:03+02:00</published>
@@ -119,32 +145,6 @@
   
 
   <summary>Neural Networks Backpropagation.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Learning Neural Nets</title>
-    <link href="http://localhost:4000/posts/learning-neural-networks/" rel="alternate" type="text/html" title="Learning Neural Nets" />
-    <published>2024-01-02T11:08:03+02:00</published>
-  
-    <updated>2024-01-02T11:08:03+02:00</updated>
-  
-    <id>http://localhost:4000/posts/learning-neural-networks/</id>
-    <content src="http://localhost:4000/posts/learning-neural-networks/" />
-    <author>
-      <name>Laurentiu Soica</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Learning the foundational mathematical framework for AI, Neural Networks, ML and DL.</summary>
 
   </entry>
 
