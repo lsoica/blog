@@ -9,6 +9,4 @@ tags: [learning neural networks]
 pin: true
 ---
 
-# Jupyter Notebooks
-
 {% jupyter_notebook "../../assets/probabilities.ipynb" %}

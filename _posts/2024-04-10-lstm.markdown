@@ -9,6 +9,4 @@ tags: [learning neural networks]
 pin: false
 ---
 
-# Jupyter Notebooks
-
 {% jupyter_notebook "../../assets/lstm.ipynb" %}
