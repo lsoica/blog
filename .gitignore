@@ -27,3 +27,5 @@ assets/js/dist
 
 # CUSTOM
 **/.venv
+
+**/*.csv

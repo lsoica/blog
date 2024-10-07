@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "LSTM",
+    "url": "/posts/lstm/",
+    "categories": "Blogging, Tutorial",
+    "tags": "learning neural networks",
+    "date": "2024-10-07 12:08:03 +0300",
+    
+
+
+
+
+
+    
+    "snippet": "Jupyter Notebooks        ",
+    "content": "Jupyter Notebooks        "
+  },
+  
+  {
     "title": "Learning Neural Nets",
     "url": "/posts/learning-neural-networks/",
     "categories": "Blogging, Tutorial",

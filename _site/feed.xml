@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-05T12:14:44+03:00</updated>
+  <updated>2024-10-07T17:29:01+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>LSTM</title>
+    <link href="http://localhost:4000/posts/lstm/" rel="alternate" type="text/html" title="LSTM" />
+    <published>2024-10-07T12:08:03+03:00</published>
+  
+    <updated>2024-10-07T12:08:03+03:00</updated>
+  
+    <id>http://localhost:4000/posts/lstm/</id>
+    <content src="http://localhost:4000/posts/lstm/" />
+    <author>
+      <name>Laurentiu Soica</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>LSTM.</summary>
+
+  </entry>
 
   
   <entry>
@@ -119,32 +145,6 @@
   
 
   <summary>Optimizations.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title> Neural Networks Backpropagation</title>
-    <link href="http://localhost:4000/posts/backpropagation/" rel="alternate" type="text/html" title=" Neural Networks Backpropagation" />
-    <published>2024-01-03T11:08:03+02:00</published>
-  
-    <updated>2024-10-05T12:07:06+03:00</updated>
-  
-    <id>http://localhost:4000/posts/backpropagation/</id>
-    <content src="http://localhost:4000/posts/backpropagation/" />
-    <author>
-      <name>Laurentiu Soica</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Neural Networks Backpropagation.</summary>
 
   </entry>
 
