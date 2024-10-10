@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-07T18:08:42+03:00</updated>
+  <updated>2024-10-10T18:06:34+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Linear Algebra</title>
+    <link href="http://localhost:4000/posts/linear-algebra/" rel="alternate" type="text/html" title="Linear Algebra" />
+    <published>2024-10-08T12:08:03+03:00</published>
+  
+    <updated>2024-10-08T12:08:03+03:00</updated>
+  
+    <id>http://localhost:4000/posts/linear-algebra/</id>
+    <content src="http://localhost:4000/posts/linear-algebra/" />
+    <author>
+      <name>Laurentiu Soica</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Linear Algebra.</summary>
+
+  </entry>
 
   
   <entry>
@@ -119,32 +145,6 @@
   
 
   <summary>Recurrent neural networks.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Optimizations</title>
-    <link href="http://localhost:4000/posts/optimizations/" rel="alternate" type="text/html" title="Optimizations" />
-    <published>2024-10-03T12:08:03+03:00</published>
-  
-    <updated>2024-10-05T12:07:06+03:00</updated>
-  
-    <id>http://localhost:4000/posts/optimizations/</id>
-    <content src="http://localhost:4000/posts/optimizations/" />
-    <author>
-      <name>Laurentiu Soica</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Optimizations.</summary>
 
   </entry>
 
