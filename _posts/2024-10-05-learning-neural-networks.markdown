@@ -5,7 +5,7 @@ description: >-
 author: Laurentiu Soica
 date:   2024-10-05 00:08:03 +0200
 categories: [Blogging, Tutorial]
-tags: [learning neural networks]
+tags: [learning neuralnetworks]
 pin: true
 ---
 

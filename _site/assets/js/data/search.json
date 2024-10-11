@@ -4,7 +4,7 @@
     "title": "Retrieval Augmented Generation",
     "url": "/posts/retrieval-augmented-generation/",
     "categories": "Blogging, Tutorial",
-    "tags": "learning neural networks",
+    "tags": "RAG tutorial",
     "date": "2024-10-11 12:08:03 +0300",
     
 
@@ -21,7 +21,7 @@
     "title": "Linear Algebra",
     "url": "/posts/linear-algebra/",
     "categories": "Blogging, Tutorial",
-    "tags": "learning neural networks",
+    "tags": "learning linearalgebra",
     "date": "2024-10-08 12:08:03 +0300",
     
 
@@ -38,7 +38,7 @@
     "title": "LSTM",
     "url": "/posts/lstm/",
     "categories": "Blogging, Tutorial",
-    "tags": "learning neural networks",
+    "tags": "learning neuralnetworks rnn lstm",
     "date": "2024-10-07 12:08:03 +0300",
     
 
@@ -55,7 +55,7 @@
     "title": "Learning Neural Nets",
     "url": "/posts/learning-neural-networks/",
     "categories": "Blogging, Tutorial",
-    "tags": "learning neural networks",
+    "tags": "learning neuralnetworks",
     "date": "2024-10-05 01:08:03 +0300",
     
 
@@ -72,7 +72,7 @@
     "title": "Probabilities",
     "url": "/posts/probabilities/",
     "categories": "Blogging, Tutorial",
-    "tags": "learning neural networks",
+    "tags": "learning probabilities",
     "date": "2024-10-04 12:08:03 +0300",
     
 
@@ -89,7 +89,7 @@
     "title": "Recurrent neural networks",
     "url": "/posts/recurrent-neural-networks/",
     "categories": "Blogging, Tutorial",
-    "tags": "learning neural networks",
+    "tags": "learning neuralnetworks rnn",
     "date": "2024-10-03 12:08:03 +0300",
     
 
@@ -106,7 +106,7 @@
     "title": "Optimizations",
     "url": "/posts/optimizations/",
     "categories": "Blogging, Tutorial",
-    "tags": "learning neural networks",
+    "tags": "learning neuralnetworks, optimizations",
     "date": "2024-10-03 12:08:03 +0300",
     
 
@@ -123,7 +123,7 @@
     "title": " Neural Networks Backpropagation",
     "url": "/posts/backpropagation/",
     "categories": "Blogging, Tutorial",
-    "tags": "learning neural networks",
+    "tags": "learning neuralnetworks, backpropagation",
     "date": "2024-01-03 11:08:03 +0200",
     
 
