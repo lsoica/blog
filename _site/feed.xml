@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-11T11:43:11+03:00</updated>
+  <updated>2024-10-11T13:52:54+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Retrieval Augmented Generation</title>
+    <link href="http://localhost:4000/posts/retrieval-augmented-generation/" rel="alternate" type="text/html" title="Retrieval Augmented Generation" />
+    <published>2024-10-11T12:08:03+03:00</published>
+  
+    <updated>2024-10-11T12:08:03+03:00</updated>
+  
+    <id>http://localhost:4000/posts/retrieval-augmented-generation/</id>
+    <content src="http://localhost:4000/posts/retrieval-augmented-generation/" />
+    <author>
+      <name>Laurentiu Soica</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Retrieval Augmented Generation.</summary>
+
+  </entry>
 
   
   <entry>
@@ -119,32 +145,6 @@
   
 
   <summary>Probabilities.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Recurrent neural networks</title>
-    <link href="http://localhost:4000/posts/recurrent-neural-networks/" rel="alternate" type="text/html" title="Recurrent neural networks" />
-    <published>2024-10-03T12:08:03+03:00</published>
-  
-    <updated>2024-10-05T12:07:06+03:00</updated>
-  
-    <id>http://localhost:4000/posts/recurrent-neural-networks/</id>
-    <content src="http://localhost:4000/posts/recurrent-neural-networks/" />
-    <author>
-      <name>Laurentiu Soica</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Recurrent neural networks.</summary>
 
   </entry>
 
