@@ -5,7 +5,7 @@ description: >-
 author: Laurentiu Soica
 date:   2024-10-04 11:08:03 +0200
 categories: [Blogging, Tutorial]
-tags: [learning probabilities]
+tags: [probabilities]
 pin: true
 ---
 
