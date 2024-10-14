@@ -1,0 +1,12 @@
+---
+title:  "Multi Layer Perceptron"
+description: >-
+  MLP.
+author: Laurentiu Soica
+date:   2024-10-11 11:08:03 +0200
+categories: [Blogging, Tutorial]
+tags: [neuralnetworks,mlp]
+pin: false
+---
+
+{% jupyter_notebook "../../assets/mlp.ipynb" %}
