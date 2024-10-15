@@ -2,7 +2,7 @@
 title:  "Optimizations"
 description: >-
   Optimizations.
-author: Laurentiu Soica
+author: lso
 date:   2024-10-03 11:08:03 +0200
 categories: [Blogging, Tutorial]
 tags: [neuralnetworks, optimizations]

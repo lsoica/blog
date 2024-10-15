@@ -2,7 +2,7 @@
 title:  " Neural Networks Backpropagation"
 description: >-
   Neural Networks Backpropagation.
-author: Laurentiu Soica
+author: lso
 date:   2024-01-03 11:08:03 +0200
 categories: [Blogging, Tutorial]
 tags: [neuralnetworks, backpropagation]

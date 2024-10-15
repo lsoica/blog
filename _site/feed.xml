@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-15T15:20:46+03:00</updated>
+  <updated>2024-10-15T15:24:39+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -24,7 +24,7 @@
     <link href="http://localhost:4000/posts/transformers/" rel="alternate" type="text/html" title="Transformers" />
     <published>2024-10-15T12:08:03+03:00</published>
   
-    <updated>2024-10-15T12:08:03+03:00</updated>
+    <updated>2024-10-15T15:21:38+03:00</updated>
   
     <id>http://localhost:4000/posts/transformers/</id>
     <content src="http://localhost:4000/posts/transformers/" />
@@ -55,7 +55,7 @@
     <id>http://localhost:4000/posts/retrieval-augmented-generation/</id>
     <content src="http://localhost:4000/posts/retrieval-augmented-generation/" />
     <author>
-      <name>Laurentiu Soica</name>
+      <name>lso</name>
     </author>
 
   
@@ -81,7 +81,7 @@
     <id>http://localhost:4000/posts/mlp/</id>
     <content src="http://localhost:4000/posts/mlp/" />
     <author>
-      <name>Laurentiu Soica</name>
+      <name>lso</name>
     </author>
 
   
@@ -107,7 +107,7 @@
     <id>http://localhost:4000/posts/linear-algebra/</id>
     <content src="http://localhost:4000/posts/linear-algebra/" />
     <author>
-      <name>Laurentiu Soica</name>
+      <name>lso</name>
     </author>
 
   
@@ -133,7 +133,7 @@
     <id>http://localhost:4000/posts/lstm/</id>
     <content src="http://localhost:4000/posts/lstm/" />
     <author>
-      <name>Laurentiu Soica</name>
+      <name>lso</name>
     </author>
 
   

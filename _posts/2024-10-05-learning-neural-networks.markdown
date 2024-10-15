@@ -2,7 +2,7 @@
 title:  "Learning Neural Nets"
 description: >-
   Learning the foundational mathematical framework for AI, Neural Networks, ML and DL.
-author: Laurentiu Soica
+author: lso
 date:   2024-10-05 00:08:03 +0200
 categories: [Blogging, Tutorial]
 tags: [neuralnetworks]
