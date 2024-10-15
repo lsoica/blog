@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "Transformers",
+    "url": "/posts/transformers/",
+    "categories": "Blogging, Tutorial",
+    "tags": "neuralnetworks, transformers",
+    "date": "2024-10-15 12:08:03 +0300",
+    
+
+
+
+
+
+    
+    "snippet": "        ",
+    "content": "        "
+  },
+  
+  {
     "title": "Retrieval Augmented Generation",
     "url": "/posts/retrieval-augmented-generation/",
     "categories": "Blogging, Tutorial",

@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-15T13:05:15+03:00</updated>
+  <updated>2024-10-15T13:14:10+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Transformers</title>
+    <link href="http://localhost:4000/posts/transformers/" rel="alternate" type="text/html" title="Transformers" />
+    <published>2024-10-15T12:08:03+03:00</published>
+  
+    <updated>2024-10-15T12:08:03+03:00</updated>
+  
+    <id>http://localhost:4000/posts/transformers/</id>
+    <content src="http://localhost:4000/posts/transformers/" />
+    <author>
+      <name>Laurentiu Soica</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Transformers.</summary>
+
+  </entry>
 
   
   <entry>
@@ -119,32 +145,6 @@
   
 
   <summary>LSTM.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Learning Neural Nets</title>
-    <link href="http://localhost:4000/posts/learning-neural-networks/" rel="alternate" type="text/html" title="Learning Neural Nets" />
-    <published>2024-10-05T01:08:03+03:00</published>
-  
-    <updated>2024-10-11T14:07:51+03:00</updated>
-  
-    <id>http://localhost:4000/posts/learning-neural-networks/</id>
-    <content src="http://localhost:4000/posts/learning-neural-networks/" />
-    <author>
-      <name>Laurentiu Soica</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Learning the foundational mathematical framework for AI, Neural Networks, ML and DL.</summary>
 
   </entry>
 
