@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>jekyll-jupyter-notebook20241015-74969-h2dirc</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>jekyll-jupyter-notebook20241015-74969-j7b1gx</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7540,9 +7540,20 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>torchvision
+<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>torchtext<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.3.0<span class="w"> </span>datasets<span class="w"> </span>tokenizers<span class="w"> </span>torchmetrics<span class="w"> </span>tensorboard<span class="w"> </span>--upgrade
 </pre></div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Let's-build-a-translaition-ng-model-using-the-Transformer-architecture">Let's build a translaition ng model using the Transformer architecture<a class="anchor-link" href="#Let's-build-a-translaition-ng-model-using-the-Transformer-architecture">¶</a></h2>
 </div>
 </div>
 </div>
@@ -7562,7 +7573,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -7570,17 +7581,40 @@ a.anchor-link {
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">random_split</span>
+<span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="n">LambdaLR</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># Huggingface datasets and tokenizers</span>
+<span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="kn">from</span> <span class="nn">tokenizers</span> <span class="kn">import</span> <span class="n">Tokenizer</span>
+<span class="kn">from</span> <span class="nn">tokenizers.models</span> <span class="kn">import</span> <span class="n">WordLevel</span>
+<span class="kn">from</span> <span class="nn">tokenizers.trainers</span> <span class="kn">import</span> <span class="n">WordLevelTrainer</span>
+<span class="kn">from</span> <span class="nn">tokenizers.pre_tokenizers</span> <span class="kn">import</span> <span class="n">Whitespace</span>
+
+<span class="kn">import</span> <span class="nn">torchmetrics</span>
+<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">'Using PyTorch version:'</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">mps</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"mps"</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cpu"</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">torchtext</span><span class="p">;</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">disable_torchtext_deprecation_warning</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">torchtext.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
 </div>
 </div>
@@ -7593,8 +7627,63 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Using PyTorch version: 2.4.1
+<pre>Using PyTorch version: 2.3.0
 </pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Define-the-configuration">Define the configuration<a class="anchor-link" href="#Define-the-configuration">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [74]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_config</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"batch_size"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s2">"num_epochs"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">"lr"</span><span class="p">:</span> <span class="mi">10</span><span class="o">**-</span><span class="mi">4</span><span class="p">,</span>
+        <span class="s2">"seq_len"</span><span class="p">:</span> <span class="mi">350</span><span class="p">,</span>
+        <span class="s2">"d_model"</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
+        <span class="s2">"datasource"</span><span class="p">:</span> <span class="s1">'opus_books'</span><span class="p">,</span>
+        <span class="s2">"lang_src"</span><span class="p">:</span> <span class="s2">"en"</span><span class="p">,</span>
+        <span class="s2">"lang_tgt"</span><span class="p">:</span> <span class="s2">"it"</span><span class="p">,</span>
+        <span class="s2">"model_folder"</span><span class="p">:</span> <span class="s2">"weights"</span><span class="p">,</span>
+        <span class="s2">"model_basename"</span><span class="p">:</span> <span class="s2">"tmodel_"</span><span class="p">,</span>
+        <span class="s2">"preload"</span><span class="p">:</span> <span class="s2">"latest"</span><span class="p">,</span>
+        <span class="s2">"tokenizer_file"</span><span class="p">:</span> <span class="s2">"tokenizer_</span><span class="si">{0}</span><span class="s2">.json"</span><span class="p">,</span>
+        <span class="s2">"experiment_name"</span><span class="p">:</span> <span class="s2">"runs/tmodel"</span>
+    <span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">get_weights_file_path</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">model_folder</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'datasource'</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'model_folder'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">model_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'model_basename'</span><span class="p">]</span><span class="si">}{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">.pt"</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span> <span class="o">/</span> <span class="n">model_folder</span> <span class="o">/</span> <span class="n">model_filename</span><span class="p">)</span>
+
+<span class="c1"># Find the latest weights file in the weights folder</span>
+<span class="k">def</span> <span class="nf">latest_weights_file_path</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="n">model_folder</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'datasource'</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'model_folder'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">model_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'model_basename'</span><span class="p">]</span><span class="si">}</span><span class="s2">*"</span>
+    <span class="n">weights_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">model_folder</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">model_filename</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">weights_files</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">weights_files</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
 </div>
 </div>
 </div>
@@ -7617,7 +7706,7 @@ vocab_size is the size of the vocabulary. how many distinct tokens.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [50]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">InputEmbeddings</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -7655,7 +7744,7 @@ Positional encodings are not learned parameters of the model, hence the requires
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [51]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">PositionalEncoding</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -7706,7 +7795,7 @@ Positional encodings are not learned parameters of the model, hence the requires
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [52]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">LayerNormalization</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -7747,7 +7836,7 @@ Dropout function to avoid overfitting.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [53]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">FeedForwardBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -7795,7 +7884,7 @@ Dropout function to avoid overfitting.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [54]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">MultiHeadAttentionBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -7871,7 +7960,7 @@ Dropout function to avoid overfitting.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [55]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ResidualConnection</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -7904,7 +7993,7 @@ Dropout function to avoid overfitting.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [56]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">EncoderBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -7929,7 +8018,7 @@ Dropout function to avoid overfitting.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [57]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Encoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -7955,6 +8044,866 @@ Dropout function to avoid overfitting.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Decoder">Decoder<a class="anchor-link" href="#Decoder">¶</a></h2><p>First attention block is a self-attention block, similar to encoder block but with a different mask.</p>
+<p>The second attention block is a cross-attention block that takes the output of the first block as input and the encoder output as key/value.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [58]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">DecoderBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">self_attention_block</span><span class="p">:</span> <span class="n">MultiHeadAttentionBlock</span><span class="p">,</span> <span class="n">cross_attention_block</span><span class="p">:</span> <span class="n">MultiHeadAttentionBlock</span><span class="p">,</span> <span class="n">feed_forward_block</span><span class="p">:</span> <span class="n">FeedForwardBlock</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">self_attention_block</span> <span class="o">=</span> <span class="n">self_attention_block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cross_attention_block</span> <span class="o">=</span> <span class="n">cross_attention_block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_block</span> <span class="o">=</span> <span class="n">feed_forward_block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_connections</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">ResidualConnection</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">encoder_output</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">,</span> <span class="n">tgt_mask</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_connections</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">self_attention_block</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">tgt_mask</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_connections</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_attention_block</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">encoder_output</span><span class="p">,</span> <span class="n">encoder_output</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_connections</span><span class="p">[</span><span class="mi">2</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_block</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+    
+<span class="k">class</span> <span class="nc">Decoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">LayerNormalization</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">encoder_output</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">,</span> <span class="n">tgt_mask</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">encoder_output</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">,</span> <span class="n">tgt_mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="The-projection-layer">The projection layer<a class="anchor-link" href="#The-projection-layer">¶</a></h2><p>The layer that maps the output of the decoder to the target vocabulary size. That's in order to apply the softmax and pick the next word/token.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [59]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ProjectionLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># (batch, seq_len, d_model) --&gt; (batch, seq_len, vocab_size)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="The-transformer-block">The transformer block<a class="anchor-link" href="#The-transformer-block">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [60]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoder</span><span class="p">:</span> <span class="n">Encoder</span><span class="p">,</span> <span class="n">decoder</span><span class="p">:</span> <span class="n">Decoder</span><span class="p">,</span> <span class="n">src_embed</span><span class="p">:</span> <span class="n">InputEmbeddings</span><span class="p">,</span> <span class="n">tgt_embed</span><span class="p">:</span> <span class="n">InputEmbeddings</span><span class="p">,</span> <span class="n">src_pos</span><span class="p">:</span> <span class="n">PositionalEncoding</span><span class="p">,</span> <span class="n">tgt_pos</span><span class="p">:</span> <span class="n">PositionalEncoding</span><span class="p">,</span> <span class="n">projection_layer</span><span class="p">:</span> <span class="n">ProjectionLayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">encoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">decoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">src_embed</span> <span class="o">=</span> <span class="n">src_embed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tgt_embed</span> <span class="o">=</span> <span class="n">tgt_embed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">src_pos</span> <span class="o">=</span> <span class="n">src_pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tgt_pos</span> <span class="o">=</span> <span class="n">tgt_pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">projection_layer</span> <span class="o">=</span> <span class="n">projection_layer</span>
+
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">):</span>
+        <span class="c1"># (batch, seq_len, d_model)</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_embed</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_pos</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoder_output</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tgt</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tgt_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="c1"># (batch, seq_len, d_model)</span>
+        <span class="n">tgt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tgt_embed</span><span class="p">(</span><span class="n">tgt</span><span class="p">)</span>
+        <span class="n">tgt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tgt_pos</span><span class="p">(</span><span class="n">tgt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">tgt</span><span class="p">,</span> <span class="n">encoder_output</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">,</span> <span class="n">tgt_mask</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># (batch, seq_len, vocab_size)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">projection_layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [61]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Build the transformer</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [62]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">build_transformer</span><span class="p">(</span><span class="n">src_vocab_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tgt_vocab_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">src_seq_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tgt_seq_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Transformer</span><span class="p">:</span>
+    <span class="c1"># Create the embedding layers</span>
+    <span class="n">src_embed</span> <span class="o">=</span> <span class="n">InputEmbeddings</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">src_vocab_size</span><span class="p">)</span>
+    <span class="n">tgt_embed</span> <span class="o">=</span> <span class="n">InputEmbeddings</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">tgt_vocab_size</span><span class="p">)</span>
+
+    <span class="c1"># Create the positional encoding layers</span>
+    <span class="n">src_pos</span> <span class="o">=</span> <span class="n">PositionalEncoding</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">src_seq_len</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+    <span class="n">tgt_pos</span> <span class="o">=</span> <span class="n">PositionalEncoding</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">tgt_seq_len</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+    
+    <span class="c1"># Create the encoder blocks</span>
+    <span class="n">encoder_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">encoder_self_attention_block</span> <span class="o">=</span> <span class="n">MultiHeadAttentionBlock</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        <span class="n">feed_forward_block</span> <span class="o">=</span> <span class="n">FeedForwardBlock</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        <span class="n">encoder_block</span> <span class="o">=</span> <span class="n">EncoderBlock</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">encoder_self_attention_block</span><span class="p">,</span> <span class="n">feed_forward_block</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        <span class="n">encoder_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">encoder_block</span><span class="p">)</span>
+
+    <span class="c1"># Create the decoder blocks</span>
+    <span class="n">decoder_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">decoder_self_attention_block</span> <span class="o">=</span> <span class="n">MultiHeadAttentionBlock</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        <span class="n">decoder_cross_attention_block</span> <span class="o">=</span> <span class="n">MultiHeadAttentionBlock</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        <span class="n">feed_forward_block</span> <span class="o">=</span> <span class="n">FeedForwardBlock</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        <span class="n">decoder_block</span> <span class="o">=</span> <span class="n">DecoderBlock</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">decoder_self_attention_block</span><span class="p">,</span> <span class="n">decoder_cross_attention_block</span><span class="p">,</span> <span class="n">feed_forward_block</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        <span class="n">decoder_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">decoder_block</span><span class="p">)</span>
+    
+    <span class="c1"># Create the encoder and decoder</span>
+    <span class="n">encoder</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">encoder_blocks</span><span class="p">))</span>
+    <span class="n">decoder</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">decoder_blocks</span><span class="p">))</span>
+    
+    <span class="c1"># Create the projection layer</span>
+    <span class="n">projection_layer</span> <span class="o">=</span> <span class="n">ProjectionLayer</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">tgt_vocab_size</span><span class="p">)</span>
+    
+    <span class="c1"># Create the transformer</span>
+    <span class="n">transformer</span> <span class="o">=</span> <span class="n">Transformer</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">src_embed</span><span class="p">,</span> <span class="n">tgt_embed</span><span class="p">,</span> <span class="n">src_pos</span><span class="p">,</span> <span class="n">tgt_pos</span><span class="p">,</span> <span class="n">projection_layer</span><span class="p">)</span>
+    
+    <span class="c1"># Initialize the parameters</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">transformer</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">transformer</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Let's-build-the-tokenizer">Let's build the tokenizer<a class="anchor-link" href="#Let's-build-the-tokenizer">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [63]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_all_sentences</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">lang</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">item</span><span class="p">[</span><span class="s1">'translation'</span><span class="p">][</span><span class="n">lang</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">get_or_build_tokenizer</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">lang</span><span class="p">):</span>
+    <span class="n">tokenizer_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">'tokenizer_file'</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lang</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tokenizer_path</span><span class="p">):</span>
+        <span class="c1"># Most code taken from: https://huggingface.co/docs/tokenizers/quicktour</span>
+        <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">WordLevel</span><span class="p">(</span><span class="n">unk_token</span><span class="o">=</span><span class="s2">"[UNK]"</span><span class="p">))</span>
+        <span class="n">tokenizer</span><span class="o">.</span><span class="n">pre_tokenizer</span> <span class="o">=</span> <span class="n">Whitespace</span><span class="p">()</span>
+        <span class="n">trainer</span> <span class="o">=</span> <span class="n">WordLevelTrainer</span><span class="p">(</span><span class="n">special_tokens</span><span class="o">=</span><span class="p">[</span><span class="s2">"[UNK]"</span><span class="p">,</span> <span class="s2">"[PAD]"</span><span class="p">,</span> <span class="s2">"[SOS]"</span><span class="p">,</span> <span class="s2">"[EOS]"</span><span class="p">],</span> <span class="n">min_frequency</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">tokenizer</span><span class="o">.</span><span class="n">train_from_iterator</span><span class="p">(</span><span class="n">get_all_sentences</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">lang</span><span class="p">),</span> <span class="n">trainer</span><span class="o">=</span><span class="n">trainer</span><span class="p">)</span>
+        <span class="n">tokenizer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tokenizer_path</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tokenizer_path</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">tokenizer</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="The-previous-words-should-not-watch-future-words">The previous words should not watch future words<a class="anchor-link" href="#The-previous-words-should-not-watch-future-words">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [64]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">causal_mask</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)),</span> <span class="n">diagonal</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask</span> <span class="o">==</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Get-the-dataset-(hugging-face-opus_books-dataset)">Get the dataset (hugging face opus_books dataset)<a class="anchor-link" href="#Get-the-dataset-(hugging-face-opus_books-dataset)">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [65]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">BilingualDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span><span class="p">,</span> <span class="n">src_lang</span><span class="p">,</span> <span class="n">tgt_lang</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seq_len</span> <span class="o">=</span> <span class="n">seq_len</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer_src</span> <span class="o">=</span> <span class="n">tokenizer_src</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer_tgt</span> <span class="o">=</span> <span class="n">tokenizer_tgt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">src_lang</span> <span class="o">=</span> <span class="n">src_lang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tgt_lang</span> <span class="o">=</span> <span class="n">tgt_lang</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sos_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s2">"[SOS]"</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eos_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s2">"[EOS]"</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pad_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s2">"[PAD]"</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="n">src_target_pair</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">src_text</span> <span class="o">=</span> <span class="n">src_target_pair</span><span class="p">[</span><span class="s1">'translation'</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">src_lang</span><span class="p">]</span>
+        <span class="n">tgt_text</span> <span class="o">=</span> <span class="n">src_target_pair</span><span class="p">[</span><span class="s1">'translation'</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tgt_lang</span><span class="p">]</span>
+
+        <span class="c1"># Transform the text into tokens</span>
+        <span class="n">enc_input_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer_src</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">src_text</span><span class="p">)</span><span class="o">.</span><span class="n">ids</span>
+        <span class="n">dec_input_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">tgt_text</span><span class="p">)</span><span class="o">.</span><span class="n">ids</span>
+
+        <span class="c1"># Add sos, eos and padding to each sentence</span>
+        <span class="n">enc_num_padding_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq_len</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">enc_input_tokens</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>  <span class="c1"># We will add &lt;s&gt; and &lt;/s&gt;</span>
+        <span class="c1"># We will only add &lt;s&gt;, and &lt;/s&gt; only on the label</span>
+        <span class="n">dec_num_padding_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq_len</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">dec_input_tokens</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="c1"># Make sure the number of padding tokens is not negative. If it is, the sentence is too long</span>
+        <span class="k">if</span> <span class="n">enc_num_padding_tokens</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">dec_num_padding_tokens</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Sentence is too long"</span><span class="p">)</span>
+
+        <span class="c1"># Add &lt;s&gt; and &lt;/s&gt; token</span>
+        <span class="n">encoder_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sos_token</span><span class="p">,</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">enc_input_tokens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">eos_token</span><span class="p">,</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_token</span><span class="p">]</span> <span class="o">*</span> <span class="n">enc_num_padding_tokens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+            <span class="p">],</span>
+            <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add only &lt;s&gt; token</span>
+        <span class="n">decoder_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sos_token</span><span class="p">,</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">dec_input_tokens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_token</span><span class="p">]</span> <span class="o">*</span> <span class="n">dec_num_padding_tokens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+            <span class="p">],</span>
+            <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add only &lt;/s&gt; token</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">dec_input_tokens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">eos_token</span><span class="p">,</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_token</span><span class="p">]</span> <span class="o">*</span> <span class="n">dec_num_padding_tokens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+            <span class="p">],</span>
+            <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Double check the size of the tensors to make sure they are all seq_len long</span>
+        <span class="k">assert</span> <span class="n">encoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq_len</span>
+        <span class="k">assert</span> <span class="n">decoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq_len</span>
+        <span class="k">assert</span> <span class="n">label</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq_len</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"encoder_input"</span><span class="p">:</span> <span class="n">encoder_input</span><span class="p">,</span>  <span class="c1"># (seq_len)</span>
+            <span class="s2">"decoder_input"</span><span class="p">:</span> <span class="n">decoder_input</span><span class="p">,</span>  <span class="c1"># (seq_len)</span>
+            <span class="s2">"encoder_mask"</span><span class="p">:</span> <span class="p">(</span><span class="n">encoder_input</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_token</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">int</span><span class="p">(),</span> <span class="c1"># (1, 1, seq_len)</span>
+            <span class="s2">"decoder_mask"</span><span class="p">:</span> <span class="p">(</span><span class="n">decoder_input</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_token</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">int</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">causal_mask</span><span class="p">(</span><span class="n">decoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span> <span class="c1"># (1, seq_len) &amp; (1, seq_len, seq_len),</span>
+            <span class="s2">"label"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>  <span class="c1"># (seq_len)</span>
+            <span class="s2">"src_text"</span><span class="p">:</span> <span class="n">src_text</span><span class="p">,</span>
+            <span class="s2">"tgt_text"</span><span class="p">:</span> <span class="n">tgt_text</span><span class="p">,</span>
+        <span class="p">}</span>
+    
+<span class="k">def</span> <span class="nf">get_ds</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="c1"># It only has the train split, so we divide it overselves</span>
+    <span class="n">ds_raw</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'datasource'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'lang_src'</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'lang_tgt'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s1">'train'</span><span class="p">)</span>
+
+    <span class="c1"># Build tokenizers</span>
+    <span class="n">tokenizer_src</span> <span class="o">=</span> <span class="n">get_or_build_tokenizer</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">ds_raw</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">'lang_src'</span><span class="p">])</span>
+    <span class="n">tokenizer_tgt</span> <span class="o">=</span> <span class="n">get_or_build_tokenizer</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">ds_raw</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">'lang_tgt'</span><span class="p">])</span>
+
+    <span class="c1"># Keep 90% for training, 10% for validation</span>
+    <span class="n">train_ds_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.9</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds_raw</span><span class="p">))</span>
+    <span class="n">val_ds_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds_raw</span><span class="p">)</span> <span class="o">-</span> <span class="n">train_ds_size</span>
+    <span class="n">train_ds_raw</span><span class="p">,</span> <span class="n">val_ds_raw</span> <span class="o">=</span> <span class="n">random_split</span><span class="p">(</span><span class="n">ds_raw</span><span class="p">,</span> <span class="p">[</span><span class="n">train_ds_size</span><span class="p">,</span> <span class="n">val_ds_size</span><span class="p">])</span>
+
+    <span class="n">train_ds</span> <span class="o">=</span> <span class="n">BilingualDataset</span><span class="p">(</span><span class="n">train_ds_raw</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">'lang_src'</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'lang_tgt'</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'seq_len'</span><span class="p">])</span>
+    <span class="n">val_ds</span> <span class="o">=</span> <span class="n">BilingualDataset</span><span class="p">(</span><span class="n">val_ds_raw</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">'lang_src'</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'lang_tgt'</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'seq_len'</span><span class="p">])</span>
+
+    <span class="c1"># Find the maximum length of each sentence in the source and target sentence</span>
+    <span class="n">max_len_src</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">max_len_tgt</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ds_raw</span><span class="p">:</span>
+        <span class="n">src_ids</span> <span class="o">=</span> <span class="n">tokenizer_src</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">'translation'</span><span class="p">][</span><span class="n">config</span><span class="p">[</span><span class="s1">'lang_src'</span><span class="p">]])</span><span class="o">.</span><span class="n">ids</span>
+        <span class="n">tgt_ids</span> <span class="o">=</span> <span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">'translation'</span><span class="p">][</span><span class="n">config</span><span class="p">[</span><span class="s1">'lang_tgt'</span><span class="p">]])</span><span class="o">.</span><span class="n">ids</span>
+        <span class="n">max_len_src</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_len_src</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">src_ids</span><span class="p">))</span>
+        <span class="n">max_len_tgt</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_len_tgt</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tgt_ids</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Max length of source sentence: </span><span class="si">{</span><span class="n">max_len_src</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Max length of target sentence: </span><span class="si">{</span><span class="n">max_len_tgt</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    
+
+    <span class="n">train_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'batch_size'</span><span class="p">],</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">val_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">train_dataloader</span><span class="p">,</span> <span class="n">val_dataloader</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Let's-build-the-training-loop">Let's build the training loop<a class="anchor-link" href="#Let's-build-the-training-loop">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [66]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">greedy_decode</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_mask</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="n">sos_idx</span> <span class="o">=</span> <span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s1">'[SOS]'</span><span class="p">)</span>
+    <span class="n">eos_idx</span> <span class="o">=</span> <span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s1">'[EOS]'</span><span class="p">)</span>
+
+    <span class="c1"># Precompute the encoder output and reuse it for every step</span>
+    <span class="n">encoder_output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">source_mask</span><span class="p">)</span>
+    <span class="c1"># Initialize the decoder input with the sos token</span>
+    <span class="n">decoder_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="n">sos_idx</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">decoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">max_len</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># build mask for target</span>
+        <span class="n">decoder_mask</span> <span class="o">=</span> <span class="n">causal_mask</span><span class="p">(</span><span class="n">decoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">source_mask</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># calculate output</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoder_output</span><span class="p">,</span> <span class="n">source_mask</span><span class="p">,</span> <span class="n">decoder_input</span><span class="p">,</span> <span class="n">decoder_mask</span><span class="p">)</span>
+
+        <span class="c1"># get next token</span>
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">next_word</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">decoder_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">decoder_input</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="n">next_word</span><span class="o">.</span><span class="n">item</span><span class="p">())</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">next_word</span> <span class="o">==</span> <span class="n">eos_idx</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">decoder_input</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">run_validation</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">validation_ds</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">print_msg</span><span class="p">,</span> <span class="n">global_step</span><span class="p">,</span> <span class="n">writer</span><span class="p">,</span> <span class="n">num_examples</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">source_texts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># get the console window width</span>
+        <span class="k">with</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s1">'stty size'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">console</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">console_width</span> <span class="o">=</span> <span class="n">console</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">console_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">console_width</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="c1"># If we can't get the console width, use 80 as default</span>
+        <span class="n">console_width</span> <span class="o">=</span> <span class="mi">80</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">validation_ds</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">encoder_input</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"encoder_input"</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># (b, seq_len)</span>
+            <span class="n">encoder_mask</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"encoder_mask"</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># (b, 1, 1, seq_len)</span>
+
+            <span class="c1"># check that the batch size is 1</span>
+            <span class="k">assert</span> <span class="n">encoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span>
+                <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"Batch size must be 1 for validation"</span>
+
+            <span class="n">model_out</span> <span class="o">=</span> <span class="n">greedy_decode</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">encoder_input</span><span class="p">,</span> <span class="n">encoder_mask</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+            <span class="n">source_text</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"src_text"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">target_text</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"tgt_text"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">model_out_text</span> <span class="o">=</span> <span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">model_out</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+
+            <span class="n">source_texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_text</span><span class="p">)</span>
+            <span class="n">expected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_text</span><span class="p">)</span>
+            <span class="n">predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_out_text</span><span class="p">)</span>
+            
+            <span class="c1"># Print the source, target and model output</span>
+            <span class="n">print_msg</span><span class="p">(</span><span class="s1">'-'</span><span class="o">*</span><span class="n">console_width</span><span class="p">)</span>
+            <span class="n">print_msg</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="sa">f</span><span class="s1">'SOURCE: '</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}{</span><span class="n">source_text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">print_msg</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="sa">f</span><span class="s1">'TARGET: '</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}{</span><span class="n">target_text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">print_msg</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="sa">f</span><span class="s1">'PREDICTED: '</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}{</span><span class="n">model_out_text</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="n">num_examples</span><span class="p">:</span>
+                <span class="n">print_msg</span><span class="p">(</span><span class="s1">'-'</span><span class="o">*</span><span class="n">console_width</span><span class="p">)</span>
+                <span class="k">break</span>
+    
+    <span class="k">if</span> <span class="n">writer</span><span class="p">:</span>
+        <span class="c1"># Evaluate the character error rate</span>
+        <span class="c1"># Compute the char error rate </span>
+        <span class="n">metric</span> <span class="o">=</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">CharErrorRate</span><span class="p">()</span>
+        <span class="n">cer</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">'validation cer'</span><span class="p">,</span> <span class="n">cer</span><span class="p">,</span> <span class="n">global_step</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+        <span class="c1"># Compute the word error rate</span>
+        <span class="n">metric</span> <span class="o">=</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">WordErrorRate</span><span class="p">()</span>
+        <span class="n">wer</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">'validation wer'</span><span class="p">,</span> <span class="n">wer</span><span class="p">,</span> <span class="n">global_step</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+        <span class="c1"># Compute the BLEU metric</span>
+        <span class="n">metric</span> <span class="o">=</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">BLEUScore</span><span class="p">()</span>
+        <span class="n">bleu</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">'validation BLEU'</span><span class="p">,</span> <span class="n">bleu</span><span class="p">,</span> <span class="n">global_step</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        
+<span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">vocab_src_len</span><span class="p">,</span> <span class="n">vocab_tgt_len</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">build_transformer</span><span class="p">(</span><span class="n">vocab_src_len</span><span class="p">,</span> <span class="n">vocab_tgt_len</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">"seq_len"</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'seq_len'</span><span class="p">],</span> <span class="n">d_model</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'d_model'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">model</span>
+
+<span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="c1"># Define the device</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"mps"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">has_mps</span> <span class="ow">or</span> <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">mps</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Using device:"</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Device name: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Device memory: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_properties</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">total_memory</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="mi">3</span><span class="si">}</span><span class="s2"> GB"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">device</span> <span class="o">==</span> <span class="s1">'mps'</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Device name: &lt;mps&gt;"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"NOTE: If you have a GPU, consider using it for training."</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"      On a Windows machine with NVidia GPU, check this video: https://www.youtube.com/watch?v=GMSjDTU8Zlc"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"      On a Mac machine, run: pip3 install --pre torch torchvision torchaudio torchtext --index-url https://download.pytorch.org/whl/nightly/cpu"</span><span class="p">)</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="c1"># Make sure the weights folder exists</span>
+    <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'datasource'</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'model_folder'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">train_dataloader</span><span class="p">,</span> <span class="n">val_dataloader</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span> <span class="o">=</span> <span class="n">get_ds</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="o">.</span><span class="n">get_vocab_size</span><span class="p">(),</span> <span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">get_vocab_size</span><span class="p">())</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># Tensorboard</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">'experiment_name'</span><span class="p">])</span>
+
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'lr'</span><span class="p">],</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">)</span>
+
+    <span class="c1"># If the user specified a model to preload before training, load it</span>
+    <span class="n">initial_epoch</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">global_step</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">preload</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">'preload'</span><span class="p">]</span>
+    <span class="n">model_filename</span> <span class="o">=</span> <span class="n">latest_weights_file_path</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="k">if</span> <span class="n">preload</span> <span class="o">==</span> <span class="s1">'latest'</span> <span class="k">else</span> <span class="n">get_weights_file_path</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">preload</span><span class="p">)</span> <span class="k">if</span> <span class="n">preload</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">model_filename</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Preloading model </span><span class="si">{</span><span class="n">model_filename</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_filename</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">'model_state_dict'</span><span class="p">])</span>
+        <span class="n">initial_epoch</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">'epoch'</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">'optimizer_state_dict'</span><span class="p">])</span>
+        <span class="n">global_step</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">'global_step'</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'No model to preload, starting from scratch'</span><span class="p">)</span>
+
+    <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="n">ignore_index</span><span class="o">=</span><span class="n">tokenizer_src</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s1">'[PAD]'</span><span class="p">),</span> <span class="n">label_smoothing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">initial_epoch</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">'num_epochs'</span><span class="p">]):</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="n">batch_iterator</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Processing Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">batch_iterator</span><span class="p">:</span>
+
+            <span class="n">encoder_input</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">'encoder_input'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># (b, seq_len)</span>
+            <span class="n">decoder_input</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">'decoder_input'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># (B, seq_len)</span>
+            <span class="n">encoder_mask</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">'encoder_mask'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># (B, 1, 1, seq_len)</span>
+            <span class="n">decoder_mask</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">'decoder_mask'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># (B, 1, seq_len, seq_len)</span>
+
+            <span class="c1"># Run the tensors through the encoder, decoder and the projection layer</span>
+            <span class="n">encoder_output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoder_input</span><span class="p">,</span> <span class="n">encoder_mask</span><span class="p">)</span> <span class="c1"># (B, seq_len, d_model)</span>
+            <span class="n">decoder_output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoder_output</span><span class="p">,</span> <span class="n">encoder_mask</span><span class="p">,</span> <span class="n">decoder_input</span><span class="p">,</span> <span class="n">decoder_mask</span><span class="p">)</span> <span class="c1"># (B, seq_len, d_model)</span>
+            <span class="n">proj_output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">decoder_output</span><span class="p">)</span> <span class="c1"># (B, seq_len, vocab_size)</span>
+
+            <span class="c1"># Compare the output with the label</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">'label'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># (B, seq_len)</span>
+
+            <span class="c1"># Compute the loss using a simple cross entropy</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">proj_output</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">get_vocab_size</span><span class="p">()),</span> <span class="n">label</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">batch_iterator</span><span class="o">.</span><span class="n">set_postfix</span><span class="p">({</span><span class="s2">"loss"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">6.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">})</span>
+
+            <span class="c1"># Log the loss</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">'train loss'</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">global_step</span><span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+            <span class="c1"># Backpropagate the loss</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+            <span class="c1"># Update the weights</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">global_step</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Run validation at the end of every epoch</span>
+        <span class="n">run_validation</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">val_dataloader</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">'seq_len'</span><span class="p">],</span> <span class="n">device</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">msg</span><span class="p">:</span> <span class="n">batch_iterator</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">),</span> <span class="n">global_step</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span>
+
+        <span class="c1"># Save the model at the end of every epoch</span>
+        <span class="n">model_filename</span> <span class="o">=</span> <span class="n">get_weights_file_path</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">({</span>
+            <span class="s1">'epoch'</span><span class="p">:</span> <span class="n">epoch</span><span class="p">,</span>
+            <span class="s1">'model_state_dict'</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+            <span class="s1">'optimizer_state_dict'</span><span class="p">:</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+            <span class="s1">'global_step'</span><span class="p">:</span> <span class="n">global_step</span>
+        <span class="p">},</span> <span class="n">model_filename</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Train-it">Train it<a class="anchor-link" href="#Train-it">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
+<span class="n">train_model</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/var/folders/59/c32_bthx48jd9m2ym5m3tnpw0000j7/T/ipykernel_15795/977991508.py:105: UserWarning: 'has_mps' is deprecated, please use 'torch.backends.mps.is_built()'
+  device = "cuda" if torch.cuda.is_available() else "mps" if torch.has_mps or torch.backends.mps.is_available() else "cpu"
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Using device: mps
+Device name: &lt;mps&gt;
+Max length of source sentence: 309
+Max length of target sentence: 274
+No model to preload, starting from scratch
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Processing Epoch 00:  40%|████      | 2917/7275 [26:18&lt;3:10:09,  2.62s/it, loss=6.186]</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="And-infer-the-trained-model">And infer the trained model<a class="anchor-link" href="#And-infer-the-trained-model">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="n">sentence</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="c1"># Define the device, tokenizers, and model</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Using device:"</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
+    <span class="n">tokenizer_src</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">'tokenizer_file'</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">'lang_src'</span><span class="p">]))))</span>
+    <span class="n">tokenizer_tgt</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">'tokenizer_file'</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">'lang_tgt'</span><span class="p">]))))</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">build_transformer</span><span class="p">(</span><span class="n">tokenizer_src</span><span class="o">.</span><span class="n">get_vocab_size</span><span class="p">(),</span> <span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">get_vocab_size</span><span class="p">(),</span> <span class="n">config</span><span class="p">[</span><span class="s2">"seq_len"</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'seq_len'</span><span class="p">],</span> <span class="n">d_model</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'d_model'</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="c1"># Load the pretrained weights</span>
+    <span class="n">model_filename</span> <span class="o">=</span> <span class="n">latest_weights_file_path</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_filename</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">'model_state_dict'</span><span class="p">])</span>
+
+    <span class="c1"># if the sentence is a number use it as an index to the test set</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">sentence</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'datasource'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'lang_src'</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">'lang_tgt'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s1">'all'</span><span class="p">)</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">BilingualDataset</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer_src</span><span class="p">,</span> <span class="n">tokenizer_tgt</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">'lang_src'</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'lang_tgt'</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'seq_len'</span><span class="p">])</span>
+        <span class="n">sentence</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s1">'src_text'</span><span class="p">]</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s2">"tgt_text"</span><span class="p">]</span>
+    <span class="n">seq_len</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">'seq_len'</span><span class="p">]</span>
+
+    <span class="c1"># translate the sentence</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="c1"># Precompute the encoder output and reuse it for every generation step</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">tokenizer_src</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">tokenizer_src</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s1">'[SOS]'</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span> 
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">tokenizer_src</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s1">'[EOS]'</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">tokenizer_src</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s1">'[PAD]'</span><span class="p">)]</span> <span class="o">*</span> <span class="p">(</span><span class="n">seq_len</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">ids</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">source_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">source</span> <span class="o">!=</span> <span class="n">tokenizer_src</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s1">'[PAD]'</span><span class="p">))</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">int</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">encoder_output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">source_mask</span><span class="p">)</span>
+
+        <span class="c1"># Initialize the decoder input with the sos token</span>
+        <span class="n">decoder_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s1">'[SOS]'</span><span class="p">))</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># Print the source sentence and target start prompt</span>
+        <span class="k">if</span> <span class="n">label</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="sa">f</span><span class="s1">'ID: '</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}{</span><span class="nb">id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="sa">f</span><span class="s1">'SOURCE: '</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}{</span><span class="n">sentence</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">label</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="sa">f</span><span class="s1">'TARGET: '</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}{</span><span class="n">label</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="sa">f</span><span class="s1">'PREDICTED: '</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+
+        <span class="c1"># Generate the translation word by word</span>
+        <span class="k">while</span> <span class="n">decoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">seq_len</span><span class="p">:</span>
+            <span class="c1"># build mask for target and calculate output</span>
+            <span class="n">decoder_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">decoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">decoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))),</span> <span class="n">diagonal</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">source_mask</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoder_output</span><span class="p">,</span> <span class="n">source_mask</span><span class="p">,</span> <span class="n">decoder_input</span><span class="p">,</span> <span class="n">decoder_mask</span><span class="p">)</span>
+
+            <span class="c1"># project next token</span>
+            <span class="n">prob</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">next_word</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">decoder_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">decoder_input</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="n">next_word</span><span class="o">.</span><span class="n">item</span><span class="p">())</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># print the translated word</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">decode</span><span class="p">([</span><span class="n">next_word</span><span class="o">.</span><span class="n">item</span><span class="p">()])</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">' '</span><span class="p">)</span>
+
+            <span class="c1"># break if we predict the end of sentence token</span>
+            <span class="k">if</span> <span class="n">next_word</span> <span class="o">==</span> <span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">token_to_id</span><span class="p">(</span><span class="s1">'[EOS]'</span><span class="p">):</span>
+                <span class="k">break</span>
+
+    <span class="c1"># convert ids to tokens</span>
+    <span class="k">return</span> <span class="n">tokenizer_tgt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">decoder_input</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+    
+<span class="c1">#read sentence from argument</span>
+<span class="n">translate</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">"I am not a very good a student."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Visualize-the-attention-heads">Visualize the attention heads<a class="anchor-link" href="#Visualize-the-attention-heads">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
+<span class="n">train_dataloader</span><span class="p">,</span> <span class="n">val_dataloader</span><span class="p">,</span> <span class="n">vocab_src</span><span class="p">,</span> <span class="n">vocab_tgt</span> <span class="o">=</span> <span class="n">get_ds</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">vocab_src</span><span class="o">.</span><span class="n">get_vocab_size</span><span class="p">(),</span> <span class="n">vocab_tgt</span><span class="o">.</span><span class="n">get_vocab_size</span><span class="p">())</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="c1"># Load the pretrained weights</span>
+<span class="n">model_filename</span> <span class="o">=</span> <span class="n">get_weights_file_path</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"29"</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_filename</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">'model_state_dict'</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">mtx2df</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">max_row</span><span class="p">,</span> <span class="n">max_col</span><span class="p">,</span> <span class="n">row_tokens</span><span class="p">,</span> <span class="n">col_tokens</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">(</span>
+                <span class="n">r</span><span class="p">,</span>
+                <span class="n">c</span><span class="p">,</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">]),</span>
+                <span class="s2">"</span><span class="si">%.3d</span><span class="s2"> </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">row_tokens</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">row_tokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">r</span> <span class="k">else</span> <span class="s2">"&lt;blank&gt;"</span><span class="p">),</span>
+                <span class="s2">"</span><span class="si">%.3d</span><span class="s2"> </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">col_tokens</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_tokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">c</span> <span class="k">else</span> <span class="s2">"&lt;blank&gt;"</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">max_row</span> <span class="ow">and</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">max_col</span>
+        <span class="p">],</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"row"</span><span class="p">,</span> <span class="s2">"column"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">,</span> <span class="s2">"row_token"</span><span class="p">,</span> <span class="s2">"col_token"</span><span class="p">],</span>
+    <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_attn_map</span><span class="p">(</span><span class="n">attn_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">head</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">attn_type</span> <span class="o">==</span> <span class="s2">"encoder"</span><span class="p">:</span>
+        <span class="n">attn</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">self_attention_block</span><span class="o">.</span><span class="n">attention_scores</span>
+    <span class="k">elif</span> <span class="n">attn_type</span> <span class="o">==</span> <span class="s2">"decoder"</span><span class="p">:</span>
+        <span class="n">attn</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">self_attention_block</span><span class="o">.</span><span class="n">attention_scores</span>
+    <span class="k">elif</span> <span class="n">attn_type</span> <span class="o">==</span> <span class="s2">"encoder-decoder"</span><span class="p">:</span>
+        <span class="n">attn</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">cross_attention_block</span><span class="o">.</span><span class="n">attention_scores</span>
+    <span class="k">return</span> <span class="n">attn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">head</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+<span class="k">def</span> <span class="nf">attn_map</span><span class="p">(</span><span class="n">attn_type</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="n">row_tokens</span><span class="p">,</span> <span class="n">col_tokens</span><span class="p">,</span> <span class="n">max_sentence_len</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">mtx2df</span><span class="p">(</span>
+        <span class="n">get_attn_map</span><span class="p">(</span><span class="n">attn_type</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">head</span><span class="p">),</span>
+        <span class="n">max_sentence_len</span><span class="p">,</span>
+        <span class="n">max_sentence_len</span><span class="p">,</span>
+        <span class="n">row_tokens</span><span class="p">,</span>
+        <span class="n">col_tokens</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">mark_rect</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">"col_token"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Axis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">""</span><span class="p">)),</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s2">"row_token"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Axis</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">""</span><span class="p">)),</span>
+            <span class="n">color</span><span class="o">=</span><span class="s2">"value"</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="p">[</span><span class="s2">"row"</span><span class="p">,</span> <span class="s2">"column"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">,</span> <span class="s2">"row_token"</span><span class="p">,</span> <span class="s2">"col_token"</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="c1">#.title(f"Layer {layer} Head {head}")</span>
+        <span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> Head </span><span class="si">{</span><span class="n">head</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+    <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_all_attention_maps</span><span class="p">(</span><span class="n">attn_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">heads</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">row_tokens</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">col_tokens</span><span class="p">,</span> <span class="n">max_sentence_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">charts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">rowCharts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">head</span> <span class="ow">in</span> <span class="n">heads</span><span class="p">:</span>
+            <span class="n">rowCharts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attn_map</span><span class="p">(</span><span class="n">attn_type</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="n">row_tokens</span><span class="p">,</span> <span class="n">col_tokens</span><span class="p">,</span> <span class="n">max_sentence_len</span><span class="p">))</span>
+        <span class="n">charts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alt</span><span class="o">.</span><span class="n">hconcat</span><span class="p">(</span><span class="o">*</span><span class="n">rowCharts</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">alt</span><span class="o">.</span><span class="n">vconcat</span><span class="p">(</span><span class="o">*</span><span class="n">charts</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>

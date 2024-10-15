@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-15T13:14:10+03:00</updated>
+  <updated>2024-10-15T15:20:46+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -29,7 +29,7 @@
     <id>http://localhost:4000/posts/transformers/</id>
     <content src="http://localhost:4000/posts/transformers/" />
     <author>
-      <name>Laurentiu Soica</name>
+      <name>lso</name>
     </author>
 
   
