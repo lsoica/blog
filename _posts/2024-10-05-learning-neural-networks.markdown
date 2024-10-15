@@ -45,6 +45,7 @@ pin: true
 | [Neural Networks](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)                | 3Blue1Brown's series on neural networks.         |
 | [Karpathy's Neural Networks: Zero to Hero](https://github.com/karpathy/nn-zero-to-hero)                    | Andrej Karpathy's series on neural networks |
 | [Build GPT from scratch](https://www.youtube.com/watch?v=kCc8FmEb1nY)                                      | Andrej Karpathy: Let's build GPT: from scratch, in code, spelled out.   |
+| [Umar Jamil's youtube channel](https://www.youtube.com/@umarjamilai)                                      | Umar Jamil's youtube channel.   |
 
 ## Statistics and Probabilities
 

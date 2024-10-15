@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>jekyll-jupyter-notebook20241015-74969-szm5fl</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>jekyll-jupyter-notebook20241015-74969-vwswex</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7516,7 +7516,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="https://colab.research.google.com/github/lsoica/blog/blob/main/assets/mlp.ipynb" target="_parent"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
+<p><a href="https://colab.research.google.com/github/lsoica/blog/blob/main/assets/transformers.ipynb" target="_parent"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
 </div>
 </div>
 </div>
@@ -7527,42 +7527,8 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Multi-layer-perceptron">Multi-layer perceptron<a class="anchor-link" href="#Multi-layer-perceptron">¶</a></h1><h2 id="Terms">Terms<a class="anchor-link" href="#Terms">¶</a></h2><ul>
-<li>Linear layer: applies a linear transformation to the input, i.e., $y = Wx + b$ where $W \in \mathbb{R}^{n \times m}$ is the weight matrix and $b \in \mathbb{R}^m$ is the bias vector. On the columns of $W$, each column represents a neuron. The number of features in the input has to match the number of weights of each neuron. The bias vector is added to the output of each neuron. In the result matrix on the rows we have the transformed input data by each neuron (so if the input data has 3 features, after the transformation it can end up having any number of features, equal to the number of neurons). Each cell is a dot product between the input vector and the weight of each neuron, so it captures the similarity between the input and the neuron. Each neuron is responsible for 1 output feature.</li>
-<li>Activation function: If the data is not linearily separable (through a line in 2D or a plane in 3D and so on) then it cannot be modeled by the MLP through just linear layers, that are just linear transformations. Just chaining multiple linear transformations is equivalent to a single linear transformation. We need to add nonlinearities between the layers, that are responsible for capturing the nonlinearity of the data. The most common activation functions are: ReLU (Rectified Linear Unit): $f(x) = max(0, x)$</li>
-<li>Data fitting: we have a series of points and we want to fit a line that passes through them</li>
-</ul>
-<h2 id="Universal-approximation-theorem">Universal approximation theorem<a class="anchor-link" href="#Universal-approximation-theorem">¶</a></h2><p>Given a family of neural networks, for each function $f$ from a certain function space, there exists a sequence of neural networks $\phi _{1}$, $\phi _{2}$, ... from the family, such that $\phi _{n}\to f$ according to some criterion. That is, the family of neural networks is dense in the function space.</p>
-<p>It states that feedforward networks with non-polynomial (non linear) activation functions are dense in the space of continuous functions between two Euclidean spaces, with respect to the compact convergence topology. It does not guarantee any method, such as backpropagation, might actually find such a sequence. Any method for searching the space of neural networks, including backpropagation, might find a converging sequence, or not (i.e. the backpropagation might get stuck in a local optimum).</p>
-<p>It is the theoretical foundation for MLPs.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Alternaltives">Alternaltives<a class="anchor-link" href="#Alternaltives">¶</a></h2><h3 id="KAN---Kolmogorov-Arnold-Networks">KAN - Kolmogorov-Arnold Networks<a class="anchor-link" href="#KAN---Kolmogorov-Arnold-Networks">¶</a></h3><ul>
-<li>Bezier curves: Bézier curves are parametric curves (with the parameter t varying from 0 to 1) that are defined by a set of control points. These points’ positions in relation to one another define the shape of the curve.</li>
-<li>B-Splines: B-splines are piecewise polynomials, which means that they are made up of smaller pieces (called knots) that are joined together by continuity conditions. The most common type of B-spline is a cubic B-spline. A cubic B-spline is a curve that has 4 control points and 3 knots.</li>
-</ul>
-<p>Based on the Kolmogorov-Arnold representation theorem, instead of learning weights like in the case of MLPs, they learn a function that maps a vector to another vector.
-The functions are learned in terms of control points. The control points are then used as the basis for the B-spline representation.</p>
-<p><a href="https://arxiv.org/abs/2404.19756">Kolmogorov-Arnold Networks Paper</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Let's-train-a-multi-layer-perceptron-model-to-classify-MNIST-digits-using-PyTorch">Let's train a multi-layer perceptron model to classify MNIST digits using PyTorch<a class="anchor-link" href="#Let's-train-a-multi-layer-perceptron-model-to-classify-MNIST-digits-using-PyTorch">¶</a></h2><h3 id="Install-missing-packages">Install missing packages<a class="anchor-link" href="#Install-missing-packages">¶</a></h3>
+<h1 id="Transformers">Transformers<a class="anchor-link" href="#Transformers">¶</a></h1><h2 id="Architecture">Architecture<a class="anchor-link" href="#Architecture">¶</a></h2><p><img alt="Architecture" src="images/transformer_architecture.jpg"/></p>
+<h2 id="Terms">Terms<a class="anchor-link" href="#Terms">¶</a></h2>
 </div>
 </div>
 </div>
@@ -7587,7 +7553,7 @@ The functions are learned in terms of control points. The control points are the
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Import-libraries">Import libraries<a class="anchor-link" href="#Import-libraries">¶</a></h3>
+<h2 id="Import-libraries">Import libraries<a class="anchor-link" href="#Import-libraries">¶</a></h2>
 </div>
 </div>
 </div>
@@ -7596,16 +7562,15 @@ The functions are learned in terms of control points. The control points are the
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
-<span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">datasets</span>
-<span class="kn">from</span> <span class="nn">torchvision.transforms</span> <span class="kn">import</span> <span class="n">ToTensor</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -7641,8 +7606,9 @@ The functions are learned in terms of control points. The control points are the
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Load-data">Load data<a class="anchor-link" href="#Load-data">¶</a></h3><p>Dataset represents the actual data items, such as images or pieces of text, and their labels.
-DataLoader is used for processing the dataset in batches in an efficient manner.</p>
+<h2 id="Embeddings-Layer">Embeddings Layer<a class="anchor-link" href="#Embeddings-Layer">¶</a></h2><p>Vectors of size 512 for each token.
+d_model is the size of the embedding, 512.
+vocab_size is the size of the vocabulary. how many distinct tokens.</p>
 </div>
 </div>
 </div>
@@ -7651,51 +7617,22 @@ DataLoader is used for processing the dataset in batches in an efficient manner.
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">32</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">InputEmbeddings</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
-<span class="n">data_dir</span> <span class="o">=</span> <span class="s1">'./data'</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'data_dir ='</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">=</span> <span class="n">vocab_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
 
-<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ToTensor</span><span class="p">())</span>
-<span class="n">test_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ToTensor</span><span class="p">())</span>
-
-<span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># (batch, seq_len) --&gt; (batch, seq_len, d_model)</span>
+        <span class="c1"># Multiply by sqrt(d_model) to scale the embeddings according to the paper</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d_model</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'data:'</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="s1">'type:'</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">type</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'target:'</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="s1">'type:'</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">type</span><span class="p">())</span>
-    <span class="k">break</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>data: torch.Size([32, 1, 28, 28]) type: torch.FloatTensor
-target: torch.Size([32]) type: torch.LongTensor
-</pre>
 </div>
 </div>
 </div>
@@ -7707,11 +7644,13 @@ target: torch.Size([32]) type: torch.LongTensor
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Here are the first 10 training digits:</p>
+<h2 id="Positional-encodings">Positional encodings<a class="anchor-link" href="#Positional-encodings">¶</a></h2><p>Another layer, vectors of size 512.
+seq_len is the max context size. One positional encoding for each token of the context.
+Positional encodings are not learned parameters of the model, hence the requires_grad_ below.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7719,91 +7658,32 @@ target: torch.Size([32]) type: torch.LongTensor
 <div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">pltsize</span><span class="o">=</span><span class="mi">1</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">pltsize</span><span class="p">,</span> <span class="n">pltsize</span><span class="p">))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">PositionalEncoding</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'off'</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,:,:,:]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"gray_r"</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Class: '</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
-<img alt="No description has been provided for this image" class="" src="data:image/png;base64,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"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Multi-layer-perceptron-(MLP)-network">Multi-layer perceptron (MLP) network<a class="anchor-link" href="#Multi-layer-perceptron-(MLP)-network">¶</a></h3><ul>
-<li>"Flatten" the 2D image into a vector with nn.Flatten</li>
-<li>Create a fully-connected layer with 20 neurons</li>
-<li>Add a ReLU non-linear activation</li>
-<li>The output of the last layer needs to be a 10-dimensional vector to match the ground truth of ten classes (the ten digits).</li>
-</ul>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SimpleMLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seq_len</span> <span class="o">=</span> <span class="n">seq_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="c1"># Create a matrix of shape (seq_len, d_model)</span>
+        <span class="n">pe</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="c1"># Create a vector of shape (seq_len)</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># (seq_len, 1)</span>
+        <span class="c1"># Create a vector of shape (d_model)</span>
+        <span class="n">div_term</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">10000.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">d_model</span><span class="p">))</span> <span class="c1"># (d_model / 2)</span>
+        <span class="c1"># Apply sine to even indices</span>
+        <span class="n">pe</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">position</span> <span class="o">*</span> <span class="n">div_term</span><span class="p">)</span> <span class="c1"># sin(position * (10000 ** (2i / d_model))</span>
+        <span class="c1"># Apply cosine to odd indices</span>
+        <span class="n">pe</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">position</span> <span class="o">*</span> <span class="n">div_term</span><span class="p">)</span> <span class="c1"># cos(position * (10000 ** (2i / d_model))</span>
+        <span class="c1"># Add a batch dimension to the positional encoding</span>
+        <span class="n">pe</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># (1, seq_len, d_model)</span>
+        <span class="c1"># Register the positional encoding as a buffer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">'pe'</span><span class="p">,</span> <span class="n">pe</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-<span class="n">model</span> <span class="o">=</span> <span class="n">SimpleMLP</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pe</span><span class="p">[:,</span> <span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">:])</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># (batch, seq_len, d_model)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>SimpleMLP(
-  (layers): Sequential(
-    (0): Flatten(start_dim=1, end_dim=-1)
-    (1): Linear(in_features=784, out_features=20, bias=True)
-    (2): ReLU()
-    (3): Linear(in_features=20, out_features=10, bias=True)
-  )
-)
-</pre>
 </div>
 </div>
 </div>
@@ -7815,7 +7695,9 @@ target: torch.Size([32]) type: torch.LongTensor
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Define-a-loss-function-and-an-optimizer">Define a loss function and an optimizer<a class="anchor-link" href="#Define-a-loss-function-and-an-optimizer">¶</a></h4><p>For a classification task we typically use the cross entropy loss.</p>
+<h2 id="Layer-normalization">Layer normalization<a class="anchor-link" href="#Layer-normalization">¶</a></h2><p>If you have a batch of 3, each item has some features; e.g. a batch of sentences where each sentence has multiple words/tokens and each item (word/token) has an embedding in the form of a list of number.</p>
+<p>The layer norm calculates a mean and a variance for each item, independent of the other items. Then, it normalizes each item by the mean and variance of that item.</p>
+<p>It also introduces a betta and a gamma parameters to introduce flunctuations in the data, allow the model to amplify or reduce values beyond the 0,1 interval that could be too restrictive.</p>
 </div>
 </div>
 </div>
@@ -7824,11 +7706,25 @@ target: torch.Size([32]) type: torch.LongTensor
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">LayerNormalization</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">features</span><span class="p">))</span> <span class="c1"># alpha is a learnable parameter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">features</span><span class="p">))</span> <span class="c1"># bias is a learnable parameter</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># x: (batch, seq_len, hidden_size)</span>
+         <span class="c1"># Keep the dimension for broadcasting</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># (batch, seq_len, 1)</span>
+        <span class="c1"># Keep the dimension for broadcasting</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dim</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># (batch, seq_len, 1)</span>
+        <span class="c1"># eps is to prevent dividing by zero or when std is very small</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">std</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span>
 </pre></div>
 </div>
 </div>
@@ -7841,7 +7737,8 @@ target: torch.Size([32]) type: torch.LongTensor
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>a helper function to calculate the number of correctly classified digits.</p>
+<h2 id="Feed-forward-layer">Feed forward layer<a class="anchor-link" href="#Feed-forward-layer">¶</a></h2><p>It's a Linear Layer, followed by a ReLU activation function, followed by another Linear Layer
+Dropout function to avoid overfitting.</p>
 </div>
 </div>
 </div>
@@ -7853,10 +7750,17 @@ target: torch.Size([32]) type: torch.LongTensor
 <div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">correct</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
-    <span class="n">predicted_digits</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                            <span class="c1"># pick digit with largest network output</span>
-    <span class="n">correct_ones</span> <span class="o">=</span> <span class="p">(</span><span class="n">predicted_digits</span> <span class="o">==</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>  <span class="c1"># 1.0 for correct, 0.0 for incorrect</span>
-    <span class="k">return</span> <span class="n">correct_ones</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>                               <span class="c1"># count number of correct ones</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">FeedForwardBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear_1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">)</span> <span class="c1"># w1 and b1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear_2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_ff</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span> <span class="c1"># w2 and b2</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># (batch, seq_len, d_model) --&gt; (batch, seq_len, d_ff) --&gt; (batch, seq_len, d_model)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear_1</span><span class="p">(</span><span class="n">x</span><span class="p">))))</span>
 </pre></div>
 </div>
 </div>
@@ -7869,7 +7773,20 @@ target: torch.Size([32]) type: torch.LongTensor
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>The training function for a single epoch.</p>
+<h2 id="Multi-Head-Attention-Layer">Multi-Head Attention Layer<a class="anchor-link" href="#Multi-Head-Attention-Layer">¶</a></h2><p>We have an input that is processed 3 times:</p>
+<ul>
+<li>By a key: Input(seq, d_model) @ W_k(d_model, d_model) = Q`(seq, d_model)</li>
+<li>By a query: Input(seq, d_model) @ W_q(d_model, d_model) = K`(seq, d_model)</li>
+<li>And by a value: Input(seq, d_model) @ W_v(d_model, d_model) = V`(seq, d_model)</li>
+</ul>
+<p>Q<code>, K</code> and V` are then split into h chunks along the embedding dimension. This way, each head has access to the full sentence, but a different subset of the embedding.</p>
+<p>Then the attention formula is applied to each head, resulting $head_1 ... head_h$. This is the formula: $$Attention(Q,K,V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$$</p>
+<p>Then we concat the resulting $head_1 ... head_h$ $$MultiHead(Q,K,V)=Concat(head_1... head_h)W^0$$</p>
+<ul>
+<li>seq = sequence length (number of words in a sentence, the max context length)</li>
+<li>d_model = dimensionality of the embedding vector (number of features in a word)</li>
+<li>h = number of heads (number of times we want to split the embedding vector in chunks)</li>
+</ul>
 </div>
 </div>
 </div>
@@ -7881,37 +7798,58 @@ target: torch.Size([32]) type: torch.LongTensor
 <div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">data_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">MultiHeadAttentionBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
-    <span class="n">num_batches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_loader</span><span class="p">)</span>
-    <span class="n">num_items</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_loader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span> <span class="c1"># Embedding vector size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">h</span> <span class="c1"># Number of heads</span>
+        <span class="c1"># Make sure d_model is divisible by h</span>
+        <span class="k">assert</span> <span class="n">d_model</span> <span class="o">%</span> <span class="n">h</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"d_model is not divisible by h"</span>
 
-    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">total_correct</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">data_loader</span><span class="p">:</span>
-        <span class="c1"># Copy data and targets to GPU</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_k</span> <span class="o">=</span> <span class="n">d_model</span> <span class="o">//</span> <span class="n">h</span> <span class="c1"># Dimension of vector seen by each head</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_q</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># Wq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_k</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># Wk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_v</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># Wv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_o</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># Wo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">attention</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">):</span>
+        <span class="n">d_k</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># Just apply the formula from the paper</span>
+        <span class="c1"># (batch, h, seq_len, d_k) --&gt; (batch, h, seq_len, seq_len)</span>
+        <span class="n">attention_scores</span> <span class="o">=</span> <span class="p">(</span><span class="n">query</span> <span class="o">@</span> <span class="n">key</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d_k</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Write a very low value (indicating -inf) to the positions where mask == 0</span>
+            <span class="n">attention_scores</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1e9</span><span class="p">)</span>
+        <span class="n">attention_scores</span> <span class="o">=</span> <span class="n">attention_scores</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># (batch, h, seq_len, seq_len) # Apply softmax</span>
+        <span class="k">if</span> <span class="n">dropout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">attention_scores</span> <span class="o">=</span> <span class="n">dropout</span><span class="p">(</span><span class="n">attention_scores</span><span class="p">)</span>
+        <span class="c1"># (batch, h, seq_len, seq_len) --&gt; (batch, h, seq_len, d_k)</span>
+        <span class="c1"># return attention scores which can be used for visualization</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">attention_scores</span> <span class="o">@</span> <span class="n">value</span><span class="p">),</span> <span class="n">attention_scores</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_q</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="c1"># (batch, seq_len, d_model) --&gt; (batch, seq_len, d_model)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_k</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="c1"># (batch, seq_len, d_model) --&gt; (batch, seq_len, d_model)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_v</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="c1"># (batch, seq_len, d_model) --&gt; (batch, seq_len, d_model)</span>
+
+        <span class="c1"># (batch, seq_len, d_model) --&gt; (batch, seq_len, h, d_k) --&gt; (batch, h, seq_len, d_k)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">query</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_k</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_k</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_k</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># Calculate attention</span>
+        <span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attention_scores</span> <span class="o">=</span> <span class="n">MultiHeadAttentionBlock</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
         
-        <span class="c1"># Do a forward pass</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        
-        <span class="c1"># Calculate the loss</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span>
+        <span class="c1"># Combine all the heads together</span>
+        <span class="c1"># (batch, h, seq_len, d_k) --&gt; (batch, seq_len, h, d_k) --&gt; (batch, seq_len, d_model)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_k</span><span class="p">)</span>
 
-        <span class="c1"># Count number of correct digits</span>
-        <span class="n">total_correct</span> <span class="o">+=</span> <span class="n">correct</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-        
-        <span class="c1"># Backpropagation</span>
-        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-
-    <span class="n">train_loss</span> <span class="o">=</span> <span class="n">total_loss</span><span class="o">/</span><span class="n">num_batches</span>
-    <span class="n">accuracy</span> <span class="o">=</span> <span class="n">total_correct</span><span class="o">/</span><span class="n">num_items</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average loss: </span><span class="si">{</span><span class="n">train_loss</span><span class="si">:</span><span class="s2">7f</span><span class="si">}</span><span class="s2">, accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="c1"># Multiply by Wo</span>
+        <span class="c1"># (batch, seq_len, d_model) --&gt; (batch, seq_len, d_model)  </span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_o</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7924,11 +7862,44 @@ target: torch.Size([32]) type: torch.LongTensor
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Train for 10 epochs:</p>
+<h2 id="Residual-Connection-Layer">Residual Connection Layer<a class="anchor-link" href="#Residual-Connection-Layer">¶</a></h2><p>This is a skip connection. The skip connection is between the Add&amp;Norm and the previous layer.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ResidualConnection</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">LayerNormalization</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    
+        <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">sublayer</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">sublayer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="The-Encoder-Block">The Encoder Block<a class="anchor-link" href="#The-Encoder-Block">¶</a></h2><p>As depicted in the figure above, the encoder block is a repetition of N encoder layers where the output of each layer is the input to the next layer. Then, the output of the last layer is the input of the decoder block.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7936,59 +7907,20 @@ target: torch.Size([32]) type: torch.LongTensor
 <div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">EncoderBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
-<span class="n">epochs</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Training epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="n">train</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">self_attention_block</span><span class="p">:</span> <span class="n">MultiHeadAttentionBlock</span><span class="p">,</span> <span class="n">feed_forward_block</span><span class="p">:</span> <span class="n">FeedForwardBlock</span><span class="p">,</span> <span class="n">dropout</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">self_attention_block</span> <span class="o">=</span> <span class="n">self_attention_block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_block</span> <span class="o">=</span> <span class="n">feed_forward_block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_connections</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">ResidualConnection</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_connections</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">self_attention_block</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">src_mask</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_connections</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_block</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Training epoch: 1
-Average loss: 0.429834, accuracy: 88.44%
-Training epoch: 2
-Average loss: 0.238427, accuracy: 93.24%
-Training epoch: 3
-Average loss: 0.200138, accuracy: 94.30%
-Training epoch: 4
-Average loss: 0.178499, accuracy: 94.87%
-Training epoch: 5
-Average loss: 0.163786, accuracy: 95.19%
-Training epoch: 6
-Average loss: 0.153337, accuracy: 95.54%
-Training epoch: 7
-Average loss: 0.144214, accuracy: 95.81%
-Training epoch: 8
-Average loss: 0.136840, accuracy: 95.95%
-Training epoch: 9
-Average loss: 0.130928, accuracy: 96.10%
-Training epoch: 10
-Average loss: 0.125242, accuracy: 96.33%
-CPU times: user 43.3 s, sys: 5.68 s, total: 49 s
-Wall time: 54.8 s
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Let's-see-the-model-accuracy-for-the-test-data">Let's see the model accuracy for the test data<a class="anchor-link" href="#Let's-see-the-model-accuracy-for-the-test-data">¶</a></h3>
 </div>
 </div>
 </div>
@@ -8000,262 +7932,19 @@ Wall time: 54.8 s
 <div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">test_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">):</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Encoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 
-    <span class="n">num_batches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_loader</span><span class="p">)</span>
-    <span class="n">num_items</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_loader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
-
-    <span class="n">test_loss</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">total_correct</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">test_loader</span><span class="p">:</span>
-            <span class="c1"># Copy data and targets to GPU</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        
-            <span class="c1"># Do a forward pass</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        
-            <span class="c1"># Calculate the loss</span>
-            <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-            <span class="n">test_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-        
-            <span class="c1"># Count number of correct digits</span>
-            <span class="n">total_correct</span> <span class="o">+=</span> <span class="n">correct</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-
-    <span class="n">test_loss</span> <span class="o">=</span> <span class="n">test_loss</span><span class="o">/</span><span class="n">num_batches</span>
-    <span class="n">accuracy</span> <span class="o">=</span> <span class="n">total_correct</span><span class="o">/</span><span class="n">num_items</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Testset accuracy: </span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">&gt;0.1f</span><span class="si">}</span><span class="s2">%, average loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">:</span><span class="s2">&gt;7f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">test</span><span class="p">(</span><span class="n">test_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Testset accuracy: 95.8%, average loss: 0.148362
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Add-one-more-hidden-linear-layer">Add one more hidden linear layer<a class="anchor-link" href="#Add-one-more-hidden-linear-layer">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">TwoLayerMLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">LayerNormalization</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">),</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="p">)</span>        
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ex1_model</span> <span class="o">=</span> <span class="n">TwoLayerMLP</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ex1_model</span><span class="p">)</span>
-<span class="n">ex1_model</span> <span class="o">=</span> <span class="n">ex1_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>TwoLayerMLP(
-  (layers): Sequential(
-    (0): Flatten(start_dim=1, end_dim=-1)
-    (1): Linear(in_features=784, out_features=50, bias=True)
-    (2): ReLU()
-    (3): Dropout(p=0.2, inplace=False)
-    (4): Linear(in_features=50, out_features=50, bias=True)
-    (5): ReLU()
-    (6): Dropout(p=0.2, inplace=False)
-    (7): Linear(in_features=50, out_features=10, bias=True)
-  )
-)
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Same steps: a loss function, an optimizer and the training loop:</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ex1_criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
-<span class="n">ex1_optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">ex1_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [29]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
-
-<span class="n">epochs</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> ..."</span><span class="p">)</span>
-    <span class="n">train</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">ex1_model</span><span class="p">,</span> <span class="n">ex1_criterion</span><span class="p">,</span> <span class="n">ex1_optimizer</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Epoch: 1 ...
-Average loss: 0.470256, accuracy: 85.86%
-Epoch: 2 ...
-Average loss: 0.240145, accuracy: 92.88%
-Epoch: 3 ...
-Average loss: 0.199531, accuracy: 94.03%
-Epoch: 4 ...
-Average loss: 0.173506, accuracy: 94.78%
-Epoch: 5 ...
-Average loss: 0.159892, accuracy: 95.23%
-Epoch: 6 ...
-Average loss: 0.148368, accuracy: 95.55%
-Epoch: 7 ...
-Average loss: 0.140041, accuracy: 95.77%
-Epoch: 8 ...
-Average loss: 0.133137, accuracy: 95.90%
-Epoch: 9 ...
-Average loss: 0.127789, accuracy: 96.07%
-Epoch: 10 ...
-Average loss: 0.123514, accuracy: 96.25%
-CPU times: user 57.6 s, sys: 6.57 s, total: 1min 4s
-Wall time: 1min 11s
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">test</span><span class="p">(</span><span class="n">test_loader</span><span class="p">,</span> <span class="n">ex1_model</span><span class="p">,</span> <span class="n">ex1_criterion</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Testset accuracy: 97.1%, average loss: 0.094662
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>So, although the numbers look a bit worse on the training split, the result is acually better on the test split.</p>
 </div>
 </div>
 </div>
