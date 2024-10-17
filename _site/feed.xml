@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-15T15:24:39+03:00</updated>
+  <updated>2024-10-15T16:08:15+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -50,7 +50,7 @@
     <link href="http://localhost:4000/posts/retrieval-augmented-generation/" rel="alternate" type="text/html" title="Retrieval Augmented Generation" />
     <published>2024-10-11T12:08:03+03:00</published>
   
-    <updated>2024-10-11T14:07:51+03:00</updated>
+    <updated>2024-10-15T15:24:52+03:00</updated>
   
     <id>http://localhost:4000/posts/retrieval-augmented-generation/</id>
     <content src="http://localhost:4000/posts/retrieval-augmented-generation/" />
@@ -76,7 +76,7 @@
     <link href="http://localhost:4000/posts/mlp/" rel="alternate" type="text/html" title="Multi Layer Perceptron" />
     <published>2024-10-11T12:08:03+03:00</published>
   
-    <updated>2024-10-11T12:08:03+03:00</updated>
+    <updated>2024-10-15T15:24:52+03:00</updated>
   
     <id>http://localhost:4000/posts/mlp/</id>
     <content src="http://localhost:4000/posts/mlp/" />
@@ -102,7 +102,7 @@
     <link href="http://localhost:4000/posts/linear-algebra/" rel="alternate" type="text/html" title="Linear Algebra" />
     <published>2024-10-08T12:08:03+03:00</published>
   
-    <updated>2024-10-11T14:07:51+03:00</updated>
+    <updated>2024-10-15T15:24:52+03:00</updated>
   
     <id>http://localhost:4000/posts/linear-algebra/</id>
     <content src="http://localhost:4000/posts/linear-algebra/" />
@@ -128,7 +128,7 @@
     <link href="http://localhost:4000/posts/lstm/" rel="alternate" type="text/html" title="LSTM" />
     <published>2024-10-07T12:08:03+03:00</published>
   
-    <updated>2024-10-11T14:07:51+03:00</updated>
+    <updated>2024-10-15T15:24:52+03:00</updated>
   
     <id>http://localhost:4000/posts/lstm/</id>
     <content src="http://localhost:4000/posts/lstm/" />

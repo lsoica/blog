@@ -31,3 +31,4 @@ assets/js/dist
 **/*.csv
 **/*tfevents*
 **/*tokenizer_*.json
+**/*.pt
