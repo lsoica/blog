@@ -32,3 +32,5 @@ assets/js/dist
 **/*tfevents*
 **/*tokenizer_*.json
 **/*.pt
+**/*-ubyte
+**/*-ubyte.gz

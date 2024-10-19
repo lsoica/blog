@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-17T17:35:08+03:00</updated>
+  <updated>2024-10-19T08:22:36+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Autoencoders</title>
+    <link href="http://localhost:4000/posts/autoencoders/" rel="alternate" type="text/html" title="Autoencoders" />
+    <published>2024-10-18T12:08:03+03:00</published>
+  
+    <updated>2024-10-18T12:08:03+03:00</updated>
+  
+    <id>http://localhost:4000/posts/autoencoders/</id>
+    <content src="http://localhost:4000/posts/autoencoders/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Autoencoders.</summary>
+
+  </entry>
 
   
   <entry>
@@ -119,32 +145,6 @@
   
 
   <summary>Linear Algebra.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>LSTM</title>
-    <link href="http://localhost:4000/posts/lstm/" rel="alternate" type="text/html" title="LSTM" />
-    <published>2024-10-07T12:08:03+03:00</published>
-  
-    <updated>2024-10-15T15:24:52+03:00</updated>
-  
-    <id>http://localhost:4000/posts/lstm/</id>
-    <content src="http://localhost:4000/posts/lstm/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>LSTM.</summary>
 
   </entry>
 
