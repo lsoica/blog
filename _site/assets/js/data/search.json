@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "CNNs",
+    "url": "/posts/cnn/",
+    "categories": "Blogging, Tutorial",
+    "tags": "neuralnetworks, cnn",
+    "date": "2024-10-22 12:08:03 +0300",
+    
+
+
+
+
+
+    
+    "snippet": "        ",
+    "content": "        "
+  },
+  
+  {
     "title": "Autoencoders",
     "url": "/posts/autoencoders/",
     "categories": "Blogging, Tutorial",

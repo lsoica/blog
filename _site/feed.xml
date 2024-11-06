@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-10-22T11:15:02+03:00</updated>
+  <updated>2024-11-06T11:32:39+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>CNNs</title>
+    <link href="http://localhost:4000/posts/cnn/" rel="alternate" type="text/html" title="CNNs" />
+    <published>2024-10-22T12:08:03+03:00</published>
+  
+    <updated>2024-10-22T12:08:03+03:00</updated>
+  
+    <id>http://localhost:4000/posts/cnn/</id>
+    <content src="http://localhost:4000/posts/cnn/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Convolutional neural networks.</summary>
+
+  </entry>
 
   
   <entry>
@@ -119,32 +145,6 @@
   
 
   <summary>MLP.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Linear Algebra</title>
-    <link href="http://localhost:4000/posts/linear-algebra/" rel="alternate" type="text/html" title="Linear Algebra" />
-    <published>2024-10-08T12:08:03+03:00</published>
-  
-    <updated>2024-10-15T15:24:52+03:00</updated>
-  
-    <id>http://localhost:4000/posts/linear-algebra/</id>
-    <content src="http://localhost:4000/posts/linear-algebra/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Linear Algebra.</summary>
 
   </entry>
 

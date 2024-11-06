@@ -1,0 +1,12 @@
+---
+title:  "CNNs"
+description: >-
+  Convolutional neural networks.
+author: lso
+date:   2024-10-22 11:08:03 +0200
+categories: [Blogging, Tutorial]
+tags: [neuralnetworks,cnn]
+pin: false
+---
+
+{% jupyter_notebook "../../assets/cnn.ipynb" %}
