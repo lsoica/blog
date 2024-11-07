@@ -44,7 +44,10 @@ This work is published under [MIT][mit] License.
 
 ## BackLog
 
-- CNN classification and localization
+- CNN bounding box detection
 - Stable diffusion
 - Multimodal LM
 - LLaMA 2
+- BERT
+- AI Agents
+- Inference strategies, temperature

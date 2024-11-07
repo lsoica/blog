@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>jekyll-jupyter-notebook20241107-47084-v7bmh</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>jekyll-jupyter-notebook20241107-47084-bqd955</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7516,28 +7516,27 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="RAG-(Retrieval-Augmented-Generation)">RAG (Retrieval Augmented Generation)<a class="anchor-link" href="#RAG-(Retrieval-Augmented-Generation)">¶</a></h1><h2 id="Terms">Terms<a class="anchor-link" href="#Terms">¶</a></h2><ul>
-<li>Fine-tuning: Train an existing model on new data. It is expensive and limited by the number of parameters of teh base model. It is not additive. It could forget exiting knowledge and replace it with new knowledge.</li>
-<li>Few-shot prompting: Teach a LM to perform a new task by first providing with some examples. Then, the model is asked to generate new examples.</li>
-<li>Retrieval: Find relevant documents from a large corpus of documents.</li>
-</ul>
-<h2 id="RAG-pipeline">RAG pipeline<a class="anchor-link" href="#RAG-pipeline">¶</a></h2><p>We start with a base model. Our goal is to extend the model for QA on data that was not train on, and without the user having to look for the answers in external sources and provide it as context to the model.</p>
+<h1 id="LLaMA">LLaMA<a class="anchor-link" href="#LLaMA">¶</a></h1><h2 id="Architecture">Architecture<a class="anchor-link" href="#Architecture">¶</a></h2><p><img alt="Architecture" src="images/transformer_vs_llama_architecture.png"/></p>
 <ul>
-<li>Identify the data source(s): PDF documents, websites, any other document source.</li>
-<li>Split the document(s) into chunks</li>
-<li>For each chunk, create embeddings for each chunk. An embedding is a vector of fixed size that represents the meaning of the chunk.</li>
-<li>Store the pairs of embedding, chunk in a vector database.</li>
-<li>At query time, we retrieve the relevant chunks from the vector database by searching for the most similar embeddings to the embedding of the query.</li>
-<li>Feed the most similar chunks into the base model's context and ask it to generate answers.</li>
+<li>It is a decoder-only model. So the decoder part of the original transformer paper minus the cross-attention block.</li>
+<li>All the normalizations have been moved before every block (the RMS Norm blocks).</li>
+<li>The decoder is a transformer, but it's not used in inference (it's just there to train the model</li>
+<li>Positional Encodings have become the Rotary Positional Encodings and they are only applied to the Query and Key, but not the Value. They come into play when we calculate the attention.</li>
+<li>The attention is a self-attention block, with KV cache.</li>
+<li>ReLU have been replaced by SwiGLU.</li>
+<li>Embeddings: for each token, a vector of 4096 dimensions. These are trainable paremeters.</li>
+<li>Normalization: let's consider we have 2 layers l1 -&gt; L2. If after the backpropagation the output of L1 changes drastically, then the output of L2 will also change drastically. This is not good for training, it makes it slow as the neurons are forced to change drastically their weights in one direction or another. To avoid this, we use Layer Normalization. How it works? For each input item, the mean and variance are calculated and maintained. Then, the output is normalized using the mean and variance of that item.</li>
+<li>Batch normalization: for batch normalization, we normalize by columns (features)</li>
+<li>Layer normalization: for layer normalization, we normalize by rows (data items). Recenters around 0 mean and rescales to 1 standard deviation.</li>
+<li>RMSNorm: Root Mean Square Normalization. It doesn't recenter but just rescale. Less computation compared to LayerNorm.</li>
+<li>Positional Encoding: a vector that is summed to the embedding of each token. It indicates the position of the token inside the sentence. They are not learned. Computed once and then used during both training and inference.</li>
+<li>Rotary Positional Encoding: it's like positional encoding but instead of absolute position encoding, it stores the distance between 2 token's position</li>
+<li>Self-Attention: $Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$ . This resulting attention matrix captures not only the meaning and possition of each token but also its relation to other tokens.</li>
+<li>KV Cache: avoid redundant computations for each new token and instead cache the previously computed keys and values and append them to the current keys and values.</li>
+<li>Multi-Query Attention: Problem: GPUs are very fast at computing, but not so fast at transfering data to/from their memory.</li>
+<li>Grouped Multi-Query Attention: We divide the queries into groups and for each group we have one different head. Loss in quality but computationally fast. <img alt="Attention" src="images/grouped-multi-query-attention.png"/></li>
+<li>FeedForward SwiGLU: The activation function instead of ReLU.</li>
 </ul>
-<h2 id="Embedding-vectors">Embedding vectors<a class="anchor-link" href="#Embedding-vectors">¶</a></h2><p>Multi-dimensional vector representations of chunks or words or any other meaningful unit. After training, the embeddings end up being able to capture semantic relationships between chunks:</p>
-<ul>
-<li>we expect that the angle between words with similar meaning to be small (the vectors are close together, similar) and that the angle between words with different meanings will be large (the vectors are far apart).</li>
-<li>The cosine similarity is a common way to measure the similarity (angle) of two vectors, based on the dot product of the 2 vectors.</li>
-</ul>
-<h2 id="Embedding-models">Embedding models<a class="anchor-link" href="#Embedding-models">¶</a></h2><p>These are models that can be used to generate embedding vectors for sentences, chunks or words. An example is the Sentence BERT model. The model generates embedding vectors for each of the tokens in the context. Then, the vectors are averaged together into a single vector that can then be used in cosine similarity with the embedding vector of the query. BERT has by default 768 dimensions. In order to represent an embedding in a lower dimensionality, we use a linear layer right after applying the average, that maps each of these 768 dimensions to a smaller number of dimensions. We call this number of dimensions the embedding size.</p>
-<h2 id="Vector-database">Vector database<a class="anchor-link" href="#Vector-database">¶</a></h2><p>Stores vectors of fixed dimensions (embeddigns) so that later on we can query the DB fo the most similar embeddings to a given embedding vector. A common way is to use an approximate KNN (nearest neighbour) search algorithm, like Annoy or Faiss. These algorithms are used to find the closest embeddings in a vector database. This is true not only for text, buat audio, images and other data as well.</p>
-<h2 id="K-NN-search">K-NN search<a class="anchor-link" href="#K-NN-search">¶</a></h2><p>With a naive approach, we would have to compute the cosine similarity of each embedding with every other embedding. An optimization to this is the HNSW that stands for Hierarchical Navigable Small Worlds. It uses a graph structure to store the embeddings. The graph is built using a nearest neighbour search algorithm (e.g., Annoy or Faiss). This way, we can query the graph for the closest embedding and then traverse the graph to find the closest neighbors of that embedding.</p>
 </div>
 </div>
 </div>
@@ -7548,21 +7547,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="RAG-pipeline-with-LlamaIndex-and-Ollama">RAG pipeline with LlamaIndex and Ollama<a class="anchor-link" href="#RAG-pipeline-with-LlamaIndex-and-Ollama">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>llama-index<span class="w"> </span>llama-index-llms-ollama<span class="w"> </span>bs4<span class="w"> </span>requests<span class="w"> </span>llama-index-embeddings-huggingface
-</pre></div>
-</div>
+<h2 id="Implementation">Implementation<a class="anchor-link" href="#Implementation">¶</a></h2><h3 id="Install-libraries">Install libraries<a class="anchor-link" href="#Install-libraries">¶</a></h3>
 </div>
 </div>
 </div>
@@ -7571,15 +7556,10 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [37]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">llama_index.llms.ollama</span> <span class="kn">import</span> <span class="n">Ollama</span>
-
-<span class="n">llm</span> <span class="o">=</span> <span class="n">Ollama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"llama3.1:8b"</span><span class="p">,</span> <span class="n">request_timeout</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">complete</span><span class="p">(</span><span class="s2">"Do you know about Claude 3.5 Sonnet?"</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>torch<span class="w"> </span>sentencepiece<span class="w"> </span>tqdm
 </pre></div>
 </div>
 </div>
@@ -7592,17 +7572,87 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>I'm not familiar with a specific work called "Claude 3.5 Sonnet." It's possible that it might be a lesser-known or unpublished poem, or maybe even a joke or a fictional reference.
+<pre>Requirement already satisfied: torch in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (2.5.0)
+Collecting sentencepiece
+  Downloading sentencepiece-0.2.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (7.7 kB)
+Requirement already satisfied: tqdm in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (4.66.5)
+Requirement already satisfied: filelock in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (3.16.1)
+Requirement already satisfied: typing-extensions&gt;=4.8.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (4.12.2)
+Requirement already satisfied: networkx in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (3.4.1)
+Requirement already satisfied: jinja2 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (3.1.4)
+Requirement already satisfied: fsspec in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (2024.9.0)
+Requirement already satisfied: setuptools in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (75.2.0)
+Requirement already satisfied: sympy==1.13.1 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (1.13.1)
+Requirement already satisfied: mpmath&lt;1.4,&gt;=1.1.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from sympy==1.13.1-&gt;torch) (1.3.0)
+Requirement already satisfied: MarkupSafe&gt;=2.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from jinja2-&gt;torch) (3.0.1)
+Downloading sentencepiece-0.2.0-cp312-cp312-macosx_11_0_arm64.whl (1.2 MB)
+   <span class="ansi-black-intense-fg">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-green-fg">1.2/1.2 MB</span> <span class="ansi-red-fg">10.7 MB/s</span> eta <span class="ansi-cyan-fg">0:00:00</span>
+Installing collected packages: sentencepiece
+Successfully installed sentencepiece-0.2.0
 
-However, I can try to help you learn more about it. Can you please provide me with some context or information about the Claude 3.5 Sonnet? For example:
-
-* Who is Claude, and what's the significance of the number 3.5?
-* Is this a specific poem by a known author, or perhaps a reference in a book, movie, or TV show?
-* Do you have any details about the content, style, or themes of the sonnet?
-
-Any information you can provide will help me better understand what you're looking for and try to assist you!
+<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> A new release of pip is available: <span class="ansi-red-fg">24.2</span> -&gt; <span class="ansi-green-fg">24.3.1</span>
+<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> To update, run: <span class="ansi-green-fg">pip install --upgrade pip</span>
 </pre>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Download-the-vocabulary">Download the vocabulary<a class="anchor-link" href="#Download-the-vocabulary">¶</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Download the script</span>
+<span class="o">!</span>curl<span class="w"> </span>-O<span class="w"> </span>https://raw.githubusercontent.com/meta-llama/llama/refs/heads/main/download.sh
+
+<span class="c1"># Make the script executable</span>
+<span class="o">!</span>chmod<span class="w"> </span>+x<span class="w"> </span>download.sh
+
+<span class="c1"># Execute the script</span>
+<span class="c1">#!./download.sh</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  2544  100  2544    0     0   4678      0 --:--:-- --:--:-- --:--:--  4676
+Enter the URL from email: ^C
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Import-modules">Import modules<a class="anchor-link" href="#Import-modules">¶</a></h3>
 </div>
 </div>
 </div>
@@ -7611,62 +7661,520 @@ Any information you can provide will help me better understand what you're looki
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
-<span class="kn">from</span> <span class="nn">llama_index.core</span> <span class="kn">import</span> <span class="n">Document</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">sentencepiece</span> <span class="kn">import</span> <span class="n">SentencePieceProcessor</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="A-class-to-store-the-parameters-of-the-model">A class to store the parameters of the model<a class="anchor-link" href="#A-class-to-store-the-parameters-of-the-model">¶</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ModelArgs</span><span class="p">:</span>
+    <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4096</span>
+    <span class="n">n_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">n_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">n_kv_heads</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">vocab_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="c1"># set when loading the tokenizer</span>
+    <span class="n">multiple_of</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span>
+    <span class="n">ffn_dim_multiplier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">norm_eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span>
 
-<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"https://www.anthropic.com/news/claude-3-5-sonnet"</span><span class="p">,</span>
-    <span class="s2">"https://www.reddit.com/r/ClaudeAI/comments/1dvfyp6/all_this_talk_about_claude_sonnet_35_being_good/"</span>
+    <span class="n">max_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">max_seq_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span>
+
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Code-the-model">Code the model<a class="anchor-link" href="#Code-the-model">¶</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">precompute_theta_pos_frequencies</span><span class="p">(</span><span class="n">head_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10000.0</span><span class="p">):</span>
+    <span class="c1"># As written in the paragraph 3.2.2 of the paper</span>
+    <span class="c1"># &gt;&gt; In order to generalize our results in 2D to any xi ∈ Rd where **d is even**, [...]</span>
+    <span class="k">assert</span> <span class="n">head_dim</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"Dimension must be divisible by 2"</span>
+    <span class="c1"># Build the theta parameter</span>
+    <span class="c1"># According to the formula theta_i = 10000^(-2(i-1)/dim) for i = [1, 2, ... dim/2]</span>
+    <span class="c1"># Shape: (Head_Dim / 2)</span>
+    <span class="n">theta_numerator</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+    <span class="c1"># Shape: (Head_Dim / 2)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">theta</span> <span class="o">**</span> <span class="p">(</span><span class="n">theta_numerator</span> <span class="o">/</span> <span class="n">head_dim</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># (Dim / 2)</span>
+    <span class="c1"># Construct the positions (the "m" parameter)</span>
+    <span class="c1"># Shape: (Seq_Len)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># Multiply each theta by each position using the outer product.</span>
+    <span class="c1"># Shape: (Seq_Len) outer_product* (Head_Dim / 2) -&gt; (Seq_Len, Head_Dim / 2)</span>
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+    <span class="c1"># We can compute complex numbers in the polar form c = R * exp(m * theta), where R = 1 as follows:</span>
+    <span class="c1"># (Seq_Len, Head_Dim / 2) -&gt; (Seq_Len, Head_Dim / 2)</span>
+    <span class="n">freqs_complex</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">polar</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">freqs</span><span class="p">),</span> <span class="n">freqs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">freqs_complex</span>
+
+<span class="k">def</span> <span class="nf">apply_rotary_embeddings</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">freqs_complex</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="c1"># Separate the last dimension pairs of two values, representing the real and imaginary parts of the complex number</span>
+    <span class="c1"># Two consecutive values will become a single complex number</span>
+    <span class="c1"># (B, Seq_Len, H, Head_Dim) -&gt; (B, Seq_Len, H, Head_Dim/2)</span>
+    <span class="n">x_complex</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">view_as_complex</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="c1"># Reshape the freqs_complex tensor to match the shape of the x_complex tensor. So we need to add the batch dimension and the head dimension</span>
+    <span class="c1"># (Seq_Len, Head_Dim/2) --&gt; (1, Seq_Len, 1, Head_Dim/2)</span>
+    <span class="n">freqs_complex</span> <span class="o">=</span> <span class="n">freqs_complex</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># Multiply each complex number in the x_complex tensor by the corresponding complex number in the freqs_complex tensor</span>
+    <span class="c1"># Which results in the rotation of the complex number as shown in the Figure 1 of the paper</span>
+    <span class="c1"># (B, Seq_Len, H, Head_Dim/2) * (1, Seq_Len, 1, Head_Dim/2) = (B, Seq_Len, H, Head_Dim/2)</span>
+    <span class="n">x_rotated</span> <span class="o">=</span> <span class="n">x_complex</span> <span class="o">*</span> <span class="n">freqs_complex</span>
+    <span class="c1"># Convert the complex number back to the real number</span>
+    <span class="c1"># (B, Seq_Len, H, Head_Dim/2) -&gt; (B, Seq_Len, H, Head_Dim/2, 2)</span>
+    <span class="n">x_out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">view_as_real</span><span class="p">(</span><span class="n">x_rotated</span><span class="p">)</span>
+    <span class="c1"># (B, Seq_Len, H, Head_Dim/2, 2) -&gt; (B, Seq_Len, H, Head_Dim)</span>
+    <span class="n">x_out</span> <span class="o">=</span> <span class="n">x_out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_out</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">RMSNorm</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
+        <span class="c1"># The gamma parameter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">dim</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="c1"># (B, Seq_Len, Dim) * (B, Seq_Len, 1) = (B, Seq_Len, Dim)</span>
+        <span class="c1"># rsqrt: 1 / sqrt(x)</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">rsqrt</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="c1"># (Dim) * (B, Seq_Len, Dim) = (B, Seq_Len, Dim)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">float</span><span class="p">())</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">EncoderBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">ModelArgs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_heads</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span> <span class="o">//</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">attention</span> <span class="o">=</span> <span class="n">SelfAttention</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span> <span class="o">=</span> <span class="n">FeedForward</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># Normalization BEFORE the attention block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attention_norm</span> <span class="o">=</span> <span class="n">RMSNorm</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">norm_eps</span><span class="p">)</span>
+        <span class="c1"># Normalization BEFORE the feed forward block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ffn_norm</span> <span class="o">=</span> <span class="n">RMSNorm</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">norm_eps</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">start_pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">freqs_complex</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="c1"># (B, Seq_Len, Dim) + (B, Seq_Len, Dim) --&gt; (B, Seq_Len, Dim)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">attention</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attention_norm</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">start_pos</span><span class="p">,</span> <span class="n">freqs_complex</span>
+        <span class="p">)</span>
+        <span class="c1"># (B, Seq_Len, Dim) + (B, Seq_Len, Dim) --&gt; (B, Seq_Len, Dim)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ffn_norm</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span>
+    
+<span class="k">def</span> <span class="nf">repeat_kv</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">n_rep</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">n_kv_heads</span><span class="p">,</span> <span class="n">head_dim</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">n_rep</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="c1"># (B, Seq_Len, N_KV_Heads, 1, Head_Dim)</span>
+        <span class="n">x</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="c1"># (B, Seq_Len, N_KV_Heads, N_Rep, Head_Dim)</span>
+        <span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">n_kv_heads</span><span class="p">,</span> <span class="n">n_rep</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">)</span>
+        <span class="c1"># (B, Seq_Len, N_KV_Heads * N_Rep, Head_Dim)</span>
+        <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">n_kv_heads</span> <span class="o">*</span> <span class="n">n_rep</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">SelfAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">ModelArgs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Indicates the number of heads for the Keys and Values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">n_kv_heads</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">n_kv_heads</span>
+        <span class="c1"># Indicates the number of heads for the Queries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_heads_q</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span>
+        <span class="c1"># Indicates how many times the Keys and Values should be repeated</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_heads_q</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span>
+        <span class="c1"># Indicates the dimension of each head, that is, the part of the embedding that each head will be responsible for</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span> <span class="o">//</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">wq</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wk</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wo</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_heads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_k</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">args</span><span class="o">.</span><span class="n">max_batch_size</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_v</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">args</span><span class="o">.</span><span class="n">max_batch_size</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">start_pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">freqs_complex</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">):</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>  <span class="c1"># (B, 1, Dim)</span>
+
+        <span class="c1"># (B, 1, Dim) -&gt; (B, 1, H_Q * Head_Dim)</span>
+        <span class="n">xq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wq</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># (B, 1, Dim) -&gt; (B, 1, H_KV * Head_Dim)</span>
+        <span class="n">xk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wk</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># (B, 1, Dim) -&gt; (B, 1, H_KV * Head_Dim)</span>
+        <span class="n">xv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># (B, 1, H_Q * Head_Dim) -&gt; (B, 1, H_Q, Head_Dim)</span>
+        <span class="n">xq</span> <span class="o">=</span> <span class="n">xq</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_heads_q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
+        <span class="c1"># (B, 1, H_KV * Head_Dim) -&gt; (B, 1, H_KV, Head_Dim)</span>
+        <span class="n">xk</span> <span class="o">=</span> <span class="n">xk</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
+        <span class="c1"># (B, 1, H_KV * Head_Dim) -&gt; (B, 1, H_KV, Head_Dim)</span>
+        <span class="n">xv</span> <span class="o">=</span> <span class="n">xv</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
+
+        <span class="c1"># (B, 1, H_Q, Head_Dim) --&gt; (B, 1, H_Q, Head_Dim)</span>
+        <span class="n">xq</span> <span class="o">=</span> <span class="n">apply_rotary_embeddings</span><span class="p">(</span><span class="n">xq</span><span class="p">,</span> <span class="n">freqs_complex</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1"># (B, 1, H_KV, Head_Dim) --&gt; (B, 1, H_KV, Head_Dim)</span>
+        <span class="n">xk</span> <span class="o">=</span> <span class="n">apply_rotary_embeddings</span><span class="p">(</span><span class="n">xk</span><span class="p">,</span> <span class="n">freqs_complex</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># Replace the entry in the cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_k</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">start_pos</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">xk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_v</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">start_pos</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">xv</span>
+
+        <span class="c1"># (B, Seq_Len_KV, H_KV, Head_Dim)</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_k</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">,</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span>
+        <span class="c1"># (B, Seq_Len_KV, H_KV, Head_Dim)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_v</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">,</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span>
+
+        <span class="c1"># Since every group of Q shares the same K and V heads, just repeat the K and V heads for every Q in the same group.</span>
+
+        <span class="c1"># (B, Seq_Len_KV, H_KV, Head_Dim) --&gt; (B, Seq_Len_KV, H_Q, Head_Dim)</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="n">repeat_kv</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_rep</span><span class="p">)</span>
+        <span class="c1"># (B, Seq_Len_KV, H_KV, Head_Dim) --&gt; (B, Seq_Len_KV, H_Q, Head_Dim)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">repeat_kv</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_rep</span><span class="p">)</span>
+
+        <span class="c1"># (B, 1, H_Q, Head_Dim) -&gt; (B, H_Q, 1, Head_Dim)</span>
+        <span class="n">xq</span> <span class="o">=</span> <span class="n">xq</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># (B, Seq_Len_KV, H_Q, Head_Dim) -&gt; (B, H_Q, Seq_Len_KV, Head_Dim)</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># (B, Seq_Len_KV, H_Q, Head_Dim) -&gt; (B, H_Q, Seq_Len_KV, Head_Dim)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># (B, H_Q, 1, Head_Dim) @ (B, H_Q, Head_Dim, Seq_Len_KV) -&gt; (B, H_Q, 1, Seq_Len_KV)</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">xq</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
+        <span class="c1"># (B, H_Q, 1, Seq_Len_KV) -&gt; (B, H_Q, 1, Seq_Len_KV)</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">xq</span><span class="p">)</span>
+
+        <span class="c1"># (B, H_Q, 1, Seq_Len) @ (B, H_Q, Seq_Len_KV, Head_Dim) -&gt; (B, H_Q, 1, Head_Dim)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+        <span class="c1"># (B, H_Q, 1, Head_Dim) -&gt; (B, 1, H_Q, Head_Dim) -&gt; (B, 1, Dim)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wo</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="c1"># (B, 1, Dim) -&gt; (B, 1, Dim)</span>
+
+<span class="k">class</span> <span class="nc">FeedForward</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">args</span><span class="p">:</span> <span class="n">ModelArgs</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span>
+        <span class="n">hidden_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hidden_dim</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">ffn_dim_multiplier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hidden_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">ffn_dim_multiplier</span> <span class="o">*</span> <span class="n">hidden_dim</span><span class="p">)</span>
+        <span class="c1"># Round the hidden_dim to the nearest multiple of the multiple_of parameter</span>
+        <span class="n">hidden_dim</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">multiple_of</span> <span class="o">*</span> <span class="p">((</span><span class="n">hidden_dim</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">multiple_of</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">args</span><span class="o">.</span><span class="n">multiple_of</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">w1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="c1"># (B, Seq_Len, Dim) --&gt; (B, Seq_Len, Hidden_Dim)</span>
+        <span class="n">swish</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">silu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="c1"># (B, Seq_Len, Dim) --&gt; (B, Seq_Len, Hidden_Dim)</span>
+        <span class="n">x_V</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># (B, Seq_Len, Hidden_Dim) * (B, Seq_Len, Hidden_Dim) --&gt; (B, Seq_Len, Hidden_Dim)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">swish</span> <span class="o">*</span> <span class="n">x_V</span>
+        <span class="c1"># (B, Seq_Len, Hidden_Dim) --&gt; (B, Seq_Len, Dim)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+    
+<span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">ModelArgs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">assert</span> <span class="n">args</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"You must provide the vocabulary size."</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">vocab_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tok_embeddings</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_layers</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EncoderBlock</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">RMSNorm</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">norm_eps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">freqs_complex</span> <span class="o">=</span> <span class="n">precompute_theta_pos_frequencies</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">start_pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="c1"># B, Seq-len</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">assert</span> <span class="n">seq_len</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"The sequence length must be one."</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tok_embeddings</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+
+        <span class="n">freq_complex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">freqs_complex</span><span class="p">[</span><span class="n">start_pos</span><span class="p">:</span><span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">start_pos</span><span class="p">,</span> <span class="n">freq_complex</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">output</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Code-the-inference-algorithm">Code the inference algorithm<a class="anchor-link" href="#Code-the-inference-algorithm">¶</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">LLaMA</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Transformer</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">:</span> <span class="n">SentencePieceProcessor</span><span class="p">,</span> <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArgs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">model_args</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">checkpoints_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tokenizer_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">load_model</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">prev_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">load_model</span><span class="p">:</span>
+            <span class="n">checkpoints</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">checkpoints_dir</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.pth"</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">checkpoints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"no checkpoint files found in </span><span class="si">{</span><span class="n">checkpoints_dir</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="n">checkpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Loading checkpoint "</span><span class="si">{</span><span class="n">ckpt_path</span><span class="si">}</span><span class="s1">"'</span><span class="p">)</span>
+            <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ckpt_path</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="s2">"cpu"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded checkpoint in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">prev_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+            <span class="n">prev_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">checkpoints_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"params.json"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArgs</span> <span class="o">=</span> <span class="n">ModelArgs</span><span class="p">(</span>
+            <span class="n">max_seq_len</span><span class="o">=</span><span class="n">max_seq_len</span><span class="p">,</span>
+            <span class="n">max_batch_size</span><span class="o">=</span><span class="n">max_batch_size</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">params</span>
+        <span class="p">)</span>
+
+        <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">SentencePieceProcessor</span><span class="p">()</span>
+        <span class="n">tokenizer</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">tokenizer_path</span><span class="p">)</span>
+        <span class="n">model_args</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">"cuda"</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">HalfTensor</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">BFloat16Tensor</span><span class="p">)</span>
+        
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Transformer</span><span class="p">(</span><span class="n">model_args</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">load_model</span><span class="p">:</span>
+            <span class="c1"># The only unmatched key in the checkpoint is rope.freqs. Remove it</span>
+            <span class="k">del</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s1">'rope.freqs'</span><span class="p">]</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded state dict in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">prev_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">LLaMA</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">model_args</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">text_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">top_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">max_gen_len</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">max_gen_len</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">max_gen_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="c1"># Convert each prompt into tokens</span>
+        <span class="n">prompt_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">out_type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">add_bos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">add_eos</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="n">prompts</span><span class="p">]</span>
+        <span class="c1"># Make sure the batch size is not too large</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompt_tokens</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_batch_size</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"batch size must be less than or equal to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_batch_size</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">max_prompt_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span> <span class="k">for</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="n">prompt_tokens</span><span class="p">)</span>
+        <span class="c1"># Make sure the prompt length is not larger than the maximum sequence length</span>
+        <span class="k">assert</span> <span class="n">max_prompt_len</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"prompt length must be less than or equal to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">total_len</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="n">max_gen_len</span> <span class="o">+</span> <span class="n">max_prompt_len</span><span class="p">)</span>
+
+        <span class="c1"># Create the list that will contain the generated tokens, along with the initial prompt tokens</span>
+        <span class="n">pad_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_id</span><span class="p">()</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">total_len</span><span class="p">),</span> <span class="n">pad_id</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prompt_tokens</span><span class="p">):</span>
+            <span class="c1"># Populate the initial tokens with the prompt tokens</span>
+            <span class="n">tokens</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="n">eos_reached</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">prompt_tokens_mask</span> <span class="o">=</span> <span class="n">tokens</span> <span class="o">!=</span> <span class="n">pad_id</span> <span class="c1"># True if the token is a prompt token, False otherwise</span>
+        <span class="n">cur_iterator</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">total_len</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">"Generating tokens"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cur_pos</span> <span class="ow">in</span> <span class="n">cur_iterator</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tokens</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">cur_pos</span><span class="p">],</span> <span class="n">cur_pos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># The temperature is applied before the softmax</span>
+                <span class="n">probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">next_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_top_p</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">top_p</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Greedily select the token with the max probability</span>
+                <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">logits</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">next_token</span> <span class="o">=</span> <span class="n">next_token</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># Only replace token if it is a padding token</span>
+            <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">prompt_tokens_mask</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="p">],</span> <span class="n">tokens</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="p">],</span> <span class="n">next_token</span><span class="p">)</span>
+            <span class="n">tokens</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_token</span>
+            <span class="c1"># EOS is reached only if we found an EOS token for a padding position</span>
+            <span class="n">eos_reached</span> <span class="o">|=</span> <span class="p">(</span><span class="o">~</span><span class="n">prompt_tokens_mask</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">next_token</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">eos_reached</span><span class="p">):</span>
+                <span class="k">break</span>
+
+        <span class="n">out_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">out_text</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">prompt_index</span><span class="p">,</span> <span class="n">current_prompt_tokens</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">tolist</span><span class="p">()):</span>
+            <span class="c1"># Cut to the EOS token, if present</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_id</span> <span class="ow">in</span> <span class="n">current_prompt_tokens</span><span class="p">:</span>
+                <span class="n">eos_idx</span> <span class="o">=</span> <span class="n">current_prompt_tokens</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
+                <span class="n">current_prompt_tokens</span> <span class="o">=</span> <span class="n">current_prompt_tokens</span><span class="p">[:</span><span class="n">eos_idx</span><span class="p">]</span>
+            <span class="n">out_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_prompt_tokens</span><span class="p">)</span>
+            <span class="n">out_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">current_prompt_tokens</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">out_tokens</span><span class="p">,</span> <span class="n">out_text</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_sample_top_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probs</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="c1"># (B, vocab_size)</span>
+        <span class="n">probs_sort</span><span class="p">,</span> <span class="n">probs_idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># (B, vocab_size)</span>
+        <span class="n">probs_sum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">probs_sort</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># (B, vocab_size)</span>
+        <span class="c1"># (Substracting "probs_sort" shifts the cumulative sum by 1 position to the right before masking)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">probs_sum</span> <span class="o">-</span> <span class="n">probs_sort</span> <span class="o">&gt;</span> <span class="n">p</span> 
+        <span class="c1"># Zero out all the probabilities of tokens that are not selected by the Top P</span>
+        <span class="n">probs_sort</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span> 
+        <span class="c1"># Redistribute the probabilities so that they sum up to 1.</span>
+        <span class="n">probs_sort</span><span class="o">.</span><span class="n">div_</span><span class="p">(</span><span class="n">probs_sort</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="c1"># Sample a token (its index) from the top p distribution</span>
+        <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">probs_sort</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Get the token position in the vocabulary corresponding to the sampled index</span>
+        <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">probs_idx</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">next_token</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">next_token</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># if torch.backends.mps.is_available():</span>
+<span class="c1">#     device = torch.device("mps")</span>
+<span class="c1"># else:</span>
+<span class="c1">#     device = torch.device("cpu")</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="s2">"cpu"</span>
+
+<span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Simply put, the theory of relativity states that "</span><span class="p">,</span>
+    <span class="s2">"If Google was an Italian company founded in Milan, it would"</span><span class="p">,</span>
+    <span class="c1"># Few shot promt</span>
+<span class="w">    </span><span class="sd">"""Translate English to French:</span>
+<span class="sd">    </span>
+<span class="sd">    sea otter =&gt; loutre de mer</span>
+<span class="sd">    peppermint =&gt; menthe poivrée</span>
+<span class="sd">    plush girafe =&gt; girafe peluche</span>
+<span class="sd">    cheese =&gt;"""</span><span class="p">,</span>
+    <span class="c1"># Zero shot prompt</span>
+<span class="w">    </span><span class="sd">"""Tell me if the following person is actually Doraemon disguised as human:</span>
+<span class="sd">    Name: Umar Jamil</span>
+<span class="sd">    Decision: </span>
+<span class="sd">    """</span>
 <span class="p">]</span>
 
-<span class="n">docs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LLaMA</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
+    <span class="n">checkpoints_dir</span><span class="o">=</span><span class="s1">'../llama-2-7b/'</span><span class="p">,</span>
+    <span class="n">tokenizer_path</span><span class="o">=</span><span class="s1">'../llama-2-7b/tokenizer.model'</span><span class="p">,</span>
+    <span class="n">load_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">max_seq_len</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+    <span class="n">max_batch_size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">prompts</span><span class="p">),</span>
+    <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+<span class="p">)</span>
 
-<span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">'html.parser'</span><span class="p">)</span>
-    <span class="n">docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">soup</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="n">url</span><span class="p">}))</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [34]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">llama_index.core</span> <span class="kn">import</span> <span class="n">VectorStoreIndex</span>
-<span class="kn">from</span> <span class="nn">llama_index.embeddings.huggingface</span> <span class="kn">import</span> <span class="n">HuggingFaceEmbedding</span>
-<span class="kn">from</span> <span class="nn">llama_index.core</span> <span class="kn">import</span> <span class="n">Settings</span>
-<span class="n">Settings</span><span class="o">.</span><span class="n">embed_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbedding</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">"BAAI/bge-small-en-v1.5"</span><span class="p">)</span>
-<span class="n">Settings</span><span class="o">.</span><span class="n">llm</span> <span class="o">=</span> <span class="n">Ollama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"llama3.1:8b"</span><span class="p">,</span> <span class="n">request_timeout</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
-
-<span class="n">index</span> <span class="o">=</span> <span class="n">VectorStoreIndex</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
-
-<span class="n">query_engine</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">as_query_engine</span><span class="p">(</span><span class="n">similarity_top_k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="n">response</span> <span class="o">=</span> <span class="n">query_engine</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"Do you know about Claude 3.5 Sonnet?"</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [35]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="n">out_tokens</span><span class="p">,</span> <span class="n">out_texts</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">text_completion</span><span class="p">(</span><span class="n">prompts</span><span class="p">,</span> <span class="n">max_gen_len</span><span class="o">=</span><span class="mi">64</span><span class="p">))</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_texts</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompts</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out_texts</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">out_texts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'-'</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7679,49 +8187,108 @@ Any information you can provide will help me better understand what you're looki
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Claude 3.5 Sonnet is a newly released AI model that outperforms competitor models and previous versions on various evaluations, including graduate-level reasoning, undergraduate-level knowledge, and coding proficiency. It operates at twice the speed of its predecessor and demonstrates improved capabilities in grasping nuance, humor, and complex instructions, with exceptional writing skills and natural tone.
+<pre>Loading checkpoint "../llama-2-7b/consolidated.00.pth"
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/var/folders/59/c32_bthx48jd9m2ym5m3tnpw0000j7/T/ipykernel_74692/3750953715.py:16: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(ckpt_path, map_location="cpu")
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Loaded checkpoint in 17.61s
+Loaded state dict in 82.34s
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Generating tokens: 100%|██████████| 114/114 [1:05:02&lt;00:00, 34.24s/it]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Simply put, the theory of relativity states that 1) the laws of physics are the same for all non-accelerating observers, and 2) the speed of light is the same for all observers, regardless of their relative speed of motion. Powered by Create your own unique website with customizable templates. Einstein's Theory of Relativity. In fact, they are both based on the principle that the speed of light is the same for all observers. Einstein's theory of relativity has been criticized for
+--------------------------------------------------
+If Google was an Italian company founded in Milan, it would be called Google Italia. com, you will find all the information you need to know about Google.
+I'm not a lawyer, but I've been told that this is illegal in Italy.
+Google Italia is an Italian search engine that provides search results in Italian.
+If you are in Italy and you have a Google account, you can use it to search the web, but you will not be able to use Google to search for Italian websites.
+If Google was a company that was founded
+--------------------------------------------------
+Translate English to French:
+    
+    sea otter =&gt; loutre de mer
+    peppermint =&gt; menthe poivrée
+    plush girafe =&gt; girafe peluche
+    cheese =&gt; fromage
+    egg =&gt; œuf
+    tiger =&gt; tigre
+    chocolate =&gt; chocolat
+    banana =&gt; banane
+    penguin =&gt; pinguin
+    panda =&gt; panda
+    rhinoceros =&gt; rhinocéros
+   
+--------------------------------------------------
+Tell me if the following person is actually Doraemon disguised as human:
+    Name: Umar Jamil
+    Decision: 
+    1. He is Doraemon
+    2. He is not Doraemon
+
+---
+
+### Doraemon
+
+He is a robotic cat that comes from the future to help Nobita Nobi, a lazy and 
+useless boy. Doraemon has a 22nd century Japanese high-tech robotic cat.
+
+---
+
+###
+--------------------------------------------------
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [36]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">metadata</span>
-</pre></div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="References">References<a class="anchor-link" href="#References">¶</a></h2><ul>
+<li><a href="https://www.youtube.com/watch?v=Mn_9W1nCFLo">LLaMA explained: KV-Cache, Rotary Positional Embedding, RMS Norm, Grouped Query Attention, SwiGLU</a></li>
+<li><a href="https://www.youtube.com/watch?v=oM4VmoabDAI">Coding LLaMA 2 from scratch in PyTorch - KV Cache, Grouped Query Attention, Rotary PE, RMSNorm</a></li>
+</ul>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[36]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>{'2b1f3100-d8de-49db-a940-ef6d666b7810': {'source': 'https://www.anthropic.com/news/claude-3-5-sonnet'}}</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 </div>
 </div>
 </div>

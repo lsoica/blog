@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "LLaMA",
+    "url": "/posts/llama-2/",
+    "categories": "Blogging, Tutorial",
+    "tags": "neuralnetworks, llm, llama",
+    "date": "2024-11-06 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "        ",
+    "content": "        "
+  },
+  
+  {
     "title": "CNNs",
     "url": "/posts/cnn/",
     "categories": "Blogging, Tutorial",

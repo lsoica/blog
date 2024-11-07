@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-11-06T11:32:39+02:00</updated>
+  <updated>2024-11-07T16:46:59+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>LLaMA</title>
+    <link href="http://localhost:4000/posts/llama-2/" rel="alternate" type="text/html" title="LLaMA" />
+    <published>2024-11-06T11:08:03+02:00</published>
+  
+    <updated>2024-11-06T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/llama-2/</id>
+    <content src="http://localhost:4000/posts/llama-2/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>LLaMA 2.</summary>
+
+  </entry>
 
   
   <entry>
@@ -119,32 +145,6 @@
   
 
   <summary>Retrieval Augmented Generation.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Multi Layer Perceptron</title>
-    <link href="http://localhost:4000/posts/mlp/" rel="alternate" type="text/html" title="Multi Layer Perceptron" />
-    <published>2024-10-11T12:08:03+03:00</published>
-  
-    <updated>2024-10-15T15:24:52+03:00</updated>
-  
-    <id>http://localhost:4000/posts/mlp/</id>
-    <content src="http://localhost:4000/posts/mlp/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>MLP.</summary>
 
   </entry>
 

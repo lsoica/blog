@@ -31,6 +31,8 @@ assets/js/dist
 **/*.csv
 **/*tfevents*
 **/*tokenizer_*.json
+**/llama-2-7b
 **/*.pt
 **/*-ubyte
 **/*-ubyte.gz
+download.sh
