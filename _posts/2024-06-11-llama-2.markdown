@@ -9,4 +9,4 @@ tags: [neuralnetworks,llm,llama]
 pin: false
 ---
 
-{% jupyter_notebook "../../assets/llama.ipynb" %}
+{% jupyter_notebook "../../assets/llama-2.ipynb" %}
