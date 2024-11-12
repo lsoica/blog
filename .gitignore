@@ -36,3 +36,7 @@ assets/js/dist
 **/*-ubyte
 **/*-ubyte.gz
 download.sh
+
+**/merges.txt
+**/vocab.json
+**/*.ckpt

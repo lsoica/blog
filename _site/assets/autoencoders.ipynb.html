@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>jekyll-jupyter-notebook20241107-47084-9sybr7</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>jekyll-jupyter-notebook20241112-56441-cv1wfw</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7551,7 +7551,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [44]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -7560,6 +7560,7 @@ a.anchor-link {
 <span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
 <span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">transforms</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">math</span>
 </pre></div>
 </div>
 </div>
@@ -8146,6 +8147,456 @@ Epoch:10, Loss:0.0299
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[72]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>torch.Size([64, 1, 1])</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="VAE---Variational-Autoencoders">VAE - Variational Autoencoders<a class="anchor-link" href="#VAE---Variational-Autoencoders">¶</a></h2><p>Variational Autoencoders (VAEs) are a type of generative model that learns to encode data into a probability distribution rather than a fixed vector. Unlike regular autoencoders, VAEs add randomness to the latent space and force it to follow a normal distribution.</p>
+<p>The key differences from regular autoencoders are:</p>
+<ol>
+<li>The encoder outputs parameters (mean and variance) of a distribution instead of a single point</li>
+<li>A random sample is drawn from this distribution to create the latent vector</li>
+<li>An additional loss term (KL divergence) ensures the latent distribution matches a standard normal</li>
+<li>Uses the SiLU activation function</li>
+</ol>
+<p>This probabilistic approach allows VAEs to:</p>
+<ul>
+<li>Generate new, realistic samples by sampling from the latent space</li>
+<li>Create smooth interpolations between data points</li>
+<li>Learn more robust and meaningful representations</li>
+</ul>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SelfAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_heads</span><span class="p">,</span> <span class="n">d_embed</span><span class="p">,</span> <span class="n">in_proj_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out_proj_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># This combines the Wq, Wk and Wv matrices into one matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_embed</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">d_embed</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">in_proj_bias</span><span class="p">)</span>
+        <span class="c1"># This one represents the Wo matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_embed</span><span class="p">,</span> <span class="n">d_embed</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">out_proj_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_heads</span> <span class="o">=</span> <span class="n">n_heads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_head</span> <span class="o">=</span> <span class="n">d_embed</span> <span class="o">//</span> <span class="n">n_heads</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">causal_mask</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># x: # (Batch_Size, Seq_Len, Dim)</span>
+
+        <span class="c1"># (Batch_Size, Seq_Len, Dim)</span>
+        <span class="n">input_shape</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> 
+        
+        <span class="c1"># (Batch_Size, Seq_Len, Dim)</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">sequence_length</span><span class="p">,</span> <span class="n">d_embed</span> <span class="o">=</span> <span class="n">input_shape</span> 
+
+        <span class="c1"># (Batch_Size, Seq_Len, H, Dim / H)</span>
+        <span class="n">interim_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">sequence_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_head</span><span class="p">)</span> 
+
+        <span class="c1"># (Batch_Size, Seq_Len, Dim) -&gt; (Batch_Size, Seq_Len, Dim * 3) -&gt; 3 tensor of shape (Batch_Size, Seq_Len, Dim)</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, Seq_Len, Dim) -&gt; (Batch_Size, Seq_Len, H, Dim / H) -&gt; (Batch_Size, H, Seq_Len, Dim / H)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">interim_shape</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">interim_shape</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">interim_shape</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># (Batch_Size, H, Seq_Len, Dim / H) @ (Batch_Size, H, Dim / H, Seq_Len) -&gt; (Batch_Size, H, Seq_Len, Seq_Len)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">q</span> <span class="o">@</span> <span class="n">k</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">causal_mask</span><span class="p">:</span>
+            <span class="c1"># Mask where the upper triangle (above the principal diagonal) is 1</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> 
+            <span class="c1"># Fill the upper triangle with -inf</span>
+            <span class="n">weight</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> 
+        
+        <span class="c1"># Divide by d_k (Dim / H). </span>
+        <span class="c1"># (Batch_Size, H, Seq_Len, Seq_Len) -&gt; (Batch_Size, H, Seq_Len, Seq_Len)</span>
+        <span class="n">weight</span> <span class="o">/=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d_head</span><span class="p">)</span> 
+
+        <span class="c1"># (Batch_Size, H, Seq_Len, Seq_Len) -&gt; (Batch_Size, H, Seq_Len, Seq_Len)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> 
+
+        <span class="c1"># (Batch_Size, H, Seq_Len, Seq_Len) @ (Batch_Size, H, Seq_Len, Dim / H) -&gt; (Batch_Size, H, Seq_Len, Dim / H)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">@</span> <span class="n">v</span>
+
+        <span class="c1"># (Batch_Size, H, Seq_Len, Dim / H) -&gt; (Batch_Size, Seq_Len, H, Dim / H)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
+
+        <span class="c1"># (Batch_Size, Seq_Len, H, Dim / H) -&gt; (Batch_Size, Seq_Len, Dim)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span> 
+
+        <span class="c1"># (Batch_Size, Seq_Len, Dim) -&gt; (Batch_Size, Seq_Len, Dim)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> 
+        
+        <span class="c1"># (Batch_Size, Seq_Len, Dim)</span>
+        <span class="k">return</span> <span class="n">output</span>
+
+<span class="k">class</span> <span class="nc">CrossAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_heads</span><span class="p">,</span> <span class="n">d_embed</span><span class="p">,</span> <span class="n">d_cross</span><span class="p">,</span> <span class="n">in_proj_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out_proj_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_proj</span>   <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_embed</span><span class="p">,</span> <span class="n">d_embed</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">in_proj_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_proj</span>   <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_cross</span><span class="p">,</span> <span class="n">d_embed</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">in_proj_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_proj</span>   <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_cross</span><span class="p">,</span> <span class="n">d_embed</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">in_proj_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_embed</span><span class="p">,</span> <span class="n">d_embed</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">out_proj_bias</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_heads</span> <span class="o">=</span> <span class="n">n_heads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_head</span> <span class="o">=</span> <span class="n">d_embed</span> <span class="o">//</span> <span class="n">n_heads</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="c1"># x (latent): # (Batch_Size, Seq_Len_Q, Dim_Q)</span>
+        <span class="c1"># y (context): # (Batch_Size, Seq_Len_KV, Dim_KV) = (Batch_Size, 77, 768)</span>
+
+        <span class="n">input_shape</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">sequence_length</span><span class="p">,</span> <span class="n">d_embed</span> <span class="o">=</span> <span class="n">input_shape</span>
+        <span class="c1"># Divide each embedding of Q into multiple heads such that d_heads * n_heads = Dim_Q</span>
+        <span class="n">interim_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_head</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, Seq_Len_Q, Dim_Q) -&gt; (Batch_Size, Seq_Len_Q, Dim_Q)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># (Batch_Size, Seq_Len_KV, Dim_KV) -&gt; (Batch_Size, Seq_Len_KV, Dim_Q)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_proj</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="c1"># (Batch_Size, Seq_Len_KV, Dim_KV) -&gt; (Batch_Size, Seq_Len_KV, Dim_Q)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_proj</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># (Batch_Size, Seq_Len_Q, Dim_Q) -&gt; (Batch_Size, Seq_Len_Q, H, Dim_Q / H) -&gt; (Batch_Size, H, Seq_Len_Q, Dim_Q / H)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">interim_shape</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
+        <span class="c1"># (Batch_Size, Seq_Len_KV, Dim_Q) -&gt; (Batch_Size, Seq_Len_KV, H, Dim_Q / H) -&gt; (Batch_Size, H, Seq_Len_KV, Dim_Q / H)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">interim_shape</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
+        <span class="c1"># (Batch_Size, Seq_Len_KV, Dim_Q) -&gt; (Batch_Size, Seq_Len_KV, H, Dim_Q / H) -&gt; (Batch_Size, H, Seq_Len_KV, Dim_Q / H)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">interim_shape</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
+        
+        <span class="c1"># (Batch_Size, H, Seq_Len_Q, Dim_Q / H) @ (Batch_Size, H, Dim_Q / H, Seq_Len_KV) -&gt; (Batch_Size, H, Seq_Len_Q, Seq_Len_KV)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">q</span> <span class="o">@</span> <span class="n">k</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, H, Seq_Len_Q, Seq_Len_KV)</span>
+        <span class="n">weight</span> <span class="o">/=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d_head</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, H, Seq_Len_Q, Seq_Len_KV)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, H, Seq_Len_Q, Seq_Len_KV) @ (Batch_Size, H, Seq_Len_KV, Dim_Q / H) -&gt; (Batch_Size, H, Seq_Len_Q, Dim_Q / H)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">@</span> <span class="n">v</span>
+        
+        <span class="c1"># (Batch_Size, H, Seq_Len_Q, Dim_Q / H) -&gt; (Batch_Size, Seq_Len_Q, H, Dim_Q / H)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+        
+        <span class="c1"># (Batch_Size, Seq_Len_Q, H, Dim_Q / H) -&gt; (Batch_Size, Seq_Len_Q, Dim_Q)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, Seq_Len_Q, Dim_Q) -&gt; (Batch_Size, Seq_Len_Q, Dim_Q)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="c1"># (Batch_Size, Seq_Len_Q, Dim_Q)</span>
+        <span class="k">return</span> <span class="n">output</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">VAE_AttentionBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groupnorm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attention</span> <span class="o">=</span> <span class="n">SelfAttention</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># x: (Batch_Size, Features, Height, Width)</span>
+
+        <span class="n">residue</span> <span class="o">=</span> <span class="n">x</span> 
+
+        <span class="c1"># (Batch_Size, Features, Height, Width) -&gt; (Batch_Size, Features, Height, Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupnorm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        
+        <span class="c1"># (Batch_Size, Features, Height, Width) -&gt; (Batch_Size, Features, Height * Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">h</span> <span class="o">*</span> <span class="n">w</span><span class="p">))</span>
+        
+        <span class="c1"># (Batch_Size, Features, Height * Width) -&gt; (Batch_Size, Height * Width, Features). Each pixel becomes a feature of size "Features", the sequence length is "Height * Width".</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># Perform self-attention WITHOUT mask</span>
+        <span class="c1"># (Batch_Size, Height * Width, Features) -&gt; (Batch_Size, Height * Width, Features)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attention</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, Height * Width, Features) -&gt; (Batch_Size, Features, Height * Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, Features, Height * Width) -&gt; (Batch_Size, Features, Height, Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+        
+        <span class="c1"># (Batch_Size, Features, Height, Width) + (Batch_Size, Features, Height, Width) -&gt; (Batch_Size, Features, Height, Width) </span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="n">residue</span>
+
+        <span class="c1"># (Batch_Size, Features, Height, Width)</span>
+        <span class="k">return</span> <span class="n">x</span> 
+
+<span class="k">class</span> <span class="nc">VAE_ResidualBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groupnorm_1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv_1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">groupnorm_2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv_2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">out_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">in_channels</span> <span class="o">==</span> <span class="n">out_channels</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">residual_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">residual_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># x: (Batch_Size, In_Channels, Height, Width)</span>
+
+        <span class="n">residue</span> <span class="o">=</span> <span class="n">x</span>
+
+        <span class="c1"># (Batch_Size, In_Channels, Height, Width) -&gt; (Batch_Size, In_Channels, Height, Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupnorm_1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, In_Channels, Height, Width) -&gt; (Batch_Size, In_Channels, Height, Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">silu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, In_Channels, Height, Width) -&gt; (Batch_Size, Out_Channels, Height, Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, Out_Channels, Height, Width) -&gt; (Batch_Size, Out_Channels, Height, Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupnorm_2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, Out_Channels, Height, Width) -&gt; (Batch_Size, Out_Channels, Height, Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">silu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, Out_Channels, Height, Width) -&gt; (Batch_Size, Out_Channels, Height, Width)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="c1"># (Batch_Size, Out_Channels, Height, Width) -&gt; (Batch_Size, Out_Channels, Height, Width)</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_layer</span><span class="p">(</span><span class="n">residue</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">VAE_Decoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="c1"># (Batch_Size, 4, Height / 8, Width / 8) -&gt; (Batch_Size, 4, Height / 8, Width / 8)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+
+            <span class="c1"># (Batch_Size, 4, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_AttentionBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># Repeats the rows and columns of the data by scale_factor (like when you resize an image by doubling its size).</span>
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 4, Width / 4)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Upsample</span><span class="p">(</span><span class="n">scale_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+            
+            <span class="c1"># (Batch_Size, 512, Height / 4, Width / 4) -&gt; (Batch_Size, 512, Height / 4, Width / 4)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 4, Width / 4) -&gt; (Batch_Size, 512, Height / 4, Width / 4)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 4, Width / 4) -&gt; (Batch_Size, 512, Height / 4, Width / 4)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 4, Width / 4) -&gt; (Batch_Size, 512, Height / 4, Width / 4)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 4, Width / 4) -&gt; (Batch_Size, 512, Height / 2, Width / 2)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Upsample</span><span class="p">(</span><span class="n">scale_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 2, Width / 2) -&gt; (Batch_Size, 512, Height / 2, Width / 2)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 2, Width / 2) -&gt; (Batch_Size, 256, Height / 2, Width / 2)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 256, Height / 2, Width / 2) -&gt; (Batch_Size, 256, Height / 2, Width / 2)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 256, Height / 2, Width / 2) -&gt; (Batch_Size, 256, Height / 2, Width / 2)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 256, Height / 2, Width / 2) -&gt; (Batch_Size, 256, Height, Width)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Upsample</span><span class="p">(</span><span class="n">scale_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 256, Height, Width) -&gt; (Batch_Size, 256, Height, Width)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 256, Height, Width) -&gt; (Batch_Size, 128, Height, Width)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 128, Height, Width) -&gt; (Batch_Size, 128, Height, Width)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 128, Height, Width) -&gt; (Batch_Size, 128, Height, Width)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 128, Height, Width) -&gt; (Batch_Size, 128, Height, Width)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 128, Height, Width) -&gt; (Batch_Size, 128, Height, Width)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">SiLU</span><span class="p">(),</span> 
+            
+            <span class="c1"># (Batch_Size, 128, Height, Width) -&gt; (Batch_Size, 3, Height, Width)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> 
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># x: (Batch_Size, 4, Height / 8, Width / 8)</span>
+        
+        <span class="c1"># Remove the scaling added by the Encoder.</span>
+        <span class="n">x</span> <span class="o">/=</span> <span class="mf">0.18215</span>
+
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># (Batch_Size, 3, Height, Width)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">VAE_Encoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="c1"># (Batch_Size, Channel, Height, Width) -&gt; (Batch_Size, 128, Height, Width)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            
+             <span class="c1"># (Batch_Size, 128, Height, Width) -&gt; (Batch_Size, 128, Height, Width)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+            
+            <span class="c1"># (Batch_Size, 128, Height, Width) -&gt; (Batch_Size, 128, Height, Width)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+            
+            <span class="c1"># (Batch_Size, 128, Height, Width) -&gt; (Batch_Size, 128, Height / 2, Width / 2)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+            
+            <span class="c1"># (Batch_Size, 128, Height / 2, Width / 2) -&gt; (Batch_Size, 256, Height / 2, Width / 2)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 256, Height / 2, Width / 2) -&gt; (Batch_Size, 256, Height / 2, Width / 2)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 256, Height / 2, Width / 2) -&gt; (Batch_Size, 256, Height / 4, Width / 4)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 256, Height / 4, Width / 4) -&gt; (Batch_Size, 512, Height / 4, Width / 4)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 4, Width / 4) -&gt; (Batch_Size, 512, Height / 4, Width / 4)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 4, Width / 4) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_AttentionBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">VAE_ResidualBlock</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> 
+            
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 512, Height / 8, Width / 8)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">SiLU</span><span class="p">(),</span> 
+
+            <span class="c1"># Because the padding=1, it means the width and height will increase by 2</span>
+            <span class="c1"># Out_Height = In_Height + Padding_Top + Padding_Bottom</span>
+            <span class="c1"># Out_Width = In_Width + Padding_Left + Padding_Right</span>
+            <span class="c1"># Since padding = 1 means Padding_Top = Padding_Bottom = Padding_Left = Padding_Right = 1,</span>
+            <span class="c1"># Since the Out_Width = In_Width + 2 (same for Out_Height), it will compensate for the Kernel size of 3</span>
+            <span class="c1"># (Batch_Size, 512, Height / 8, Width / 8) -&gt; (Batch_Size, 8, Height / 8, Width / 8). </span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> 
+
+            <span class="c1"># (Batch_Size, 8, Height / 8, Width / 8) -&gt; (Batch_Size, 8, Height / 8, Width / 8)</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> 
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">noise</span><span class="p">):</span>
+        <span class="c1"># x: (Batch_Size, Channel, Height, Width)</span>
+        <span class="c1"># noise: (Batch_Size, 4, Height / 8, Width / 8)</span>
+
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">'stride'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>  <span class="c1"># Padding at downsampling should be asymmetric (see #8)</span>
+                <span class="c1"># Pad: (Padding_Left, Padding_Right, Padding_Top, Padding_Bottom).</span>
+                <span class="c1"># Pad with zeros on the right and bottom.</span>
+                <span class="c1"># (Batch_Size, Channel, Height, Width) -&gt; (Batch_Size, Channel, Height + Padding_Top + Padding_Bottom, Width + Padding_Left + Padding_Right) = (Batch_Size, Channel, Height + 1, Width + 1)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            
+            <span class="n">x</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># (Batch_Size, 8, Height / 8, Width / 8) -&gt; two tensors of shape (Batch_Size, 4, Height / 8, Width / 8)</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">log_variance</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Clamp the log variance between -30 and 20, so that the variance is between (circa) 1e-14 and 1e8. </span>
+        <span class="c1"># (Batch_Size, 4, Height / 8, Width / 8) -&gt; (Batch_Size, 4, Height / 8, Width / 8)</span>
+        <span class="n">log_variance</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">log_variance</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="c1"># (Batch_Size, 4, Height / 8, Width / 8) -&gt; (Batch_Size, 4, Height / 8, Width / 8)</span>
+        <span class="n">variance</span> <span class="o">=</span> <span class="n">log_variance</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span>
+        <span class="c1"># (Batch_Size, 4, Height / 8, Width / 8) -&gt; (Batch_Size, 4, Height / 8, Width / 8)</span>
+        <span class="n">stdev</span> <span class="o">=</span> <span class="n">variance</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+        
+        <span class="c1"># Transform N(0, 1) -&gt; N(mean, stdev) </span>
+        <span class="c1"># (Batch_Size, 4, Height / 8, Width / 8) -&gt; (Batch_Size, 4, Height / 8, Width / 8)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">stdev</span> <span class="o">*</span> <span class="n">noise</span>
+        
+        <span class="c1"># Scale by a constant</span>
+        <span class="c1"># Constant taken from: https://github.com/CompVis/stable-diffusion/blob/21f890f9da3cfbeaba8e2ac3c425ee9e998d5229/configs/stable-diffusion/v1-inference.yaml#L17C1-L17C1</span>
+        <span class="n">x</span> <span class="o">*=</span> <span class="mf">0.18215</span>
+        
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
 </div>
 </div>
 </div>

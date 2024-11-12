@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-11-07T17:35:46+02:00</updated>
+  <updated>2024-11-12T12:54:16+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -20,11 +20,61 @@
 
   
   <entry>
+    <title>Quotes</title>
+    <link href="http://localhost:4000/posts/quotes/" rel="alternate" type="text/html" title="Quotes" />
+    <published>2024-11-09T11:08:03+02:00</published>
+  
+    <updated>2024-11-09T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/quotes/</id>
+    <content src="http://localhost:4000/posts/quotes/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+  
+
+  <summary>Quotes.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Stable Diffusion</title>
+    <link href="http://localhost:4000/posts/stable-diffusion/" rel="alternate" type="text/html" title="Stable Diffusion" />
+    <published>2024-11-06T11:08:03+02:00</published>
+  
+    <updated>2024-11-06T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/stable-diffusion/</id>
+    <content src="http://localhost:4000/posts/stable-diffusion/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Stable Diffusion.</summary>
+
+  </entry>
+
+  
+  <entry>
     <title>LLaMA</title>
     <link href="http://localhost:4000/posts/llama-2/" rel="alternate" type="text/html" title="LLaMA" />
     <published>2024-11-06T11:08:03+02:00</published>
   
-    <updated>2024-11-06T11:08:03+02:00</updated>
+    <updated>2024-11-07T17:36:23+02:00</updated>
   
     <id>http://localhost:4000/posts/llama-2/</id>
     <content src="http://localhost:4000/posts/llama-2/" />
@@ -93,58 +143,6 @@
   
 
   <summary>Autoencoders.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Transformers</title>
-    <link href="http://localhost:4000/posts/transformers/" rel="alternate" type="text/html" title="Transformers" />
-    <published>2024-10-15T12:08:03+03:00</published>
-  
-    <updated>2024-10-15T15:21:38+03:00</updated>
-  
-    <id>http://localhost:4000/posts/transformers/</id>
-    <content src="http://localhost:4000/posts/transformers/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Transformers.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Retrieval Augmented Generation</title>
-    <link href="http://localhost:4000/posts/retrieval-augmented-generation/" rel="alternate" type="text/html" title="Retrieval Augmented Generation" />
-    <published>2024-10-11T12:08:03+03:00</published>
-  
-    <updated>2024-10-15T15:24:52+03:00</updated>
-  
-    <id>http://localhost:4000/posts/retrieval-augmented-generation/</id>
-    <content src="http://localhost:4000/posts/retrieval-augmented-generation/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Retrieval Augmented Generation.</summary>
 
   </entry>
 

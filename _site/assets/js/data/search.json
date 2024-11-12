@@ -1,6 +1,40 @@
 [
   
   {
+    "title": "Quotes",
+    "url": "/posts/quotes/",
+    "categories": "Blogging",
+    "tags": "",
+    "date": "2024-11-09 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "  There is an enthusiasm to step down from the limitations of accepted order into the limitless potential of chaos but too often this step is regarder as an achievement in itself rather than only t...",
+    "content": "  There is an enthusiasm to step down from the limitations of accepted order into the limitless potential of chaos but too often this step is regarder as an achievement in itself rather than only the first stage towards achivement. – Edward de Bono, Lateral Thinking."
+  },
+  
+  {
+    "title": "Stable Diffusion",
+    "url": "/posts/stable-diffusion/",
+    "categories": "Blogging, Tutorial",
+    "tags": "neuralnetworks, stablediffusion",
+    "date": "2024-11-06 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "        ",
+    "content": "        "
+  },
+  
+  {
     "title": "LLaMA",
     "url": "/posts/llama-2/",
     "categories": "Blogging, Tutorial",
