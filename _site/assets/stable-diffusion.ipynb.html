@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>jekyll-jupyter-notebook20241112-56441-pjga2i</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>jekyll-jupyter-notebook20241112-56441-lqkz33</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7538,110 +7538,16 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>sentencepiece<span class="w"> </span>torch<span class="w"> </span>numpy<span class="w"> </span>tqdm<span class="w"> </span>transformers<span class="w"> </span>lightning<span class="w"> </span>pillow
 </pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Requirement already satisfied: sentencepiece in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (0.2.0)
-Requirement already satisfied: torch in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (2.5.0)
-Requirement already satisfied: numpy in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (2.1.2)
-Requirement already satisfied: tqdm in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (4.66.5)
-Collecting transformers
-  Downloading transformers-4.46.2-py3-none-any.whl.metadata (44 kB)
-Collecting lightning
-  Downloading lightning-2.4.0-py3-none-any.whl.metadata (38 kB)
-Requirement already satisfied: pillow in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (11.0.0)
-Requirement already satisfied: filelock in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (3.16.1)
-Requirement already satisfied: typing-extensions&gt;=4.8.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (4.12.2)
-Requirement already satisfied: networkx in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (3.4.1)
-Requirement already satisfied: jinja2 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (3.1.4)
-Requirement already satisfied: fsspec in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (2024.9.0)
-Requirement already satisfied: setuptools in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (75.2.0)
-Requirement already satisfied: sympy==1.13.1 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (1.13.1)
-Requirement already satisfied: mpmath&lt;1.4,&gt;=1.1.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from sympy==1.13.1-&gt;torch) (1.3.0)
-Collecting huggingface-hub&lt;1.0,&gt;=0.23.2 (from transformers)
-  Downloading huggingface_hub-0.26.2-py3-none-any.whl.metadata (13 kB)
-Requirement already satisfied: packaging&gt;=20.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from transformers) (24.1)
-Requirement already satisfied: pyyaml&gt;=5.1 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from transformers) (6.0.2)
-Collecting regex!=2019.12.17 (from transformers)
-  Downloading regex-2024.11.6-cp312-cp312-macosx_11_0_arm64.whl.metadata (40 kB)
-Requirement already satisfied: requests in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from transformers) (2.32.3)
-Collecting safetensors&gt;=0.4.1 (from transformers)
-  Using cached safetensors-0.4.5-cp312-cp312-macosx_11_0_arm64.whl.metadata (3.8 kB)
-Collecting tokenizers&lt;0.21,&gt;=0.20 (from transformers)
-  Downloading tokenizers-0.20.3-cp312-cp312-macosx_11_0_arm64.whl.metadata (6.7 kB)
-Collecting lightning-utilities&lt;2.0,&gt;=0.10.0 (from lightning)
-  Downloading lightning_utilities-0.11.8-py3-none-any.whl.metadata (5.2 kB)
-Collecting torchmetrics&lt;3.0,&gt;=0.7.0 (from lightning)
-  Downloading torchmetrics-1.5.2-py3-none-any.whl.metadata (20 kB)
-Collecting pytorch-lightning (from lightning)
-  Downloading pytorch_lightning-2.4.0-py3-none-any.whl.metadata (21 kB)
-Collecting aiohttp!=4.0.0a0,!=4.0.0a1 (from fsspec[http]&lt;2026.0,&gt;=2022.5.0-&gt;lightning)
-  Using cached aiohttp-3.10.10-cp312-cp312-macosx_11_0_arm64.whl.metadata (7.6 kB)
-Requirement already satisfied: MarkupSafe&gt;=2.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from jinja2-&gt;torch) (3.0.1)
-Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from requests-&gt;transformers) (3.4.0)
-Requirement already satisfied: idna&lt;4,&gt;=2.5 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from requests-&gt;transformers) (3.10)
-Requirement already satisfied: urllib3&lt;3,&gt;=1.21.1 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from requests-&gt;transformers) (2.2.3)
-Requirement already satisfied: certifi&gt;=2017.4.17 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from requests-&gt;transformers) (2024.8.30)
-Collecting aiohappyeyeballs&gt;=2.3.0 (from aiohttp!=4.0.0a0,!=4.0.0a1-&gt;fsspec[http]&lt;2026.0,&gt;=2022.5.0-&gt;lightning)
-  Using cached aiohappyeyeballs-2.4.3-py3-none-any.whl.metadata (6.1 kB)
-Collecting aiosignal&gt;=1.1.2 (from aiohttp!=4.0.0a0,!=4.0.0a1-&gt;fsspec[http]&lt;2026.0,&gt;=2022.5.0-&gt;lightning)
-  Using cached aiosignal-1.3.1-py3-none-any.whl.metadata (4.0 kB)
-Collecting attrs&gt;=17.3.0 (from aiohttp!=4.0.0a0,!=4.0.0a1-&gt;fsspec[http]&lt;2026.0,&gt;=2022.5.0-&gt;lightning)
-  Using cached attrs-24.2.0-py3-none-any.whl.metadata (11 kB)
-Collecting frozenlist&gt;=1.1.1 (from aiohttp!=4.0.0a0,!=4.0.0a1-&gt;fsspec[http]&lt;2026.0,&gt;=2022.5.0-&gt;lightning)
-  Downloading frozenlist-1.5.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (13 kB)
-Collecting multidict&lt;7.0,&gt;=4.5 (from aiohttp!=4.0.0a0,!=4.0.0a1-&gt;fsspec[http]&lt;2026.0,&gt;=2022.5.0-&gt;lightning)
-  Using cached multidict-6.1.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (5.0 kB)
-Collecting yarl&lt;2.0,&gt;=1.12.0 (from aiohttp!=4.0.0a0,!=4.0.0a1-&gt;fsspec[http]&lt;2026.0,&gt;=2022.5.0-&gt;lightning)
-  Downloading yarl-1.17.1-cp312-cp312-macosx_11_0_arm64.whl.metadata (64 kB)
-Collecting propcache&gt;=0.2.0 (from yarl&lt;2.0,&gt;=1.12.0-&gt;aiohttp!=4.0.0a0,!=4.0.0a1-&gt;fsspec[http]&lt;2026.0,&gt;=2022.5.0-&gt;lightning)
-  Using cached propcache-0.2.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (7.7 kB)
-Downloading transformers-4.46.2-py3-none-any.whl (10.0 MB)
-   <span class="ansi-black-intense-fg">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-green-fg">10.0/10.0 MB</span> <span class="ansi-red-fg">16.1 MB/s</span> eta <span class="ansi-cyan-fg">0:00:00</span> <span class="ansi-cyan-fg">0:00:01</span>
-Downloading lightning-2.4.0-py3-none-any.whl (810 kB)
-   <span class="ansi-black-intense-fg">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-green-fg">811.0/811.0 kB</span> <span class="ansi-red-fg">15.0 MB/s</span> eta <span class="ansi-cyan-fg">0:00:00</span>
-Downloading huggingface_hub-0.26.2-py3-none-any.whl (447 kB)
-Downloading lightning_utilities-0.11.8-py3-none-any.whl (26 kB)
-Downloading regex-2024.11.6-cp312-cp312-macosx_11_0_arm64.whl (284 kB)
-Using cached safetensors-0.4.5-cp312-cp312-macosx_11_0_arm64.whl (381 kB)
-Downloading tokenizers-0.20.3-cp312-cp312-macosx_11_0_arm64.whl (2.6 MB)
-   <span class="ansi-black-intense-fg">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-green-fg">2.6/2.6 MB</span> <span class="ansi-red-fg">22.4 MB/s</span> eta <span class="ansi-cyan-fg">0:00:00</span>
-Downloading torchmetrics-1.5.2-py3-none-any.whl (891 kB)
-   <span class="ansi-black-intense-fg">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-green-fg">891.4/891.4 kB</span> <span class="ansi-red-fg">30.0 MB/s</span> eta <span class="ansi-cyan-fg">0:00:00</span>
-Downloading pytorch_lightning-2.4.0-py3-none-any.whl (815 kB)
-   <span class="ansi-black-intense-fg">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-green-fg">815.2/815.2 kB</span> <span class="ansi-red-fg">30.3 MB/s</span> eta <span class="ansi-cyan-fg">0:00:00</span>
-Using cached aiohttp-3.10.10-cp312-cp312-macosx_11_0_arm64.whl (390 kB)
-Using cached aiohappyeyeballs-2.4.3-py3-none-any.whl (14 kB)
-Using cached aiosignal-1.3.1-py3-none-any.whl (7.6 kB)
-Using cached attrs-24.2.0-py3-none-any.whl (63 kB)
-Downloading frozenlist-1.5.0-cp312-cp312-macosx_11_0_arm64.whl (51 kB)
-Using cached multidict-6.1.0-cp312-cp312-macosx_11_0_arm64.whl (29 kB)
-Downloading yarl-1.17.1-cp312-cp312-macosx_11_0_arm64.whl (92 kB)
-Using cached propcache-0.2.0-cp312-cp312-macosx_11_0_arm64.whl (45 kB)
-Installing collected packages: safetensors, regex, propcache, multidict, lightning-utilities, frozenlist, attrs, aiohappyeyeballs, yarl, huggingface-hub, aiosignal, torchmetrics, tokenizers, aiohttp, transformers, pytorch-lightning, lightning
-Successfully installed aiohappyeyeballs-2.4.3 aiohttp-3.10.10 aiosignal-1.3.1 attrs-24.2.0 frozenlist-1.5.0 huggingface-hub-0.26.2 lightning-2.4.0 lightning-utilities-0.11.8 multidict-6.1.0 propcache-0.2.0 pytorch-lightning-2.4.0 regex-2024.11.6 safetensors-0.4.5 tokenizers-0.20.3 torchmetrics-1.5.2 transformers-4.46.2 yarl-1.17.1
-
-<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> A new release of pip is available: <span class="ansi-red-fg">24.2</span> -&gt; <span class="ansi-green-fg">24.3.1</span>
-<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> To update, run: <span class="ansi-green-fg">pip install --upgrade pip</span>
-</pre>
 </div>
 </div>
 </div>
