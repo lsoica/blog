@@ -1,5 +1,5 @@
 ---
-title:  "CNNs"
+title:  "BERT fine tuning for phishing URL detection."
 description: >-
   BERT fine tuning for phishing URL detection.
 author: lso
