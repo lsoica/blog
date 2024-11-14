@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-11-12T12:58:34+02:00</updated>
+  <updated>2024-11-14T12:39:09+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>CNNs</title>
+    <link href="http://localhost:4000/posts/bert-fine-tuning/" rel="alternate" type="text/html" title="CNNs" />
+    <published>2024-11-14T11:08:03+02:00</published>
+  
+    <updated>2024-11-14T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/bert-fine-tuning/</id>
+    <content src="http://localhost:4000/posts/bert-fine-tuning/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>BERT fine tuning.</summary>
+
+  </entry>
 
   
   <entry>
@@ -117,32 +143,6 @@
   
 
   <summary>Convolutional neural networks.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Autoencoders</title>
-    <link href="http://localhost:4000/posts/autoencoders/" rel="alternate" type="text/html" title="Autoencoders" />
-    <published>2024-10-18T12:08:03+03:00</published>
-  
-    <updated>2024-10-18T12:08:03+03:00</updated>
-  
-    <id>http://localhost:4000/posts/autoencoders/</id>
-    <content src="http://localhost:4000/posts/autoencoders/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Autoencoders.</summary>
 
   </entry>
 
