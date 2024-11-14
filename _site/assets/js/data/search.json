@@ -1,7 +1,7 @@
 [
   
   {
-    "title": "CNNs",
+    "title": "BERT fine tuning for phishing URL detection.",
     "url": "/posts/bert-fine-tuning/",
     "categories": "Blogging, Tutorial",
     "tags": "neuralnetworks, bert, finetuning",
