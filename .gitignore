@@ -40,3 +40,4 @@ download.sh
 **/merges.txt
 **/vocab.json
 **/*.ckpt
+**/distilbert-base*

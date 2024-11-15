@@ -46,15 +46,4 @@ pin: true
 | [Karpathy's Neural Networks: Zero to Hero](https://github.com/karpathy/nn-zero-to-hero)                    | Andrej Karpathy's series on neural networks |
 | [Build GPT from scratch](https://www.youtube.com/watch?v=kCc8FmEb1nY)                                      | Andrej Karpathy: Let's build GPT: from scratch, in code, spelled out.   |
 | [Umar Jamil's youtube channel](https://www.youtube.com/@umarjamilai)                                      | Umar Jamil's youtube channel.   |
-
-## Statistics and Probabilities
-
-| Link                                                                                                      | Description                                              |
-|-----------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
-| [Machine Learning Foundations](https://github.com/jonkrohn/ML-foundations/tree/master) | Machine Learning Foundations |
-
-
-## Lanuage modeling
-
-[Language Modeling](https://www.youtube.com/watch?v=1il-s4mgNdI)
-
+| [Shawhin Talebi's youtube channel](https://www.youtube.com/@ShawhinTalebi) | Shawhin Talebi's youtube channel. |
