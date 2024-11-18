@@ -5,20 +5,20 @@ description: >-
 author: lso
 date:   2024-10-03 11:08:03 +0200
 categories: [Blogging, Tutorial]
-tags: [neuralnetworks, optimizations]
+tags: [neuralnetworks, optimizations, quantization]
 pin: false
 media_subpath: '/posts/20241003'
 ---
 
 # Quantization
 
+{% jupyter_notebook "quantization.ipynb" %}
+
+# Distillation
+
 # Sparsity
 
 # Torch compiler
-
-# Jupyter Notebooks
-
-{% jupyter_notebook "quantization.ipynb" %}
 
 # References
 

@@ -242,7 +242,7 @@
     "title": "Optimizations",
     "url": "/posts/optimizations/",
     "categories": "Blogging, Tutorial",
-    "tags": "neuralnetworks, optimizations",
+    "tags": "neuralnetworks, optimizations, quantization",
     "date": "2024-10-03 12:08:03 +0300",
     
 
@@ -251,8 +251,8 @@
 
 
     
-    "snippet": "QuantizationSparsityTorch compilerJupyter Notebooks        ReferencesGPU MODE IRL 2024 Keynotes",
-    "content": "QuantizationSparsityTorch compilerJupyter Notebooks        ReferencesGPU MODE IRL 2024 Keynotes"
+    "snippet": "Quantization        DistillationSparsityTorch compilerReferencesGPU MODE IRL 2024 Keynotes",
+    "content": "Quantization        DistillationSparsityTorch compilerReferencesGPU MODE IRL 2024 Keynotes"
   },
   
   {
