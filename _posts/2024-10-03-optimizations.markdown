@@ -12,7 +12,7 @@ media_subpath: '/posts/20241003'
 
 # Quantization
 
-{% jupyter_notebook "quantization.ipynb" %}
+{% jupyter_notebook "../../assets/quantization.ipynb" %}
 
 # Distillation
 
