@@ -1,7 +1,7 @@
 ---
-title:  "Hugging"
+title:  "HuggingFace"
 description: >-
-  Hugging.
+  HuggingFace.
 author: lso
 date:   2024-11-18 11:08:03 +0200
 categories: [Blogging, Tutorial]

@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-11-19T11:35:28+02:00</updated>
+  <updated>2024-11-19T11:39:32+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -20,8 +20,8 @@
 
   
   <entry>
-    <title>Hugging</title>
-    <link href="http://localhost:4000/posts/huggingface/" rel="alternate" type="text/html" title="Hugging" />
+    <title>HuggingFace</title>
+    <link href="http://localhost:4000/posts/huggingface/" rel="alternate" type="text/html" title="HuggingFace" />
     <published>2024-11-18T11:08:03+02:00</published>
   
     <updated>2024-11-18T11:08:03+02:00</updated>
@@ -40,7 +40,7 @@
     
   
 
-  <summary>Hugging.</summary>
+  <summary>HuggingFace.</summary>
 
   </entry>
 
