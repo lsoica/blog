@@ -52,4 +52,4 @@ This work is published under [MIT][mit] License.
 - VertexAI
 - Probabilies: mean, variance, markov chains, std deviation
 - Score-Based Generative Models
-- Model distillation & quantization
+- Model distillation

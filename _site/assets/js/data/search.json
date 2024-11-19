@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "Hugging",
+    "url": "/posts/huggingface/",
+    "categories": "Blogging, Tutorial",
+    "tags": "huggingface, transformers",
+    "date": "2024-11-18 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "HuggingfaceTransformers Library        References            [The Hugging Face Transformers Library      Example Code + Chatbot UI with Gradio](https://www.youtube.com/watch?v=jan07gloaRg)      ",
+    "content": "HuggingfaceTransformers Library        References            [The Hugging Face Transformers Library      Example Code + Chatbot UI with Gradio](https://www.youtube.com/watch?v=jan07gloaRg)      "
+  },
+  
+  {
     "title": "BERT fine tuning for phishing URL detection.",
     "url": "/posts/bert-fine-tuning/",
     "categories": "Blogging, Tutorial",
@@ -251,8 +268,8 @@
 
 
     
-    "snippet": "Quantization        DistillationSparsityTorch compilerReferencesGPU MODE IRL 2024 Keynotes",
-    "content": "Quantization        DistillationSparsityTorch compilerReferencesGPU MODE IRL 2024 Keynotes"
+    "snippet": "Quantization        DistillationSparsityTorch compilerReferencesGPU MODE IRL 2024 KeynotesQuantization explained with PyTorch - Post-Training Quantization, Quantization-Aware Training",
+    "content": "Quantization        DistillationSparsityTorch compilerReferencesGPU MODE IRL 2024 KeynotesQuantization explained with PyTorch - Post-Training Quantization, Quantization-Aware Training"
   },
   
   {

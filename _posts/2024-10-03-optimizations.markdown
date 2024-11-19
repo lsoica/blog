@@ -23,3 +23,4 @@ media_subpath: '/posts/20241003'
 # References
 
 [GPU MODE IRL 2024 Keynotes](https://www.youtube.com/watch?v=FH5wiwOyPX4&ab_channel=GPUMODE)
+[Quantization explained with PyTorch - Post-Training Quantization, Quantization-Aware Training](https://www.youtube.com/watch?v=0VdNflU08yA)
