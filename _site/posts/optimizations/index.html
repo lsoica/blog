@@ -643,7 +643,7 @@
   class="readtime"
   data-bs-toggle="tooltip"
   data-bs-placement="bottom"
-  title="20 words"
+  title="66 words"
 >
   <em>1 min</em> read</span>
 
@@ -661,7 +661,12 @@
   </div>
 </div>
 
-<h1 id="distillation">Distillation</h1>
+<h1 id="knowledge-distillation">Knowledge Distillation</h1>
+
+<p>Transfer the knowledge of a larger (teacher) model to a smaller (student) one.</p>
+
+<p>Soft targets: train student using logits of the teacher. During training, the teacher’s logits are used as targets for the student.
+Synthetic data: generate synthetic data from the teacher’s predictions.</p>
 
 <h1 id="sparsity">Sparsity</h1>
 
@@ -670,7 +675,8 @@
 <h1 id="references">References</h1>
 
 <p><a href="https://www.youtube.com/watch?v=FH5wiwOyPX4&amp;ab_channel=GPUMODE">GPU MODE IRL 2024 Keynotes</a>
-<a href="https://www.youtube.com/watch?v=0VdNflU08yA">Quantization explained with PyTorch - Post-Training Quantization, Quantization-Aware Training</a></p>
+<a href="https://www.youtube.com/watch?v=0VdNflU08yA">Quantization explained with PyTorch - Post-Training Quantization, Quantization-Aware Training</a>
+<a href="https://www.youtube.com/watch?v=FLkUOkeMd5M">Knowledge Distillation</a></p>
 
   </div>
 
@@ -808,6 +814,20 @@
         
         
         <li class="text-truncate lh-lg">
+          <a href="/posts/llm-fine-tuning-on-your-own-docs/">LLM Fine-Tuning on Your Own Docs</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/huggingface/">HuggingFace</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
           <a href="/posts/optimizations/">Optimizations</a>
         </li>
       
@@ -822,21 +842,7 @@
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/huggingface/">HuggingFace</a>
-        </li>
-      
-        
-        
-        
-        <li class="text-truncate lh-lg">
           <a href="/posts/learning-neural-networks/">Learning Neural Nets</a>
-        </li>
-      
-        
-        
-        
-        <li class="text-truncate lh-lg">
-          <a href="/posts/bert-fine-tuning/">BERT fine tuning for phishing URL detection.</a>
         </li>
       
     </ul>
@@ -930,55 +936,6 @@
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
   
     
     
@@ -1012,43 +969,6 @@
     
     
     
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
     
   
     
@@ -1149,7 +1069,128 @@
     
     
     
+  
+    
+    
+    
+    
       
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
     
   
     
@@ -1400,7 +1441,7 @@
         <a class="post-tag btn btn-outline-primary" href="/tags/dotproduct/">dotproduct</a>
       
         
-        <a class="post-tag btn btn-outline-primary" href="/tags/finetuning/">finetuning</a>
+        <a class="post-tag btn btn-outline-primary" href="/tags/fine-tuning/">fine-tuning</a>
       
     </div>
   </section>
@@ -1464,6 +1505,18 @@
 
   
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
   
 
   
@@ -1913,55 +1966,6 @@
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
   
     
     
@@ -1995,43 +1999,6 @@
     
     
     
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
     
   
     
@@ -2132,7 +2099,128 @@
     
     
     
+  
+    
+    
+    
+    
       
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
     
   
     
@@ -2383,7 +2471,7 @@
         <a class="post-tag btn btn-outline-primary" href="/tags/dotproduct/">dotproduct</a>
       
         
-        <a class="post-tag btn btn-outline-primary" href="/tags/finetuning/">finetuning</a>
+        <a class="post-tag btn btn-outline-primary" href="/tags/fine-tuning/">fine-tuning</a>
       
     </div>
   </section>

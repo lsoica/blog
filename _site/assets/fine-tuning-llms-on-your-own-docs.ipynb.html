@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>jekyll-jupyter-notebook20241127-60996-4p63o4</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>jekyll-jupyter-notebook20241127-60996-c3uxiy</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7516,28 +7516,30 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="https://colab.research.google.com/github/lsoica/blog/blob/main/assets/llama-2.ipynb" target="_parent"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
-<h1 id="LLaMA">LLaMA<a class="anchor-link" href="#LLaMA">¶</a></h1><h2 id="Architecture">Architecture<a class="anchor-link" href="#Architecture">¶</a></h2><p><img alt="Architecture" src="images/transformer_vs_llama_architecture.png"/></p>
-<ul>
-<li>It is a decoder-only model. So the decoder part of the original transformer paper minus the cross-attention block.</li>
-<li>All the normalizations have been moved before every block (the RMS Norm blocks).</li>
-<li>The decoder is a transformer, but it's not used in inference (it's just there to train the model</li>
-<li>Positional Encodings have become the Rotary Positional Encodings and they are only applied to the Query and Key, but not the Value. They come into play when we calculate the attention.</li>
-<li>The attention is a self-attention block, with KV cache.</li>
-<li>ReLU have been replaced by SwiGLU.</li>
-<li>Embeddings: for each token, a vector of 4096 dimensions. These are trainable paremeters.</li>
-<li>Normalization: let's consider we have 2 layers l1 -&gt; L2. If after the backpropagation the output of L1 changes drastically, then the output of L2 will also change drastically. This is not good for training, it makes it slow as the neurons are forced to change drastically their weights in one direction or another. To avoid this, we use Layer Normalization. How it works? For each input item, the mean and variance are calculated and maintained. Then, the output is normalized using the mean and variance of that item.</li>
-<li>Batch normalization: for batch normalization, we normalize by columns (features)</li>
-<li>Layer normalization: for layer normalization, we normalize by rows (data items). Recenters around 0 mean and rescales to 1 standard deviation.</li>
-<li>RMSNorm: Root Mean Square Normalization. It doesn't recenter but just rescale. Less computation compared to LayerNorm.</li>
-<li>Positional Encoding: a vector that is summed to the embedding of each token. It indicates the position of the token inside the sentence. They are not learned. Computed once and then used during both training and inference.</li>
-<li>Rotary Positional Encoding: it's like positional encoding but instead of absolute position encoding, it stores the distance between 2 token's position</li>
-<li>Self-Attention: $Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$ . This resulting attention matrix captures not only the meaning and possition of each token but also its relation to other tokens.</li>
-<li>KV Cache: avoid redundant computations for each new token and instead cache the previously computed keys and values and append them to the current keys and values.</li>
-<li>Multi-Query Attention: Problem: GPUs are very fast at computing, but not so fast at transfering data to/from their memory.</li>
-<li>Grouped Multi-Query Attention: We divide the queries into groups and for each group we have one different head. Loss in quality but computationally fast. <img alt="Attention" src="images/grouped-multi-query-attention.png"/></li>
-<li>FeedForward SwiGLU: The activation function instead of ReLU.</li>
-</ul>
+<h1 id="Fine-tuning-a-LLM-on-your-own-docs">Fine-tuning a LLM on your own docs<a class="anchor-link" href="#Fine-tuning-a-LLM-on-your-own-docs">¶</a></h1><h2 id="Natural-Language-Processing">Natural Language Processing<a class="anchor-link" href="#Natural-Language-Processing">¶</a></h2><p><strong>Text classification</strong>: the model is trained to predict a label for a given text. Text classification is frequently used for tasks like sentiment analysis, topic classification, and spam detection.</p>
+<p><strong>Token classification</strong>: the model is trained to predict a label for each token in the sequence. Token classification is frequently used for tasks like named entity recognition (NER), part-of-speech tagging, and chunking.</p>
+<p><strong>Question answering</strong>: the model is trained to predict an answer to a question based on a given context. Question answering is frequently used for tasks like question answering, fact verification, and conversational response generation.</p>
+<p><strong>Causal language modeling</strong>: the model is trained to predict the next token in the sequence. Causal language models are frequently used for text generation.</p>
+<p><strong>Masked language modeling</strong>: the model is trained to predict the masked tokens in the sequence. Masked language model can attend to tokens bidirectionally. This means the model has full access to the tokens on the left and right. Masked language modeling is great for tasks that require a good contextual understanding of an entire sequence. BERT is an example of a masked language model.</p>
+<p><strong>Translation</strong>: the model is trained to translate text from one language to another. Translation is frequently used for tasks like machine translation.</p>
+<p><strong>Summarization</strong>: the model is trained to summarize a given text. Summarization is frequently used for tasks like news summarization, article summarization, and book summarization.</p>
+<p><strong>Multiple choice</strong>: the model is trained to predict the correct answer from a list of multiple choice options.</p>
+<p>The goal of this post is to fine-tune a LLM on a custom dataset for causal language modeling. We will use the DistilGPT2 model. DistilGPT2 (short for Distilled-GPT2) is an English-language model pre-trained with the supervision of the smallest version of Generative Pre-trained Transformer 2 (GPT-2). Like GPT-2, DistilGPT2 can be used to generate text. Users of this model card should also consider information about the design, training, and limitations of GPT-2.</p>
+<h2 id="Install-libraries">Install libraries<a class="anchor-link" href="#Install-libraries">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">pip</span> install -U transformers torch tqdm tiktoken markdown
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -7548,7 +7550,8 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Implementation">Implementation<a class="anchor-link" href="#Implementation">¶</a></h2><h3 id="Install-libraries">Install libraries<a class="anchor-link" href="#Install-libraries">¶</a></h3>
+<h2 id="Load-the-data">Load the data<a class="anchor-link" href="#Load-the-data">¶</a></h2><p>Let's load the ELI5 dataset from the Hugging Face Hub first. Next, we split the dataset into a training and test set, train the model on the training set, evaluate the model on the test set, inference the model on a custom prompt.</p>
+<p>Next, we fine-tune the model on our own dataset.</p>
 </div>
 </div>
 </div>
@@ -7560,7 +7563,11 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>torch<span class="w"> </span>sentencepiece<span class="w"> </span>tqdm
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+
+<span class="n">eli5</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">"eli5_category"</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s2">"train[:5000]"</span><span class="p">)</span>
+
+<span class="n">eli5</span> <span class="o">=</span> <span class="n">eli5</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7572,27 +7579,17 @@ a.anchor-link {
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Requirement already satisfied: torch in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (2.5.0)
-Collecting sentencepiece
-  Downloading sentencepiece-0.2.0-cp312-cp312-macosx_11_0_arm64.whl.metadata (7.7 kB)
-Requirement already satisfied: tqdm in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (4.66.5)
-Requirement already satisfied: filelock in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (3.16.1)
-Requirement already satisfied: typing-extensions&gt;=4.8.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (4.12.2)
-Requirement already satisfied: networkx in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (3.4.1)
-Requirement already satisfied: jinja2 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (3.1.4)
-Requirement already satisfied: fsspec in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (2024.9.0)
-Requirement already satisfied: setuptools in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (75.2.0)
-Requirement already satisfied: sympy==1.13.1 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from torch) (1.13.1)
-Requirement already satisfied: mpmath&lt;1.4,&gt;=1.1.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from sympy==1.13.1-&gt;torch) (1.3.0)
-Requirement already satisfied: MarkupSafe&gt;=2.0 in /Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages (from jinja2-&gt;torch) (3.0.1)
-Downloading sentencepiece-0.2.0-cp312-cp312-macosx_11_0_arm64.whl (1.2 MB)
-   <span class="ansi-black-intense-fg">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-green-fg">1.2/1.2 MB</span> <span class="ansi-red-fg">10.7 MB/s</span> eta <span class="ansi-cyan-fg">0:00:00</span>
-Installing collected packages: sentencepiece
-Successfully installed sentencepiece-0.2.0
-
-<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> A new release of pip is available: <span class="ansi-red-fg">24.2</span> -&gt; <span class="ansi-green-fg">24.3.1</span>
-<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> To update, run: <span class="ansi-green-fg">pip install --upgrade pip</span>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+Downloading data: 100%|██████████| 62.3M/62.3M [00:00&lt;00:00, 66.7MB/s]
+Downloading data: 100%|██████████| 5.00M/5.00M [00:00&lt;00:00, 90.5MB/s]
+Downloading data: 100%|██████████| 1.76M/1.76M [00:00&lt;00:00, 110MB/s]
+Downloading data: 100%|██████████| 3.85M/3.85M [00:00&lt;00:00, 95.6MB/s]
+Generating train split: 100%|██████████| 91772/91772 [00:03&lt;00:00, 23245.99 examples/s]
+Generating validation1 split: 100%|██████████| 5446/5446 [00:00&lt;00:00, 26980.41 examples/s]
+Generating validation2 split: 100%|██████████| 2375/2375 [00:00&lt;00:00, 28917.25 examples/s]
+Generating test split: 100%|██████████| 5411/5411 [00:00&lt;00:00, 29139.00 examples/s]
 </pre>
 </div>
 </div>
@@ -7605,7 +7602,7 @@ Successfully installed sentencepiece-0.2.0
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Download-the-vocabulary">Download the vocabulary<a class="anchor-link" href="#Download-the-vocabulary">¶</a></h3>
+<h2 id="Preprocess">Preprocess<a class="anchor-link" href="#Preprocess">¶</a></h2>
 </div>
 </div>
 </div>
@@ -7617,14 +7614,12 @@ Successfully installed sentencepiece-0.2.0
 <div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Download the script</span>
-<span class="o">!</span>curl<span class="w"> </span>-O<span class="w"> </span>https://raw.githubusercontent.com/meta-llama/llama/refs/heads/main/download.sh
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">"distilbert/distilgpt2"</span><span class="p">)</span>
 
-<span class="c1"># Make the script executable</span>
-<span class="o">!</span>chmod<span class="w"> </span>+x<span class="w"> </span>download.sh
 
-<span class="c1"># Execute the script</span>
-<span class="c1">#!./download.sh</span>
+<span class="n">eli5</span> <span class="o">=</span> <span class="n">eli5</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">eli5</span><span class="p">[</span><span class="s2">"train"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -7634,65 +7629,25 @@ Successfully installed sentencepiece-0.2.0
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  2544  100  2544    0     0   4678      0 --:--:-- --:--:-- --:--:--  4676
-Enter the URL from email: ^C
-</pre>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>{'q_id': '7h2ns1',
+ 'title': 'How does different data traveling on the same cable not get lost with all the other data?',
+ 'selftext': '',
+ 'category': 'Technology',
+ 'subreddit': 'explainlikeimfive',
+ 'answers.a_id': ['dqnmb02'],
+ 'answers.text': ['Data is encapsulated into packets with headers and trailers that identify it. Sometimes it does get lost though. When 2 devices establish a connection, they decide on packet numbering. If I send you a packet that says it contains data 1500 - 1600 you expect that my next packet starts with 1700. If it doesn’t, then you your response to me is essentially “I need 1700”.'],
+ 'answers.score': [10],
+ 'answers.text_urls': [[]],
+ 'title_urls': ['url'],
+ 'selftext_urls': ['url']}</pre>
 </div>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Import-modules">Import modules<a class="anchor-link" href="#Import-modules">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">sentencepiece</span> <span class="kn">import</span> <span class="n">SentencePieceProcessor</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="A-class-to-store-the-parameters-of-the-model">A class to store the parameters of the model<a class="anchor-link" href="#A-class-to-store-the-parameters-of-the-model">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7700,482 +7655,40 @@ Enter the URL from email: ^C
 <div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">ModelArgs</span><span class="p">:</span>
-    <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4096</span>
-    <span class="n">n_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
-    <span class="n">n_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
-    <span class="n">n_kv_heads</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">vocab_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="c1"># set when loading the tokenizer</span>
-    <span class="n">multiple_of</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span>
-    <span class="n">ffn_dim_multiplier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">norm_eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">preprocess_function</span><span class="p">(</span><span class="n">examples</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="p">([</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">[</span><span class="s2">"answers.text"</span><span class="p">]])</span>
 
-    <span class="n">max_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
-    <span class="n">max_seq_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span>
-
-    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Code-the-model">Code the model<a class="anchor-link" href="#Code-the-model">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">precompute_theta_pos_frequencies</span><span class="p">(</span><span class="n">head_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10000.0</span><span class="p">):</span>
-    <span class="c1"># As written in the paragraph 3.2.2 of the paper</span>
-    <span class="c1"># &gt;&gt; In order to generalize our results in 2D to any xi ∈ Rd where **d is even**, [...]</span>
-    <span class="k">assert</span> <span class="n">head_dim</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"Dimension must be divisible by 2"</span>
-    <span class="c1"># Build the theta parameter</span>
-    <span class="c1"># According to the formula theta_i = 10000^(-2(i-1)/dim) for i = [1, 2, ... dim/2]</span>
-    <span class="c1"># Shape: (Head_Dim / 2)</span>
-    <span class="n">theta_numerator</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-    <span class="c1"># Shape: (Head_Dim / 2)</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">theta</span> <span class="o">**</span> <span class="p">(</span><span class="n">theta_numerator</span> <span class="o">/</span> <span class="n">head_dim</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># (Dim / 2)</span>
-    <span class="c1"># Construct the positions (the "m" parameter)</span>
-    <span class="c1"># Shape: (Seq_Len)</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-    <span class="c1"># Multiply each theta by each position using the outer product.</span>
-    <span class="c1"># Shape: (Seq_Len) outer_product* (Head_Dim / 2) -&gt; (Seq_Len, Head_Dim / 2)</span>
-    <span class="n">freqs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-    <span class="c1"># We can compute complex numbers in the polar form c = R * exp(m * theta), where R = 1 as follows:</span>
-    <span class="c1"># (Seq_Len, Head_Dim / 2) -&gt; (Seq_Len, Head_Dim / 2)</span>
-    <span class="n">freqs_complex</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">polar</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">freqs</span><span class="p">),</span> <span class="n">freqs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">freqs_complex</span>
-
-<span class="k">def</span> <span class="nf">apply_rotary_embeddings</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">freqs_complex</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="c1"># Separate the last dimension pairs of two values, representing the real and imaginary parts of the complex number</span>
-    <span class="c1"># Two consecutive values will become a single complex number</span>
-    <span class="c1"># (B, Seq_Len, H, Head_Dim) -&gt; (B, Seq_Len, H, Head_Dim/2)</span>
-    <span class="n">x_complex</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">view_as_complex</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-    <span class="c1"># Reshape the freqs_complex tensor to match the shape of the x_complex tensor. So we need to add the batch dimension and the head dimension</span>
-    <span class="c1"># (Seq_Len, Head_Dim/2) --&gt; (1, Seq_Len, 1, Head_Dim/2)</span>
-    <span class="n">freqs_complex</span> <span class="o">=</span> <span class="n">freqs_complex</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-    <span class="c1"># Multiply each complex number in the x_complex tensor by the corresponding complex number in the freqs_complex tensor</span>
-    <span class="c1"># Which results in the rotation of the complex number as shown in the Figure 1 of the paper</span>
-    <span class="c1"># (B, Seq_Len, H, Head_Dim/2) * (1, Seq_Len, 1, Head_Dim/2) = (B, Seq_Len, H, Head_Dim/2)</span>
-    <span class="n">x_rotated</span> <span class="o">=</span> <span class="n">x_complex</span> <span class="o">*</span> <span class="n">freqs_complex</span>
-    <span class="c1"># Convert the complex number back to the real number</span>
-    <span class="c1"># (B, Seq_Len, H, Head_Dim/2) -&gt; (B, Seq_Len, H, Head_Dim/2, 2)</span>
-    <span class="n">x_out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">view_as_real</span><span class="p">(</span><span class="n">x_rotated</span><span class="p">)</span>
-    <span class="c1"># (B, Seq_Len, H, Head_Dim/2, 2) -&gt; (B, Seq_Len, H, Head_Dim)</span>
-    <span class="n">x_out</span> <span class="o">=</span> <span class="n">x_out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">x_out</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">RMSNorm</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
-        <span class="c1"># The gamma parameter</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">dim</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-        <span class="c1"># (B, Seq_Len, Dim) * (B, Seq_Len, 1) = (B, Seq_Len, Dim)</span>
-        <span class="c1"># rsqrt: 1 / sqrt(x)</span>
-        <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">rsqrt</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-        <span class="c1"># (Dim) * (B, Seq_Len, Dim) = (B, Seq_Len, Dim)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">float</span><span class="p">())</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">EncoderBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">ModelArgs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_heads</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span> <span class="o">//</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">attention</span> <span class="o">=</span> <span class="n">SelfAttention</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span> <span class="o">=</span> <span class="n">FeedForward</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-
-        <span class="c1"># Normalization BEFORE the attention block</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">attention_norm</span> <span class="o">=</span> <span class="n">RMSNorm</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">norm_eps</span><span class="p">)</span>
-        <span class="c1"># Normalization BEFORE the feed forward block</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ffn_norm</span> <span class="o">=</span> <span class="n">RMSNorm</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">norm_eps</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">start_pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">freqs_complex</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-        <span class="c1"># (B, Seq_Len, Dim) + (B, Seq_Len, Dim) --&gt; (B, Seq_Len, Dim)</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">attention</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attention_norm</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">start_pos</span><span class="p">,</span> <span class="n">freqs_complex</span>
-        <span class="p">)</span>
-        <span class="c1"># (B, Seq_Len, Dim) + (B, Seq_Len, Dim) --&gt; (B, Seq_Len, Dim)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ffn_norm</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">out</span>
-    
-<span class="k">def</span> <span class="nf">repeat_kv</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">n_rep</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-    <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">n_kv_heads</span><span class="p">,</span> <span class="n">head_dim</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">if</span> <span class="n">n_rep</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">x</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="c1"># (B, Seq_Len, N_KV_Heads, 1, Head_Dim)</span>
-        <span class="n">x</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="c1"># (B, Seq_Len, N_KV_Heads, N_Rep, Head_Dim)</span>
-        <span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">n_kv_heads</span><span class="p">,</span> <span class="n">n_rep</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">)</span>
-        <span class="c1"># (B, Seq_Len, N_KV_Heads * N_Rep, Head_Dim)</span>
-        <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">n_kv_heads</span> <span class="o">*</span> <span class="n">n_rep</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">)</span>
-    <span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">SelfAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">ModelArgs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-        <span class="c1"># Indicates the number of heads for the Keys and Values</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">n_kv_heads</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">n_kv_heads</span>
-        <span class="c1"># Indicates the number of heads for the Queries</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_heads_q</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span>
-        <span class="c1"># Indicates how many times the Keys and Values should be repeated</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_heads_q</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span>
-        <span class="c1"># Indicates the dimension of each head, that is, the part of the embedding that each head will be responsible for</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span> <span class="o">//</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">wq</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">n_heads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wk</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wo</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_heads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">cache_k</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">args</span><span class="o">.</span><span class="n">max_batch_size</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cache_v</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">args</span><span class="o">.</span><span class="n">max_batch_size</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-        <span class="n">start_pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">freqs_complex</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">):</span>
-        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>  <span class="c1"># (B, 1, Dim)</span>
-
-        <span class="c1"># (B, 1, Dim) -&gt; (B, 1, H_Q * Head_Dim)</span>
-        <span class="n">xq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wq</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="c1"># (B, 1, Dim) -&gt; (B, 1, H_KV * Head_Dim)</span>
-        <span class="n">xk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wk</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="c1"># (B, 1, Dim) -&gt; (B, 1, H_KV * Head_Dim)</span>
-        <span class="n">xv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-        <span class="c1"># (B, 1, H_Q * Head_Dim) -&gt; (B, 1, H_Q, Head_Dim)</span>
-        <span class="n">xq</span> <span class="o">=</span> <span class="n">xq</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_heads_q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
-        <span class="c1"># (B, 1, H_KV * Head_Dim) -&gt; (B, 1, H_KV, Head_Dim)</span>
-        <span class="n">xk</span> <span class="o">=</span> <span class="n">xk</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
-        <span class="c1"># (B, 1, H_KV * Head_Dim) -&gt; (B, 1, H_KV, Head_Dim)</span>
-        <span class="n">xv</span> <span class="o">=</span> <span class="n">xv</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_kv_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
-
-        <span class="c1"># (B, 1, H_Q, Head_Dim) --&gt; (B, 1, H_Q, Head_Dim)</span>
-        <span class="n">xq</span> <span class="o">=</span> <span class="n">apply_rotary_embeddings</span><span class="p">(</span><span class="n">xq</span><span class="p">,</span> <span class="n">freqs_complex</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="c1"># (B, 1, H_KV, Head_Dim) --&gt; (B, 1, H_KV, Head_Dim)</span>
-        <span class="n">xk</span> <span class="o">=</span> <span class="n">apply_rotary_embeddings</span><span class="p">(</span><span class="n">xk</span><span class="p">,</span> <span class="n">freqs_complex</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
-        <span class="c1"># Replace the entry in the cache</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cache_k</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">start_pos</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">xk</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cache_v</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">start_pos</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">xv</span>
-
-        <span class="c1"># (B, Seq_Len_KV, H_KV, Head_Dim)</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_k</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">,</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span>
-        <span class="c1"># (B, Seq_Len_KV, H_KV, Head_Dim)</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_v</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">,</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span>
-
-        <span class="c1"># Since every group of Q shares the same K and V heads, just repeat the K and V heads for every Q in the same group.</span>
-
-        <span class="c1"># (B, Seq_Len_KV, H_KV, Head_Dim) --&gt; (B, Seq_Len_KV, H_Q, Head_Dim)</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="n">repeat_kv</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_rep</span><span class="p">)</span>
-        <span class="c1"># (B, Seq_Len_KV, H_KV, Head_Dim) --&gt; (B, Seq_Len_KV, H_Q, Head_Dim)</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">repeat_kv</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_rep</span><span class="p">)</span>
-
-        <span class="c1"># (B, 1, H_Q, Head_Dim) -&gt; (B, H_Q, 1, Head_Dim)</span>
-        <span class="n">xq</span> <span class="o">=</span> <span class="n">xq</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="c1"># (B, Seq_Len_KV, H_Q, Head_Dim) -&gt; (B, H_Q, Seq_Len_KV, Head_Dim)</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="c1"># (B, Seq_Len_KV, H_Q, Head_Dim) -&gt; (B, H_Q, Seq_Len_KV, Head_Dim)</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-
-        <span class="c1"># (B, H_Q, 1, Head_Dim) @ (B, H_Q, Head_Dim, Seq_Len_KV) -&gt; (B, H_Q, 1, Seq_Len_KV)</span>
-        <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">xq</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
-        <span class="c1"># (B, H_Q, 1, Seq_Len_KV) -&gt; (B, H_Q, 1, Seq_Len_KV)</span>
-        <span class="n">scores</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="n">xq</span><span class="p">)</span>
-
-        <span class="c1"># (B, H_Q, 1, Seq_Len) @ (B, H_Q, Seq_Len_KV, Head_Dim) -&gt; (B, H_Q, 1, Head_Dim)</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
-        <span class="c1"># (B, H_Q, 1, Head_Dim) -&gt; (B, 1, H_Q, Head_Dim) -&gt; (B, 1, Dim)</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wo</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="c1"># (B, 1, Dim) -&gt; (B, 1, Dim)</span>
-
-<span class="k">class</span> <span class="nc">FeedForward</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">args</span><span class="p">:</span> <span class="n">ModelArgs</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-        <span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span>
-        <span class="n">hidden_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hidden_dim</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">ffn_dim_multiplier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">hidden_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">ffn_dim_multiplier</span> <span class="o">*</span> <span class="n">hidden_dim</span><span class="p">)</span>
-        <span class="c1"># Round the hidden_dim to the nearest multiple of the multiple_of parameter</span>
-        <span class="n">hidden_dim</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">multiple_of</span> <span class="o">*</span> <span class="p">((</span><span class="n">hidden_dim</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">multiple_of</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">args</span><span class="o">.</span><span class="n">multiple_of</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">w1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-        <span class="c1"># (B, Seq_Len, Dim) --&gt; (B, Seq_Len, Hidden_Dim)</span>
-        <span class="n">swish</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">silu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="c1"># (B, Seq_Len, Dim) --&gt; (B, Seq_Len, Hidden_Dim)</span>
-        <span class="n">x_V</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="c1"># (B, Seq_Len, Hidden_Dim) * (B, Seq_Len, Hidden_Dim) --&gt; (B, Seq_Len, Hidden_Dim)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">swish</span> <span class="o">*</span> <span class="n">x_V</span>
-        <span class="c1"># (B, Seq_Len, Hidden_Dim) --&gt; (B, Seq_Len, Dim)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">x</span>
-    
-<span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">ModelArgs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-        <span class="k">assert</span> <span class="n">args</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"You must provide the vocabulary size."</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">vocab_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_layers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tok_embeddings</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EncoderBlock</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">RMSNorm</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">norm_eps</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">freqs_complex</span> <span class="o">=</span> <span class="n">precompute_theta_pos_frequencies</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">dim</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">n_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">start_pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="c1"># B, Seq-len</span>
-        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">assert</span> <span class="n">seq_len</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"The sequence length must be one."</span>
-
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tok_embeddings</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
-
-        <span class="n">freq_complex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">freqs_complex</span><span class="p">[</span><span class="n">start_pos</span><span class="p">:</span><span class="n">start_pos</span> <span class="o">+</span> <span class="n">seq_len</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">h</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">start_pos</span><span class="p">,</span> <span class="n">freq_complex</span><span class="p">)</span>
-
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">output</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Code-the-inference-algorithm">Code the inference algorithm<a class="anchor-link" href="#Code-the-inference-algorithm">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">LLaMA</span><span class="p">:</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Transformer</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">:</span> <span class="n">SentencePieceProcessor</span><span class="p">,</span> <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArgs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">model_args</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">checkpoints_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tokenizer_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">load_model</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">prev_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">load_model</span><span class="p">:</span>
-            <span class="n">checkpoints</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">checkpoints_dir</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.pth"</span><span class="p">))</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">checkpoints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"no checkpoint files found in </span><span class="si">{</span><span class="n">checkpoints_dir</span><span class="si">}</span><span class="s2">"</span>
-            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="n">checkpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Loading checkpoint "</span><span class="si">{</span><span class="n">ckpt_path</span><span class="si">}</span><span class="s1">"'</span><span class="p">)</span>
-            <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ckpt_path</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="s2">"cpu"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded checkpoint in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">prev_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
-            <span class="n">prev_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">checkpoints_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"params.json"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-
-        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArgs</span> <span class="o">=</span> <span class="n">ModelArgs</span><span class="p">(</span>
-            <span class="n">max_seq_len</span><span class="o">=</span><span class="n">max_seq_len</span><span class="p">,</span>
-            <span class="n">max_batch_size</span><span class="o">=</span><span class="n">max_batch_size</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">params</span>
-        <span class="p">)</span>
-
-        <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">SentencePieceProcessor</span><span class="p">()</span>
-        <span class="n">tokenizer</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">tokenizer_path</span><span class="p">)</span>
-        <span class="n">model_args</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">()</span>
-        
-        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">"cuda"</span><span class="p">:</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">HalfTensor</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">BFloat16Tensor</span><span class="p">)</span>
-        
-        <span class="n">model</span> <span class="o">=</span> <span class="n">Transformer</span><span class="p">(</span><span class="n">model_args</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">load_model</span><span class="p">:</span>
-            <span class="c1"># The only unmatched key in the checkpoint is rope.freqs. Remove it</span>
-            <span class="k">del</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s1">'rope.freqs'</span><span class="p">]</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded state dict in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">prev_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
-        
-        <span class="k">return</span> <span class="n">LLaMA</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">model_args</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">text_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">top_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">max_gen_len</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">max_gen_len</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">max_gen_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="c1"># Convert each prompt into tokens</span>
-        <span class="n">prompt_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">out_type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">add_bos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">add_eos</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="n">prompts</span><span class="p">]</span>
-        <span class="c1"># Make sure the batch size is not too large</span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompt_tokens</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_batch_size</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"batch size must be less than or equal to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_batch_size</span><span class="si">}</span><span class="s2">"</span>
-        <span class="n">max_prompt_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span> <span class="k">for</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="n">prompt_tokens</span><span class="p">)</span>
-        <span class="c1"># Make sure the prompt length is not larger than the maximum sequence length</span>
-        <span class="k">assert</span> <span class="n">max_prompt_len</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"prompt length must be less than or equal to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="si">}</span><span class="s2">"</span>
-        <span class="n">total_len</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">max_seq_len</span><span class="p">,</span> <span class="n">max_gen_len</span> <span class="o">+</span> <span class="n">max_prompt_len</span><span class="p">)</span>
-
-        <span class="c1"># Create the list that will contain the generated tokens, along with the initial prompt tokens</span>
-        <span class="n">pad_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_id</span><span class="p">()</span>
-        <span class="n">tokens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">total_len</span><span class="p">),</span> <span class="n">pad_id</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prompt_tokens</span><span class="p">):</span>
-            <span class="c1"># Populate the initial tokens with the prompt tokens</span>
-            <span class="n">tokens</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        
-        <span class="n">eos_reached</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">prompt_tokens_mask</span> <span class="o">=</span> <span class="n">tokens</span> <span class="o">!=</span> <span class="n">pad_id</span> <span class="c1"># True if the token is a prompt token, False otherwise</span>
-        <span class="n">cur_iterator</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">total_len</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">"Generating tokens"</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">cur_pos</span> <span class="ow">in</span> <span class="n">cur_iterator</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-                <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tokens</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">cur_pos</span><span class="p">],</span> <span class="n">cur_pos</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># The temperature is applied before the softmax</span>
-                <span class="n">probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">next_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_top_p</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">top_p</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Greedily select the token with the max probability</span>
-                <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">logits</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-
-            <span class="n">next_token</span> <span class="o">=</span> <span class="n">next_token</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># Only replace token if it is a padding token</span>
-            <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">prompt_tokens_mask</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="p">],</span> <span class="n">tokens</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="p">],</span> <span class="n">next_token</span><span class="p">)</span>
-            <span class="n">tokens</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_token</span>
-            <span class="c1"># EOS is reached only if we found an EOS token for a padding position</span>
-            <span class="n">eos_reached</span> <span class="o">|=</span> <span class="p">(</span><span class="o">~</span><span class="n">prompt_tokens_mask</span><span class="p">[:,</span> <span class="n">cur_pos</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">next_token</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">eos_reached</span><span class="p">):</span>
-                <span class="k">break</span>
-
-        <span class="n">out_tokens</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">out_text</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">prompt_index</span><span class="p">,</span> <span class="n">current_prompt_tokens</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">tolist</span><span class="p">()):</span>
-            <span class="c1"># Cut to the EOS token, if present</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_id</span> <span class="ow">in</span> <span class="n">current_prompt_tokens</span><span class="p">:</span>
-                <span class="n">eos_idx</span> <span class="o">=</span> <span class="n">current_prompt_tokens</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
-                <span class="n">current_prompt_tokens</span> <span class="o">=</span> <span class="n">current_prompt_tokens</span><span class="p">[:</span><span class="n">eos_idx</span><span class="p">]</span>
-            <span class="n">out_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_prompt_tokens</span><span class="p">)</span>
-            <span class="n">out_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">current_prompt_tokens</span><span class="p">))</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">out_tokens</span><span class="p">,</span> <span class="n">out_text</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">_sample_top_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probs</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="c1"># (B, vocab_size)</span>
-        <span class="n">probs_sort</span><span class="p">,</span> <span class="n">probs_idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="c1"># (B, vocab_size)</span>
-        <span class="n">probs_sum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">probs_sort</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="c1"># (B, vocab_size)</span>
-        <span class="c1"># (Substracting "probs_sort" shifts the cumulative sum by 1 position to the right before masking)</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">probs_sum</span> <span class="o">-</span> <span class="n">probs_sort</span> <span class="o">&gt;</span> <span class="n">p</span> 
-        <span class="c1"># Zero out all the probabilities of tokens that are not selected by the Top P</span>
-        <span class="n">probs_sort</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span> 
-        <span class="c1"># Redistribute the probabilities so that they sum up to 1.</span>
-        <span class="n">probs_sort</span><span class="o">.</span><span class="n">div_</span><span class="p">(</span><span class="n">probs_sort</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-        <span class="c1"># Sample a token (its index) from the top p distribution</span>
-        <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">probs_sort</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="c1"># Get the token position in the vocabulary corresponding to the sampled index</span>
-        <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">probs_idx</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">next_token</span><span class="p">)</span> 
-        <span class="k">return</span> <span class="n">next_token</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-<span class="c1"># if torch.backends.mps.is_available():</span>
-<span class="c1">#     device = torch.device("mps")</span>
-<span class="c1"># else:</span>
-<span class="c1">#     device = torch.device("cpu")</span>
-
-<span class="n">device</span> <span class="o">=</span> <span class="s2">"cpu"</span>
-
-<span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"Simply put, the theory of relativity states that "</span><span class="p">,</span>
-    <span class="s2">"If Google was an Italian company founded in Milan, it would"</span><span class="p">,</span>
-    <span class="c1"># Few shot promt</span>
-<span class="w">    </span><span class="sd">"""Translate English to French:</span>
-<span class="sd">    </span>
-<span class="sd">    sea otter =&gt; loutre de mer</span>
-<span class="sd">    peppermint =&gt; menthe poivrée</span>
-<span class="sd">    plush girafe =&gt; girafe peluche</span>
-<span class="sd">    cheese =&gt;"""</span><span class="p">,</span>
-    <span class="c1"># Zero shot prompt</span>
-<span class="w">    </span><span class="sd">"""Tell me if the following person is actually Doraemon disguised as human:</span>
-<span class="sd">    Name: Umar Jamil</span>
-<span class="sd">    Decision: </span>
-<span class="sd">    """</span>
-<span class="p">]</span>
-
-<span class="n">model</span> <span class="o">=</span> <span class="n">LLaMA</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
-    <span class="n">checkpoints_dir</span><span class="o">=</span><span class="s1">'../llama-2-7b/'</span><span class="p">,</span>
-    <span class="n">tokenizer_path</span><span class="o">=</span><span class="s1">'../llama-2-7b/tokenizer.model'</span><span class="p">,</span>
-    <span class="n">load_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">max_seq_len</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
-    <span class="n">max_batch_size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">prompts</span><span class="p">),</span>
-    <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+<span class="n">tokenized_eli5</span> <span class="o">=</span> <span class="n">eli5</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">preprocess_function</span><span class="p">,</span>
+    <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">num_proc</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">remove_columns</span><span class="o">=</span><span class="n">eli5</span><span class="p">[</span><span class="s2">"train"</span><span class="p">]</span><span class="o">.</span><span class="n">column_names</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">out_tokens</span><span class="p">,</span> <span class="n">out_texts</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">text_completion</span><span class="p">(</span><span class="n">prompts</span><span class="p">,</span> <span class="n">max_gen_len</span><span class="o">=</span><span class="mi">64</span><span class="p">))</span>
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_texts</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompts</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out_texts</span><span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">out_texts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'-'</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">block_size</span> <span class="o">=</span> <span class="mi">128</span>
+
+<span class="k">def</span> <span class="nf">group_texts</span><span class="p">(</span><span class="n">examples</span><span class="p">):</span>
+    <span class="c1"># Concatenate all texts.</span>
+    <span class="n">concatenated_examples</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">examples</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+    <span class="n">total_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">concatenated_examples</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="c1"># We drop the small remainder, we could add padding if the model supported it instead of this drop, you can</span>
+    <span class="c1"># customize this part to your needs.</span>
+    <span class="k">if</span> <span class="n">total_length</span> <span class="o">&gt;=</span> <span class="n">block_size</span><span class="p">:</span>
+        <span class="n">total_length</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_length</span> <span class="o">//</span> <span class="n">block_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">block_size</span>
+    <span class="c1"># Split by chunks of block_size.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">block_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_length</span><span class="p">,</span> <span class="n">block_size</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">concatenated_examples</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">result</span><span class="p">[</span><span class="s2">"labels"</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"input_ids"</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">lm_dataset</span> <span class="o">=</span> <span class="n">tokenized_eli5</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">group_texts</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">DataCollatorForLanguageModeling</span>
+
+<span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span>
+<span class="n">data_collator</span> <span class="o">=</span> <span class="n">DataCollatorForLanguageModeling</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">mlm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8187,76 +7700,267 @@ Enter the URL from email: ^C
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Map (num_proc=4):   0%|          | 0/4000 [00:00&lt;?, ? examples/s]Token indices sequence length is longer than the specified maximum sequence length for this model (1209 &gt; 1024). Running this sequence through the model will result in indexing errors
+Token indices sequence length is longer than the specified maximum sequence length for this model (1186 &gt; 1024). Running this sequence through the model will result in indexing errors
+Token indices sequence length is longer than the specified maximum sequence length for this model (2070 &gt; 1024). Running this sequence through the model will result in indexing errors
+Token indices sequence length is longer than the specified maximum sequence length for this model (1601 &gt; 1024). Running this sequence through the model will result in indexing errors
+Map (num_proc=4): 100%|██████████| 4000/4000 [00:00&lt;00:00, 4995.93 examples/s]
+Map (num_proc=4):   0%|          | 0/1000 [00:00&lt;?, ? examples/s]Token indices sequence length is longer than the specified maximum sequence length for this model (1246 &gt; 1024). Running this sequence through the model will result in indexing errors
+Token indices sequence length is longer than the specified maximum sequence length for this model (1477 &gt; 1024). Running this sequence through the model will result in indexing errors
+Token indices sequence length is longer than the specified maximum sequence length for this model (2922 &gt; 1024). Running this sequence through the model will result in indexing errors
+Map (num_proc=4):  25%|██▌       | 250/1000 [00:00&lt;00:00, 1413.37 examples/s]Token indices sequence length is longer than the specified maximum sequence length for this model (2575 &gt; 1024). Running this sequence through the model will result in indexing errors
+Map (num_proc=4): 100%|██████████| 1000/1000 [00:00&lt;00:00, 3896.43 examples/s]
+Map (num_proc=4): 100%|██████████| 4000/4000 [00:01&lt;00:00, 3049.55 examples/s]
+Map (num_proc=4): 100%|██████████| 1000/1000 [00:00&lt;00:00, 5714.65 examples/s]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Train">Train<a class="anchor-link" href="#Train">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">TrainingArguments</span><span class="p">,</span> <span class="n">Trainer</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">"distilbert/distilgpt2"</span><span class="p">)</span>
+
+<span class="n">training_args</span> <span class="o">=</span> <span class="n">TrainingArguments</span><span class="p">(</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s2">"my_awesome_eli5_clm-model"</span><span class="p">,</span>
+    <span class="n">eval_strategy</span><span class="o">=</span><span class="s2">"epoch"</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">2e-5</span><span class="p">,</span>
+    <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">push_to_hub</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="n">training_args</span><span class="p">,</span>
+    <span class="n">train_dataset</span><span class="o">=</span><span class="n">lm_dataset</span><span class="p">[</span><span class="s2">"train"</span><span class="p">],</span>
+    <span class="n">eval_dataset</span><span class="o">=</span><span class="n">lm_dataset</span><span class="p">[</span><span class="s2">"test"</span><span class="p">],</span>
+    <span class="n">data_collator</span><span class="o">=</span><span class="n">data_collator</span><span class="p">,</span>
+    <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/var/folders/59/c32_bthx48jd9m2ym5m3tnpw0000j7/T/ipykernel_46283/2004268791.py:13: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+ 13%|█▎        | 500/3975 [04:26&lt;30:20,  1.91it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Loading checkpoint "../llama-2-7b/consolidated.00.pth"
+<pre>{'loss': 3.9787, 'grad_norm': 4.818574905395508, 'learning_rate': 1.748427672955975e-05, 'epoch': 0.38}
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/var/folders/59/c32_bthx48jd9m2ym5m3tnpw0000j7/T/ipykernel_74692/3750953715.py:16: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  checkpoint = torch.load(ckpt_path, map_location="cpu")
-</pre>
+<pre> 25%|██▌       | 1000/3975 [08:52&lt;25:56,  1.91it/s] </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Loaded checkpoint in 17.61s
-Loaded state dict in 82.34s
+<pre>{'loss': 3.9528, 'grad_norm': 3.8537325859069824, 'learning_rate': 1.4968553459119497e-05, 'epoch': 0.75}
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>Generating tokens: 100%|██████████| 114/114 [1:05:02&lt;00:00, 34.24s/it]</pre>
+<pre>                                                   
+ 33%|███▎      | 1325/3975 [12:26&lt;23:20,  1.89it/s]</pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Simply put, the theory of relativity states that 1) the laws of physics are the same for all non-accelerating observers, and 2) the speed of light is the same for all observers, regardless of their relative speed of motion. Powered by Create your own unique website with customizable templates. Einstein's Theory of Relativity. In fact, they are both based on the principle that the speed of light is the same for all observers. Einstein's theory of relativity has been criticized for
---------------------------------------------------
-If Google was an Italian company founded in Milan, it would be called Google Italia. com, you will find all the information you need to know about Google.
-I'm not a lawyer, but I've been told that this is illegal in Italy.
-Google Italia is an Italian search engine that provides search results in Italian.
-If you are in Italy and you have a Google account, you can use it to search the web, but you will not be able to use Google to search for Italian websites.
-If Google was a company that was founded
---------------------------------------------------
-Translate English to French:
-    
-    sea otter =&gt; loutre de mer
-    peppermint =&gt; menthe poivrée
-    plush girafe =&gt; girafe peluche
-    cheese =&gt; fromage
-    egg =&gt; œuf
-    tiger =&gt; tigre
-    chocolate =&gt; chocolat
-    banana =&gt; banane
-    penguin =&gt; pinguin
-    panda =&gt; panda
-    rhinoceros =&gt; rhinocéros
-   
---------------------------------------------------
-Tell me if the following person is actually Doraemon disguised as human:
-    Name: Umar Jamil
-    Decision: 
-    1. He is Doraemon
-    2. He is not Doraemon
+<pre>{'eval_loss': 3.8328182697296143, 'eval_runtime': 41.027, 'eval_samples_per_second': 60.497, 'eval_steps_per_second': 7.58, 'epoch': 1.0}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 38%|███▊      | 1500/3975 [14:00&lt;22:34,  1.83it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 3.913, 'grad_norm': 3.8344168663024902, 'learning_rate': 1.2452830188679246e-05, 'epoch': 1.13}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 50%|█████     | 2000/3975 [18:25&lt;16:49,  1.96it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 3.8573, 'grad_norm': 4.064958572387695, 'learning_rate': 9.937106918238994e-06, 'epoch': 1.51}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 63%|██████▎   | 2500/3975 [22:48&lt;13:05,  1.88it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 3.8496, 'grad_norm': 4.159275531768799, 'learning_rate': 7.421383647798742e-06, 'epoch': 1.89}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>                                                   
+ 67%|██████▋   | 2650/3975 [24:51&lt;11:36,  1.90it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'eval_loss': 3.823622941970825, 'eval_runtime': 41.3614, 'eval_samples_per_second': 60.008, 'eval_steps_per_second': 7.519, 'epoch': 2.0}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 75%|███████▌  | 3000/3975 [27:54&lt;08:24,  1.93it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 3.83, 'grad_norm': 3.96323823928833, 'learning_rate': 4.905660377358491e-06, 'epoch': 2.26}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 88%|████████▊ | 3500/3975 [32:22&lt;04:15,  1.86it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 3.8126, 'grad_norm': 4.447389125823975, 'learning_rate': 2.389937106918239e-06, 'epoch': 2.64}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>                                                   
+100%|██████████| 3975/3975 [37:30&lt;00:00,  1.77it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'eval_loss': 3.8222262859344482, 'eval_runtime': 52.5303, 'eval_samples_per_second': 47.249, 'eval_steps_per_second': 5.92, 'epoch': 3.0}
+{'train_runtime': 2250.3542, 'train_samples_per_second': 14.131, 'train_steps_per_second': 1.766, 'train_loss': 3.8763028203616354, 'epoch': 3.0}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>TrainOutput(global_step=3975, training_loss=3.8763028203616354, metrics={'train_runtime': 2250.3542, 'train_samples_per_second': 14.131, 'train_steps_per_second': 1.766, 'total_flos': 1038654583603200.0, 'train_loss': 3.8763028203616354, 'epoch': 3.0})</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Evaluate">Evaluate<a class="anchor-link" href="#Evaluate">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
 
----
-
-### Doraemon
-
-He is a robotic cat that comes from the future to help Nobita Nobi, a lazy and 
-useless boy. Doraemon has a 22nd century Japanese high-tech robotic cat.
-
----
-
-###
---------------------------------------------------
+<span class="n">eval_results</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">evaluate</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Perplexity: </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">eval_results</span><span class="p">[</span><span class="s1">'eval_loss'</span><span class="p">])</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>100%|██████████| 311/311 [00:40&lt;00:00,  7.62it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Perplexity: 45.71
 </pre>
 </div>
 </div>
@@ -8276,10 +7980,45 @@ useless boy. Doraemon has a 22nd century Japanese high-tech robotic cat.
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="References">References<a class="anchor-link" href="#References">¶</a></h2><ul>
-<li><a href="https://www.youtube.com/watch?v=Mn_9W1nCFLo">LLaMA explained: KV-Cache, Rotary Positional Embedding, RMS Norm, Grouped Query Attention, SwiGLU</a></li>
-<li><a href="https://www.youtube.com/watch?v=oM4VmoabDAI">Coding LLaMA 2 from scratch in PyTorch - KV Cache, Grouped Query Attention, Rotary PE, RMSNorm</a></li>
-</ul>
+<h2 id="Inference">Inference<a class="anchor-link" href="#Inference">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">prompt</span> <span class="o">=</span> <span class="s2">"Somatic hypermutation allows the immune system to"</span>
+
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">pipeline</span>
+
+<span class="n">generator</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">"text-generation"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">"my_awesome_eli5_clm-model"</span><span class="p">)</span>
+<span class="n">generator</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Hardware accelerator e.g. GPU is available in the environment, but no `device` argument is passed to the `Pipeline` object. Model will be on CPU.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>[{'generated_text': 'Somatic hypermutation allows the immune system to adapt to a more drastic response. When the immune system is overwhelmed, the immune system does NOT adapt to new stimuli (an event) and does not respond to new stimuli.This technique is called hyp'}]</pre>
+</div>
 </div>
 </div>
 </div>
@@ -8290,6 +8029,919 @@ useless boy. Doraemon has a 22nd century Japanese high-tech robotic cat.
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Build-our-own-dataset">Build our own dataset<a class="anchor-link" href="#Build-our-own-dataset">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="n">own_dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">data_files</span><span class="o">=</span><span class="p">{</span><span class="s2">"train"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"llm-fine-tuning-docs/docs/README.md"</span><span class="p">]},</span> <span class="n">split</span><span class="o">=</span><span class="s2">"train"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">own_dataset</span> <span class="o">=</span> <span class="n">own_dataset</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">"distilbert/distilgpt2"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">preprocess_function</span><span class="p">(</span><span class="n">examples</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="p">([</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]])</span>
+
+<span class="n">tokenized_own_dataset</span> <span class="o">=</span> <span class="n">own_dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">preprocess_function</span><span class="p">,</span>
+    <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">num_proc</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">remove_columns</span><span class="o">=</span><span class="n">own_dataset</span><span class="p">[</span><span class="s2">"train"</span><span class="p">]</span><span class="o">.</span><span class="n">column_names</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">block_size</span> <span class="o">=</span> <span class="mi">128</span>
+
+<span class="k">def</span> <span class="nf">group_texts</span><span class="p">(</span><span class="n">examples</span><span class="p">):</span>
+    <span class="c1"># Concatenate all texts.</span>
+    <span class="n">concatenated_examples</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">examples</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+    <span class="n">total_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">concatenated_examples</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="k">if</span> <span class="n">total_length</span> <span class="o">&gt;=</span> <span class="n">block_size</span><span class="p">:</span>
+        <span class="n">total_length</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_length</span> <span class="o">//</span> <span class="n">block_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">block_size</span>
+    <span class="c1"># Split by chunks of block_size.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">block_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_length</span><span class="p">,</span> <span class="n">block_size</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">concatenated_examples</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">result</span><span class="p">[</span><span class="s2">"labels"</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"input_ids"</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">lm_dataset</span> <span class="o">=</span> <span class="n">tokenized_own_dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">group_texts</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Map (num_proc=4):  23%|██▎       | 25000/110255 [00:00&lt;00:01, 47341.94 examples/s]Token indices sequence length is longer than the specified maximum sequence length for this model (1265 &gt; 1024). Running this sequence through the model will result in indexing errors
+Token indices sequence length is longer than the specified maximum sequence length for this model (2635 &gt; 1024). Running this sequence through the model will result in indexing errors
+Map (num_proc=4): 100%|██████████| 110255/110255 [00:02&lt;00:00, 51796.27 examples/s]
+Map (num_proc=4):  33%|███▎      | 9000/27564 [00:00&lt;00:00, 33464.95 examples/s]Token indices sequence length is longer than the specified maximum sequence length for this model (1434 &gt; 1024). Running this sequence through the model will result in indexing errors
+Token indices sequence length is longer than the specified maximum sequence length for this model (1498 &gt; 1024). Running this sequence through the model will result in indexing errors
+Map (num_proc=4): 100%|██████████| 27564/27564 [00:00&lt;00:00, 43419.17 examples/s]
+Map (num_proc=4): 100%|██████████| 110255/110255 [00:05&lt;00:00, 19012.39 examples/s]
+Map (num_proc=4): 100%|██████████| 27564/27564 [00:01&lt;00:00, 18585.38 examples/s]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">DataCollatorForLanguageModeling</span>
+
+<span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span>
+<span class="n">data_collator</span> <span class="o">=</span> <span class="n">DataCollatorForLanguageModeling</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">mlm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">TrainingArguments</span><span class="p">,</span> <span class="n">Trainer</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">"distilbert/distilgpt2"</span><span class="p">)</span>
+
+<span class="n">training_args</span> <span class="o">=</span> <span class="n">TrainingArguments</span><span class="p">(</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s2">"my_awesome_eli5_clm-model"</span><span class="p">,</span>
+    <span class="n">eval_strategy</span><span class="o">=</span><span class="s2">"epoch"</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">2e-5</span><span class="p">,</span>
+    <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">push_to_hub</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="n">training_args</span><span class="p">,</span>
+    <span class="n">train_dataset</span><span class="o">=</span><span class="n">lm_dataset</span><span class="p">[</span><span class="s2">"train"</span><span class="p">],</span>
+    <span class="n">eval_dataset</span><span class="o">=</span><span class="n">lm_dataset</span><span class="p">[</span><span class="s2">"test"</span><span class="p">],</span>
+    <span class="n">data_collator</span><span class="o">=</span><span class="n">data_collator</span><span class="p">,</span>
+    <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>/var/folders/59/c32_bthx48jd9m2ym5m3tnpw0000j7/T/ipykernel_59164/2004268791.py:13: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+  2%|▏         | 500/25236 [04:32&lt;3:45:39,  1.83it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 1.0514, 'grad_norm': 2.923488140106201, 'learning_rate': 1.9603740687906166e-05, 'epoch': 0.06}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>  4%|▍         | 1000/25236 [09:02&lt;3:37:20,  1.86it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.8607, 'grad_norm': 3.653607130050659, 'learning_rate': 1.9207481375812334e-05, 'epoch': 0.12}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>  6%|▌         | 1500/25236 [13:34&lt;3:34:09,  1.85it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.789, 'grad_norm': 3.275932788848877, 'learning_rate': 1.8811222063718498e-05, 'epoch': 0.18}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>  8%|▊         | 2000/25236 [18:06&lt;3:25:18,  1.89it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.7358, 'grad_norm': 3.0901458263397217, 'learning_rate': 1.8414962751624666e-05, 'epoch': 0.24}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 10%|▉         | 2500/25236 [22:36&lt;3:25:19,  1.85it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.7202, 'grad_norm': 3.7790260314941406, 'learning_rate': 1.801870343953083e-05, 'epoch': 0.3}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 12%|█▏        | 3000/25236 [27:04&lt;3:14:50,  1.90it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.6646, 'grad_norm': 2.1665198802948, 'learning_rate': 1.7622444127436998e-05, 'epoch': 0.36}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 14%|█▍        | 3500/25236 [31:32&lt;3:11:37,  1.89it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.6752, 'grad_norm': 2.3151416778564453, 'learning_rate': 1.7226184815343162e-05, 'epoch': 0.42}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 16%|█▌        | 4000/25236 [36:00&lt;3:07:08,  1.89it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.6623, 'grad_norm': 4.289205074310303, 'learning_rate': 1.6829925503249326e-05, 'epoch': 0.48}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 18%|█▊        | 4500/25236 [40:27&lt;3:01:44,  1.90it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.6326, 'grad_norm': 3.1733734607696533, 'learning_rate': 1.6433666191155494e-05, 'epoch': 0.53}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 20%|█▉        | 5000/25236 [44:51&lt;2:53:46,  1.94it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.6217, 'grad_norm': 3.655308723449707, 'learning_rate': 1.6037406879061658e-05, 'epoch': 0.59}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 22%|██▏       | 5500/25236 [49:12&lt;3:02:40,  1.80it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.6148, 'grad_norm': 2.426121234893799, 'learning_rate': 1.5641147566967826e-05, 'epoch': 0.65}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 24%|██▍       | 6000/25236 [53:43&lt;2:51:29,  1.87it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.6033, 'grad_norm': 3.019343137741089, 'learning_rate': 1.524488825487399e-05, 'epoch': 0.71}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 26%|██▌       | 6500/25236 [58:15&lt;2:46:54,  1.87it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5964, 'grad_norm': 2.171902894973755, 'learning_rate': 1.4848628942780156e-05, 'epoch': 0.77}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 28%|██▊       | 7000/25236 [1:02:46&lt;2:42:38,  1.87it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5933, 'grad_norm': 3.705193281173706, 'learning_rate': 1.4452369630686322e-05, 'epoch': 0.83}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 30%|██▉       | 7500/25236 [1:07:16&lt;2:37:07,  1.88it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5997, 'grad_norm': 3.1082398891448975, 'learning_rate': 1.4056110318592488e-05, 'epoch': 0.89}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 32%|███▏      | 8000/25236 [1:11:46&lt;2:34:09,  1.86it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5687, 'grad_norm': 2.9610862731933594, 'learning_rate': 1.3659851006498654e-05, 'epoch': 0.95}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>                                                        
+ 33%|███▎      | 8412/25236 [1:20:06&lt;2:47:04,  1.68it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'eval_loss': 0.5195939540863037, 'eval_runtime': 278.079, 'eval_samples_per_second': 60.123, 'eval_steps_per_second': 7.516, 'epoch': 1.0}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 34%|███▎      | 8500/25236 [1:20:54&lt;2:27:11,  1.90it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5843, 'grad_norm': 3.4731698036193848, 'learning_rate': 1.326359169440482e-05, 'epoch': 1.01}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 36%|███▌      | 9000/25236 [1:25:23&lt;2:22:48,  1.89it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5693, 'grad_norm': 2.3894593715667725, 'learning_rate': 1.2867332382310986e-05, 'epoch': 1.07}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 38%|███▊      | 9500/25236 [1:29:53&lt;2:18:56,  1.89it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5665, 'grad_norm': 3.145565986633301, 'learning_rate': 1.247107307021715e-05, 'epoch': 1.13}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 40%|███▉      | 10000/25236 [1:34:26&lt;2:14:58,  1.88it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5574, 'grad_norm': 2.6279871463775635, 'learning_rate': 1.2074813758123316e-05, 'epoch': 1.19}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 42%|████▏     | 10500/25236 [1:38:58&lt;2:12:20,  1.86it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5405, 'grad_norm': 1.9093999862670898, 'learning_rate': 1.1678554446029482e-05, 'epoch': 1.25}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 44%|████▎     | 11000/25236 [1:43:27&lt;2:06:47,  1.87it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5507, 'grad_norm': 2.3656275272369385, 'learning_rate': 1.1282295133935648e-05, 'epoch': 1.31}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 46%|████▌     | 11500/25236 [1:47:57&lt;2:05:47,  1.82it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5573, 'grad_norm': 2.009424924850464, 'learning_rate': 1.0886035821841814e-05, 'epoch': 1.37}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 48%|████▊     | 12000/25236 [1:52:36&lt;1:59:20,  1.85it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5447, 'grad_norm': 2.790330648422241, 'learning_rate': 1.048977650974798e-05, 'epoch': 1.43}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 50%|████▉     | 12500/25236 [1:57:10&lt;1:56:34,  1.82it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5304, 'grad_norm': 2.3634917736053467, 'learning_rate': 1.0093517197654146e-05, 'epoch': 1.49}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 52%|█████▏    | 13000/25236 [2:01:46&lt;1:50:19,  1.85it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5492, 'grad_norm': 1.8188008069992065, 'learning_rate': 9.697257885560312e-06, 'epoch': 1.55}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 53%|█████▎    | 13500/25236 [2:06:19&lt;1:46:50,  1.83it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5377, 'grad_norm': 3.021474838256836, 'learning_rate': 9.300998573466478e-06, 'epoch': 1.6}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 55%|█████▌    | 14000/25236 [2:10:53&lt;1:44:38,  1.79it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.522, 'grad_norm': 2.7724623680114746, 'learning_rate': 8.904739261372642e-06, 'epoch': 1.66}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 57%|█████▋    | 14500/25236 [2:15:30&lt;1:37:07,  1.84it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5476, 'grad_norm': 2.124424695968628, 'learning_rate': 8.508479949278808e-06, 'epoch': 1.72}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 59%|█████▉    | 15000/25236 [2:20:06&lt;1:33:47,  1.82it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5324, 'grad_norm': 2.9832992553710938, 'learning_rate': 8.112220637184974e-06, 'epoch': 1.78}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 61%|██████▏   | 15500/25236 [2:24:41&lt;1:30:13,  1.80it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5287, 'grad_norm': 2.484278678894043, 'learning_rate': 7.71596132509114e-06, 'epoch': 1.84}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 63%|██████▎   | 16000/25236 [2:29:18&lt;1:22:59,  1.85it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5346, 'grad_norm': 2.693070650100708, 'learning_rate': 7.319702012997306e-06, 'epoch': 1.9}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 65%|██████▌   | 16500/25236 [2:33:54&lt;1:20:01,  1.82it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5224, 'grad_norm': 1.8972607851028442, 'learning_rate': 6.923442700903472e-06, 'epoch': 1.96}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>                                                          
+ 67%|██████▋   | 16824/25236 [2:41:44&lt;1:08:58,  2.03it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'eval_loss': 0.4774123430252075, 'eval_runtime': 278.0684, 'eval_samples_per_second': 60.125, 'eval_steps_per_second': 7.516, 'epoch': 2.0}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 67%|██████▋   | 17000/25236 [2:43:20&lt;1:14:20,  1.85it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.526, 'grad_norm': 3.3371341228485107, 'learning_rate': 6.527183388809638e-06, 'epoch': 2.02}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 69%|██████▉   | 17500/25236 [2:47:55&lt;1:23:18,  1.55it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5141, 'grad_norm': 1.9682505130767822, 'learning_rate': 6.130924076715803e-06, 'epoch': 2.08}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 71%|███████▏  | 18000/25236 [3:54:38&lt;1:05:04,  1.85it/s]   </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5141, 'grad_norm': 1.9189631938934326, 'learning_rate': 5.734664764621969e-06, 'epoch': 2.14}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 73%|███████▎  | 18500/25236 [3:59:09&lt;59:56,  1.87it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5143, 'grad_norm': 2.137493371963501, 'learning_rate': 5.338405452528135e-06, 'epoch': 2.2}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 74%|███████▎  | 18576/25236 [3:59:52&lt;59:00,  1.88it/s]  '(MaxRetryError("HTTPSConnectionPool(host='hf-hub-lfs-us-east-1.s3-accelerate.amazonaws.com', port=443): Max retries exceeded with url: /repos/68/06/6806daa1282d81c0310b0d7762f1b9f17a88f4db09f73b467e997d4dfb8bcbc3/6ac8e5921524ba0b7ff5537890a2cb67b63c3d9248e8044a430615bf1f54dd48?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=AKIA2JU7TKAQLC2QXPN7%2F20241127%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20241127T161017Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=f5e42a05914cf5ef1facb7a43fe5d59a9e70586bcb081f65d1efc5f3923931a5&amp;X-Amz-SignedHeaders=host&amp;partNumber=1&amp;uploadId=IxVQYRzAzQRbKI9fvy85ANlUMnJmWStto2IR_Q78hQJAF8WNmVdG49o0a21mmt2hrWFEaI.LT5cLhcBCC_iwFo32I8WZDle8KLY7CoJem5.oq.pgw2ov5SlCtXQVzPhR&amp;x-id=UploadPart (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:2406)')))"), '(Request ID: b898e3b7-ff85-4ab6-8fab-15e2d8776ac0)')' thrown while requesting PUT https://hf-hub-lfs-us-east-1.s3-accelerate.amazonaws.com/repos/68/06/6806daa1282d81c0310b0d7762f1b9f17a88f4db09f73b467e997d4dfb8bcbc3/6ac8e5921524ba0b7ff5537890a2cb67b63c3d9248e8044a430615bf1f54dd48?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Credential=AKIA2JU7TKAQLC2QXPN7%2F20241127%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20241127T161017Z&amp;X-Amz-Expires=86400&amp;X-Amz-Signature=f5e42a05914cf5ef1facb7a43fe5d59a9e70586bcb081f65d1efc5f3923931a5&amp;X-Amz-SignedHeaders=host&amp;partNumber=1&amp;uploadId=IxVQYRzAzQRbKI9fvy85ANlUMnJmWStto2IR_Q78hQJAF8WNmVdG49o0a21mmt2hrWFEaI.LT5cLhcBCC_iwFo32I8WZDle8KLY7CoJem5.oq.pgw2ov5SlCtXQVzPhR&amp;x-id=UploadPart
+Retrying in 1s [Retry 1/5].
+ 75%|███████▌  | 19000/25236 [4:03:38&lt;55:20,  1.88it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5117, 'grad_norm': 2.0127975940704346, 'learning_rate': 4.942146140434301e-06, 'epoch': 2.26}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 77%|███████▋  | 19500/25236 [4:08:05&lt;50:15,  1.90it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5104, 'grad_norm': 2.227771520614624, 'learning_rate': 4.545886828340466e-06, 'epoch': 2.32}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 79%|███████▉  | 20000/25236 [4:12:32&lt;46:29,  1.88it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5119, 'grad_norm': 1.7230807542800903, 'learning_rate': 4.149627516246632e-06, 'epoch': 2.38}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 81%|████████  | 20500/25236 [4:17:01&lt;41:39,  1.89it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.515, 'grad_norm': 2.8102188110351562, 'learning_rate': 3.753368204152798e-06, 'epoch': 2.44}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 83%|████████▎ | 21000/25236 [4:21:29&lt;37:09,  1.90it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5152, 'grad_norm': 2.353322744369507, 'learning_rate': 3.3571088920589633e-06, 'epoch': 2.5}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 85%|████████▌ | 21500/25236 [4:25:55&lt;32:44,  1.90it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5006, 'grad_norm': 2.4536876678466797, 'learning_rate': 2.9608495799651293e-06, 'epoch': 2.56}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 87%|████████▋ | 22000/25236 [4:30:21&lt;27:54,  1.93it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5171, 'grad_norm': 2.692809581756592, 'learning_rate': 2.5645902678712953e-06, 'epoch': 2.62}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 89%|████████▉ | 22500/25236 [4:34:48&lt;23:52,  1.91it/s]  </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5174, 'grad_norm': 2.5782158374786377, 'learning_rate': 2.168330955777461e-06, 'epoch': 2.67}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 91%|█████████ | 23000/25236 [4:39:13&lt;19:28,  1.91it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5054, 'grad_norm': 3.181828022003174, 'learning_rate': 1.7720716436836266e-06, 'epoch': 2.73}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 93%|█████████▎| 23500/25236 [4:43:38&lt;14:53,  1.94it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.509, 'grad_norm': 2.4656076431274414, 'learning_rate': 1.3758123315897926e-06, 'epoch': 2.79}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 95%|█████████▌| 24000/25236 [4:48:05&lt;11:01,  1.87it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5196, 'grad_norm': 2.672015428543091, 'learning_rate': 9.795530194959582e-07, 'epoch': 2.85}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 97%|█████████▋| 24500/25236 [4:52:36&lt;06:29,  1.89it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5075, 'grad_norm': 1.7535483837127686, 'learning_rate': 5.83293707402124e-07, 'epoch': 2.91}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre> 99%|█████████▉| 25000/25236 [4:57:06&lt;02:05,  1.87it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'loss': 0.5201, 'grad_norm': 2.7316629886627197, 'learning_rate': 1.8703439530828975e-07, 'epoch': 2.97}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>                                                       
+100%|██████████| 25236/25236 [5:03:49&lt;00:00,  1.38it/s]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{'eval_loss': 0.46561333537101746, 'eval_runtime': 272.7404, 'eval_samples_per_second': 61.3, 'eval_steps_per_second': 7.663, 'epoch': 3.0}
+{'train_runtime': 18229.2929, 'train_samples_per_second': 11.074, 'train_steps_per_second': 1.384, 'train_loss': 0.5792096785422758, 'epoch': 3.0}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>TrainOutput(global_step=25236, training_loss=0.5792096785422758, metrics={'train_runtime': 18229.2929, 'train_samples_per_second': 11.074, 'train_steps_per_second': 1.384, 'total_flos': 6593692852813824.0, 'train_loss': 0.5792096785422758, 'epoch': 3.0})</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">prompt</span> <span class="o">=</span> <span class="s2">"Somatic hypermutation allows the immune system to"</span>
+
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">pipeline</span>
+
+<span class="n">generator</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">"text-generation"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">"my_awesome_eli5_clm-model"</span><span class="p">)</span>
+<span class="n">generator</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Hardware accelerator e.g. GPU is available in the environment, but no `device` argument is passed to the `Pipeline` object. Model will be on CPU.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>[{'generated_text': 'Somatic hypermutation allows the immune system to s i o n. t y p e.                              '}]</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+</div>
 </div>
 </div>
 </div>

@@ -53,3 +53,4 @@ This work is published under [MIT][mit] License.
 - Probabilies: mean, variance, markov chains, std deviation
 - Score-Based Generative Models
 - Model distillation
+- RNN

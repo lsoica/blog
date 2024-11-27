@@ -41,3 +41,7 @@ download.sh
 **/vocab.json
 **/*.ckpt
 **/distilbert-base*
+**/llm-fine-tuning-docs*
+**/my_awesome_eli5_clm-model*
+**/dataset*
+

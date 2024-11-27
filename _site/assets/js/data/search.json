@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "LLM Fine-Tuning on Your Own Docs",
+    "url": "/posts/llm-fine-tuning-on-your-own-docs/",
+    "categories": "Blogging, Tutorial",
+    "tags": "neuralnetworks, fine-tuning, llms",
+    "date": "2024-11-20 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "Fine-tuning LLMs on your own documents        ReferencesFine-tune a model on your own documentation",
+    "content": "Fine-tuning LLMs on your own documents        ReferencesFine-tune a model on your own documentation"
+  },
+  
+  {
     "title": "HuggingFace",
     "url": "/posts/huggingface/",
     "categories": "Blogging, Tutorial",
@@ -268,8 +285,8 @@
 
 
     
-    "snippet": "Quantization        DistillationSparsityTorch compilerReferencesGPU MODE IRL 2024 KeynotesQuantization explained with PyTorch - Post-Training Quantization, Quantization-Aware Training",
-    "content": "Quantization        DistillationSparsityTorch compilerReferencesGPU MODE IRL 2024 KeynotesQuantization explained with PyTorch - Post-Training Quantization, Quantization-Aware Training"
+    "snippet": "Quantization        Knowledge DistillationTransfer the knowledge of a larger (teacher) model to a smaller (student) one.Soft targets: train student using logits of the teacher. During training, the...",
+    "content": "Quantization        Knowledge DistillationTransfer the knowledge of a larger (teacher) model to a smaller (student) one.Soft targets: train student using logits of the teacher. During training, the teacher’s logits are used as targets for the student.Synthetic data: generate synthetic data from the teacher’s predictions.SparsityTorch compilerReferencesGPU MODE IRL 2024 KeynotesQuantization explained with PyTorch - Post-Training Quantization, Quantization-Aware TrainingKnowledge Distillation"
   },
   
   {
