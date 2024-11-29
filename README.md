@@ -54,3 +54,4 @@ This work is published under [MIT][mit] License.
 - Score-Based Generative Models
 - Model distillation
 - RNN
+- Pandas
