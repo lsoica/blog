@@ -55,3 +55,5 @@ This work is published under [MIT][mit] License.
 - Model distillation
 - RNN
 - Pandas
+- Gated recurrent networks
+
