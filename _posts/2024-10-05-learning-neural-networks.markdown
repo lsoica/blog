@@ -47,3 +47,44 @@ pin: true
 | [Build GPT from scratch](https://www.youtube.com/watch?v=kCc8FmEb1nY)                                      | Andrej Karpathy: Let's build GPT: from scratch, in code, spelled out.   |
 | [Umar Jamil's youtube channel](https://www.youtube.com/@umarjamilai)                                      | Umar Jamil's youtube channel.   |
 | [Shawhin Talebi's youtube channel](https://www.youtube.com/@ShawhinTalebi) | Shawhin Talebi's youtube channel. |
+
+## Architectures
+
+| **Domain**              | **Problem**                        | **Architecture**                                                                                   |
+|--------------------------|------------------------------------|---------------------------------------------------------------------------------------------------|
+| **Computer Vision**      | Image classification              | CNNs, ResNet, EfficientNet, Vision Transformers (ViT)                                             |
+|                          | Object detection                  | YOLO, Faster R-CNN, RetinaNet, DETR                                                              |
+|                          | Image segmentation                | U-Net, Mask R-CNN, DeepLabV3                                                                      |
+|                          | Image generation                  | GANs, Variational Autoencoders (VAEs)                                                            |
+|                          | Style transfer                    | Neural Style Transfer Networks                                                                    |
+| **Natural Language Processing (NLP)** | Text classification               | RNNs, BiLSTMs, Transformers, BERT                                                                 |
+|                          | Sentiment analysis                | RNNs, BiLSTMs, Transformers, BERT                                                                 |
+|                          | Machine translation               | Seq2Seq Models, Transformers, MarianMT, T5                                                       |
+|                          | Text summarization                | Transformers, BART, Pegasus                                                                       |
+|                          | Question answering                | BERT, RoBERTa, ALBERT                                                                             |
+|                          | Text generation                   | GPT, LLaMA                                                                                       |
+| **Speech Processing**    | Speech recognition                | RNNs with CTC Loss, Wav2Vec 2.0, Conformer                                                       |
+|                          | Speech synthesis                  | Tacotron 2, WaveNet, VITS                                                                         |
+|                          | Speaker identification            | CNNs, ResNet-based models                                                                         |
+| **Time-Series Analysis** | Forecasting                       | LSTMs, GRUs, Temporal Fusion Transformer                                                         |
+|                          | Anomaly detection                 | Autoencoders, LSTMs                                                                               |
+|                          | Activity recognition              | CNNs, RNNs, Temporal Convolutional Networks (TCNs)                                               |
+| **Reinforcement Learning** | Game playing                     | Deep Q-Networks (DQNs), AlphaZero, PPO                                                           |
+|                          | Robotics control                  | Policy Gradient Methods, SAC, TD3                                                                |
+|                          | Strategy optimization             | A3C, PPO                                                                                         |
+| **Generative Modeling**  | Text-to-image generation          | Stable Diffusion, DALL-E                                                                          |
+|                          | Data augmentation                 | GANs, VAEs                                                                                       |
+|                          | Synthetic data generation         | GANs, Diffusion Models                                                                            |
+| **Medical Applications** | Disease detection                 | CNNs, Vision Transformers (ViT)                                                                  |
+|                          | Medical image segmentation        | U-Net, SegNet                                                                                    |
+|                          | Drug discovery                    | Graph Neural Networks (GNNs), Transformer-based models (e.g., MolBERT)                           |
+| **Graph-Based Problems** | Social network analysis           | Graph Neural Networks (GNNs), Graph Convolutional Networks (GCNs)                                |
+|                          | Knowledge graph completion        | Graph Attention Networks (GATs), TransE                                                          |
+|                          | Molecular structure prediction    | Message Passing Neural Networks (MPNNs)                                                          |
+| **Recommendation Systems** | Product recommendation          | Collaborative Filtering Models, Autoencoders, Neural Collaborative Filtering (NCF), Transformers |
+|                          | Content personalization           | Collaborative Filtering Models, Autoencoders, Transformers                                       |
+|                          | Collaborative filtering           | Collaborative Filtering Models, Neural Collaborative Filtering (NCF)                             |
+| **Control Systems**      | Autonomous driving                | Convolutional Networks, Reinforcement Learning with sensor integration                           |
+|                          | Industrial process optimization   | Recurrent Neural Networks, Reinforcement Learning                                                |
+| **Multimodal Learning**  | Image and text alignment          | CLIP, ViLBERT                                                                                   |
+|                          | Audio-visual synchronization      | Multimodal Transformers, Hybrid CNN-RNN Architectures                                            |
