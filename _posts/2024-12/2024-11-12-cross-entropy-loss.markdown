@@ -6,7 +6,7 @@ author: lso
 date:   2024-11-12 11:08:03 +0200
 categories: [Blogging, Tutorial]
 tags: [probabilities,cross-entropy-loss]
-pin: true
+pin: false
 ---
 
 {% jupyter_notebook "../../assets/2024-12/cross-entropy-loss.ipynb" %}
