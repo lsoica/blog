@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "Python Pandas",
+    "url": "/posts/pandas/",
+    "categories": "Blogging, Tutorial",
+    "tags": "pandas",
+    "date": "2024-12-06 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "        ",
+    "content": "        "
+  },
+  
+  {
     "title": "LLM Fine-Tuning on Your Own Docs",
     "url": "/posts/llm-fine-tuning-on-your-own-docs/",
     "categories": "Blogging, Tutorial",
@@ -40,6 +57,40 @@
     "categories": "Blogging, Tutorial",
     "tags": "neuralnetworks, bert, finetuning",
     "date": "2024-11-14 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "        ",
+    "content": "        "
+  },
+  
+  {
+    "title": "SoftMax",
+    "url": "/posts/softmax/",
+    "categories": "Blogging, Tutorial",
+    "tags": "probabilities, softmax",
+    "date": "2024-11-12 11:08:03 +0200",
+    
+
+
+
+
+
+    
+    "snippet": "        ",
+    "content": "        "
+  },
+  
+  {
+    "title": "Cross Entropy Loss",
+    "url": "/posts/cross-entropy-loss/",
+    "categories": "Blogging, Tutorial",
+    "tags": "probabilities, cross-entropy-loss",
+    "date": "2024-11-12 11:08:03 +0200",
     
 
 

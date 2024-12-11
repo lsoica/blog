@@ -1,0 +1,12 @@
+---
+title:  "Python Pandas"
+description: >-
+  Python Pandas.
+author: lso
+date:   2024-12-06 11:08:03 +0200
+categories: [Blogging, Tutorial]
+tags: [pandas]
+pin: false
+---
+
+{% jupyter_notebook "../../assets/2024-12/pandas.ipynb" %}

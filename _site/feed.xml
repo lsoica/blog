@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-12-04T14:17:45+02:00</updated>
+  <updated>2024-12-11T13:52:31+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Python Pandas</title>
+    <link href="http://localhost:4000/posts/pandas/" rel="alternate" type="text/html" title="Python Pandas" />
+    <published>2024-12-06T11:08:03+02:00</published>
+  
+    <updated>2024-12-06T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/pandas/</id>
+    <content src="http://localhost:4000/posts/pandas/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Python Pandas.</summary>
+
+  </entry>
 
   
   <entry>
@@ -98,38 +124,14 @@
 
   
   <entry>
-    <title>Quotes</title>
-    <link href="http://localhost:4000/posts/quotes/" rel="alternate" type="text/html" title="Quotes" />
-    <published>2024-11-09T11:08:03+02:00</published>
+    <title>SoftMax</title>
+    <link href="http://localhost:4000/posts/softmax/" rel="alternate" type="text/html" title="SoftMax" />
+    <published>2024-11-12T11:08:03+02:00</published>
   
-    <updated>2024-11-09T11:08:03+02:00</updated>
+    <updated>2024-11-12T11:08:03+02:00</updated>
   
-    <id>http://localhost:4000/posts/quotes/</id>
-    <content src="http://localhost:4000/posts/quotes/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-  
-
-  <summary>Quotes.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Stable Diffusion</title>
-    <link href="http://localhost:4000/posts/stable-diffusion/" rel="alternate" type="text/html" title="Stable Diffusion" />
-    <published>2024-11-06T11:08:03+02:00</published>
-  
-    <updated>2024-11-06T11:08:03+02:00</updated>
-  
-    <id>http://localhost:4000/posts/stable-diffusion/</id>
-    <content src="http://localhost:4000/posts/stable-diffusion/" />
+    <id>http://localhost:4000/posts/softmax/</id>
+    <content src="http://localhost:4000/posts/softmax/" />
     <author>
       <name>lso</name>
     </author>
@@ -142,7 +144,7 @@
     
   
 
-  <summary>Stable Diffusion.</summary>
+  <summary>SoftMax.</summary>
 
   </entry>
 

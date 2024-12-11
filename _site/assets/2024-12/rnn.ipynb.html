@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>jekyll-jupyter-notebook20241204-22871-e6es8o</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>jekyll-jupyter-notebook20241211-89722-z99kvu</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7528,10 +7528,27 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="RNN">RNN<a class="anchor-link" href="#RNN">¶</a></h1><p>RNNs are a type of neural network that are designed to process sequential data. Allows previous outputs to be used as inputs while having hidden states.</p>
-<p><img alt="RNN" src="../assets/images/rnn.png"/></p>
+<p><img alt="RNN" src="../../assets/images/rnn.png"/></p>
 <p><a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">RNN effectiveness</a></p>
 <p>RNNs allows us to process sequential data.</p>
-<p><img alt="RNN operates on sequences" src="../assets/images/rnn-operates-on-sequences.png"/></p>
+<p><img alt="RNN operates on sequences" src="../../assets/images/rnn-operates-on-sequences.png"/></p>
+<ol>
+<li>Vanilla neural network: Fixed input vector size -&gt; a hidden layer -&gt; a fixed output vector size</li>
+<li>Image captioning: Fixed input vector size -&gt; a RNN -&gt; a sequence of words describing the image</li>
+<li>Sentiment classification: a sequence of words -&gt; a RNN -&gt; clasify the sentiment of the sentence as positive or negative</li>
+<li>Machine translation: a sequence of words in the source language -&gt; a RNN -&gt; a sequence of words in the target language</li>
+<li>Video classification: a sequence of frames -&gt; a RNN -&gt; classify the video into different categories</li>
+</ol>
+<p>It can process a sequence of vectors x by applying a recurrent transformation f at every time step.
+$$
+h_t = f(h_{t-1}, x_t)
+$$</p>
+<p>e.g.
+$$
+h_t = \tanh(W_{hh}h_{t-1} + W_{hx}x_t)
+$$</p>
+<p>where the output is:</p>
+<p>The state consists of a single hidden vector h.</p>
 <h2 id="Let's-build-a-RNN-to-classify-names-by-origin">Let's build a RNN to classify names by origin<a class="anchor-link" href="#Let's-build-a-RNN-to-classify-names-by-origin">¶</a></h2><ul>
 <li>We treat each name as a sequence of characters.</li>
 <li>Each character is represented by a one-hot vector. A tensor of fixed size where only one element is 1 and the rest are 0s. Each character is uniquely identified by its index.</li>
