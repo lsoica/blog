@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-12-11T14:09:47+02:00</updated>
+  <updated>2024-12-11T14:12:27+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,84 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>SoftMax</title>
+    <link href="http://localhost:4000/posts/softmax/" rel="alternate" type="text/html" title="SoftMax" />
+    <published>2024-12-11T11:08:03+02:00</published>
+  
+    <updated>2024-12-11T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/softmax/</id>
+    <content src="http://localhost:4000/posts/softmax/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>SoftMax.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Cross Entropy Loss</title>
+    <link href="http://localhost:4000/posts/cross-entropy-loss/" rel="alternate" type="text/html" title="Cross Entropy Loss" />
+    <published>2024-12-11T11:08:03+02:00</published>
+  
+    <updated>2024-12-11T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/cross-entropy-loss/</id>
+    <content src="http://localhost:4000/posts/cross-entropy-loss/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Cross Entropy Loss.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Recurrent neural networks</title>
+    <link href="http://localhost:4000/posts/recurrent-neural-networks/" rel="alternate" type="text/html" title="Recurrent neural networks" />
+    <published>2024-12-10T11:08:03+02:00</published>
+  
+    <updated>2024-12-10T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/recurrent-neural-networks/</id>
+    <content src="http://localhost:4000/posts/recurrent-neural-networks/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Recurrent neural networks.</summary>
+
+  </entry>
 
   
   <entry>
@@ -67,84 +145,6 @@
   
 
   <summary>Fine-tuning LLMs on your own documents.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>HuggingFace</title>
-    <link href="http://localhost:4000/posts/huggingface/" rel="alternate" type="text/html" title="HuggingFace" />
-    <published>2024-11-18T11:08:03+02:00</published>
-  
-    <updated>2024-11-19T11:39:54+02:00</updated>
-  
-    <id>http://localhost:4000/posts/huggingface/</id>
-    <content src="http://localhost:4000/posts/huggingface/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>HuggingFace.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>BERT fine tuning for phishing URL detection.</title>
-    <link href="http://localhost:4000/posts/bert-fine-tuning/" rel="alternate" type="text/html" title="BERT fine tuning for phishing URL detection." />
-    <published>2024-11-14T11:08:03+02:00</published>
-  
-    <updated>2024-11-14T12:42:07+02:00</updated>
-  
-    <id>http://localhost:4000/posts/bert-fine-tuning/</id>
-    <content src="http://localhost:4000/posts/bert-fine-tuning/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>BERT fine tuning for phishing URL detection.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>SoftMax</title>
-    <link href="http://localhost:4000/posts/softmax/" rel="alternate" type="text/html" title="SoftMax" />
-    <published>2024-11-12T11:08:03+02:00</published>
-  
-    <updated>2024-12-11T13:58:38+02:00</updated>
-  
-    <id>http://localhost:4000/posts/softmax/</id>
-    <content src="http://localhost:4000/posts/softmax/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>SoftMax.</summary>
 
   </entry>
 

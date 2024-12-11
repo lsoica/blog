@@ -3,7 +3,7 @@ title:  "SoftMax"
 description: >-
   SoftMax.
 author: lso
-date:   2024-11-12 11:08:03 +0200
+date:   2024-12-11 11:08:03 +0200
 categories: [Blogging, Tutorial]
 tags: [probabilities,softmax]
 pin: false
