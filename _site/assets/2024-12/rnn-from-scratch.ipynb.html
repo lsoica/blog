@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>jekyll-jupyter-notebook20241220-97737-jl5sme</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>jekyll-jupyter-notebook20241220-97737-dvgje4</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7516,14 +7516,70 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Huggingface">Huggingface<a class="anchor-link" href="#Huggingface">¶</a></h1><p>An open source ML hub providing:</p>
+<p><a href="https://colab.research.google.com/github/lsoica/blog/blob/main/assets/rnn-from-scratch.ipynb" target="_parent"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="RNN-from-scratch">RNN from scratch<a class="anchor-link" href="#RNN-from-scratch">¶</a></h1><p>RNNs acts as sequence processors. They take a sequence of inputs, and produce a sequence of outputs. The input sequence length is variable, it can take a sequence of 7 steps or 7000 steps, doesn't matter.</p>
+<p>We have:</p>
 <ul>
-<li>Models</li>
-<li>Datasets</li>
-<li>Spaces: platform that allow users to build and deploy AI models</li>
+<li>Input layer: one weights matrix and one bias vector</li>
+<li>Hidden layer: one weights matrix and one bias vector</li>
+<li>Output layer: one weights matrix and one bias vector</li>
 </ul>
-<h2 id="Huggingface-Transformers-Library">Huggingface Transformers Library<a class="anchor-link" href="#Huggingface-Transformers-Library">¶</a></h2><p>A python library that makes downloading and training models easy.</p>
-<h3 id="Example:-Sentiment-Analysis">Example: Sentiment Analysis<a class="anchor-link" href="#Example:-Sentiment-Analysis">¶</a></h3><p>Let's say we want do do sentiment analysis. We can use a pipeline to do this:</p>
+<p><img alt="RNN architecture" src="./rnn-from-scratch.png"/></p>
+<p>For each input X, we have:</p>
+<ul>
+<li>Input layer: $XI = X \times W_i + b_i$</li>
+<li>Hidden layer: $XH(t_n) = \text{activation}(XH(t_{n-1}) + XI)$</li>
+<li>Output layer: $XO = XH(t_n) \times W_o + b_o$</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="RNN operations" src="./rnn_operations.png"/></p>
+<p><img alt="RNN operations" src="./rnn-matrix.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<ul>
+<li>Input has 3 features so its shape is: (1, 3)</li>
+<li>Input layer has 5 neurons, so its weights shape is: (3, 5). XI has shape (1, 5)</li>
+<li>Hidden layer has 5 neurons, so its weights shape is: (5, 5). XH has shape (1, 5) as it XH_previous (1,5) @ H_weights (5,5) = (1,5). XI+XH has shape (1, 5). The resulting XH has shape (1, 5).</li>
+<li>Output layer has 1 neuron, so its weights shape is: (5, 1). XO has shape (1, 1)</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Install-required-packages">Install required packages<a class="anchor-link" href="#Install-required-packages">¶</a></h2>
 </div>
 </div>
 </div>
@@ -7535,9 +7591,20 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>gradio
+<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>torch<span class="w"> </span>matplotlib
 </pre></div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Download-the-data">Download the data<a class="anchor-link" href="#Download-the-data">¶</a></h2>
 </div>
 </div>
 </div>
@@ -7546,11 +7613,291 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">pipeline</span>
-<span class="n">pipeline</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">"sentiment-analysis"</span><span class="p">)(</span><span class="s2">"I love this product!"</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>curl<span class="w"> </span>https://raw.githubusercontent.com/VikParuchuri/zero_to_gpt/refs/heads/master/data/clean_weather.csv<span class="w"> </span>-o<span class="w"> </span>clean_weather.csv
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  396k  100  396k    0     0   727k      0 --:--:-- --:--:-- --:--:--  726k
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Import-libraries">Import libraries<a class="anchor-link" href="#Import-libraries">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Read-the-data">Read the data<a class="anchor-link" href="#Read-the-data">¶</a></h2><p>Each row is a day, with columns for each weather variable. We have tmax, tmin, rain. tmax_tomorrow is the target, what we're trying to predict.</p>
+<p>ffill fills in missing values with the last known value.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Read in our data, and fill missing values</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"./clean_weather.csv"</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+
+<span class="n">data</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>tmax</th>
+<th>tmin</th>
+<th>rain</th>
+<th>tmax_tomorrow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>1970-01-01</th>
+<td>60.0</td>
+<td>35.0</td>
+<td>0.0</td>
+<td>52.0</td>
+</tr>
+<tr>
+<th>1970-01-02</th>
+<td>52.0</td>
+<td>39.0</td>
+<td>0.0</td>
+<td>52.0</td>
+</tr>
+<tr>
+<th>1970-01-03</th>
+<td>52.0</td>
+<td>35.0</td>
+<td>0.0</td>
+<td>53.0</td>
+</tr>
+<tr>
+<th>1970-01-04</th>
+<td>53.0</td>
+<td>36.0</td>
+<td>0.0</td>
+<td>52.0</td>
+</tr>
+<tr>
+<th>1970-01-05</th>
+<td>52.0</td>
+<td>35.0</td>
+<td>0.0</td>
+<td>50.0</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<th>2022-11-22</th>
+<td>62.0</td>
+<td>35.0</td>
+<td>0.0</td>
+<td>67.0</td>
+</tr>
+<tr>
+<th>2022-11-23</th>
+<td>67.0</td>
+<td>38.0</td>
+<td>0.0</td>
+<td>66.0</td>
+</tr>
+<tr>
+<th>2022-11-24</th>
+<td>66.0</td>
+<td>41.0</td>
+<td>0.0</td>
+<td>70.0</td>
+</tr>
+<tr>
+<th>2022-11-25</th>
+<td>70.0</td>
+<td>39.0</td>
+<td>0.0</td>
+<td>62.0</td>
+</tr>
+<tr>
+<th>2022-11-26</th>
+<td>62.0</td>
+<td>41.0</td>
+<td>0.0</td>
+<td>64.0</td>
+</tr>
+</tbody>
+</table>
+<p>13509 rows × 4 columns</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>The most common activation function for RNNs is the tanh function:</p>
+<p>$$
+\text{tanh}(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
+$$</p>
+<p>The derivative of the tanh function is:</p>
+<p>$$
+\text{tanh}'(x) = 1 - \text{tanh}(x)^2
+$$</p>
+<p>Let's graph the tanh function and its derivative:</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">dy</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'tanh(x)'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"tanh'(x)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
+<img alt="No description has been provided for this image" class="" src="data:image/png;base64,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"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Full-Implementation">Full Implementation<a class="anchor-link" href="#Full-Implementation">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="c1"># Define predictors and target</span>
+<span class="n">PREDICTORS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"tmax"</span><span class="p">,</span> <span class="s2">"tmin"</span><span class="p">,</span> <span class="s2">"rain"</span><span class="p">]</span>
+<span class="n">TARGET</span> <span class="o">=</span> <span class="s2">"tmax_tomorrow"</span>
+
+<span class="c1"># Scale our data to have mean 0</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">data</span><span class="p">[</span><span class="n">PREDICTORS</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">PREDICTORS</span><span class="p">])</span>
+
+<span class="c1"># Split into train, valid, test sets: 70% train, 15% valid, 15% test</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">split_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mf">.7</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="mf">.85</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))])</span>
+<span class="p">(</span><span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">),</span> <span class="p">(</span><span class="n">valid_x</span><span class="p">,</span> <span class="n">valid_y</span><span class="p">),</span> <span class="p">(</span><span class="n">test_x</span><span class="p">,</span> <span class="n">test_y</span><span class="p">)</span> <span class="o">=</span> <span class="p">[[</span><span class="n">d</span><span class="p">[</span><span class="n">PREDICTORS</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">d</span><span class="p">[[</span><span class="n">TARGET</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">split_data</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -7563,21 +7910,55 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>No model was supplied, defaulted to distilbert/distilbert-base-uncased-finetuned-sst-2-english and revision 714eb0f (https://huggingface.co/distilbert/distilbert-base-uncased-finetuned-sst-2-english).
-Using a pipeline without specifying a model name and revision in production is not recommended.
-Hardware accelerator e.g. GPU is available in the environment, but no `device` argument is passed to the `Pipeline` object. Model will be on CPU.
+<pre>/Users/LSoica/work/AI/blog/.venv/lib/python3.12/site-packages/numpy/core/fromnumeric.py:59: FutureWarning: 'DataFrame.swapaxes' is deprecated and will be removed in a future version. Please use 'DataFrame.transpose' instead.
+  return bound(*args, **kwds)
 </pre>
 </div>
 </div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>[{'label': 'POSITIVE', 'score': 0.9998855590820312}]</pre>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">init_params</span><span class="p">(</span><span class="n">layer_conf</span><span class="p">):</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_conf</span><span class="p">)):</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">layer_conf</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">"hidden"</span><span class="p">])</span>
+        <span class="n">i_weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">layer_conf</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"units"</span><span class="p">],</span> <span class="n">layer_conf</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">"hidden"</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="n">k</span>
+
+        <span class="n">h_weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">layer_conf</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">"hidden"</span><span class="p">],</span> <span class="n">layer_conf</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">"hidden"</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="n">k</span>
+        <span class="n">h_bias</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">layer_conf</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">"hidden"</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="n">k</span>
+
+        <span class="n">o_weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">layer_conf</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">"hidden"</span><span class="p">],</span> <span class="n">layer_conf</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">"output"</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="n">k</span>
+        <span class="n">o_bias</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">layer_conf</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">"output"</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="n">k</span>
+
+        <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">i_weight</span><span class="p">,</span> <span class="n">h_weight</span><span class="p">,</span> <span class="n">h_bias</span><span class="p">,</span> <span class="n">o_weight</span><span class="p">,</span> <span class="n">o_bias</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">layers</span>
+</pre></div>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="forward-pass">forward pass<a class="anchor-link" href="#forward-pass">¶</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7585,308 +7966,15 @@ Hardware accelerator e.g. GPU is available in the environment, but no `device` a
 <div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">pipeline</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">"sentiment-analysis"</span><span class="p">)(</span><span class="s2">"I hate this product!"</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># using mean squared error as loss function</span>
+<span class="k">def</span> <span class="nf">mse</span><span class="p">(</span><span class="n">actual</span><span class="p">,</span> <span class="n">predicted</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">actual</span><span class="o">-</span><span class="n">predicted</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># mse gradient is the difference between actual and predicted. It the negative of the mse derivative</span>
+<span class="k">def</span> <span class="nf">mse_grad</span><span class="p">(</span><span class="n">actual</span><span class="p">,</span> <span class="n">predicted</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">predicted</span> <span class="o">-</span> <span class="n">actual</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>No model was supplied, defaulted to distilbert/distilbert-base-uncased-finetuned-sst-2-english and revision 714eb0f (https://huggingface.co/distilbert/distilbert-base-uncased-finetuned-sst-2-english).
-Using a pipeline without specifying a model name and revision in production is not recommended.
-Hardware accelerator e.g. GPU is available in the environment, but no `device` argument is passed to the `Pipeline` object. Model will be on CPU.
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>[{'label': 'NEGATIVE', 'score': 0.9997503161430359}]</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Now let's do the same but specify the model we want to use:</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">pipeline</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">"sentiment-analysis"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">"distilbert-base-uncased-finetuned-sst-2-english"</span><span class="p">)(</span><span class="s2">"I love this product!"</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>Hardware accelerator e.g. GPU is available in the environment, but no `device` argument is passed to the `Pipeline` object. Model will be on CPU.
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>[{'label': 'POSITIVE', 'score': 0.9998855590820312}]</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Other tasks:</p>
-<ul>
-<li>Question answering</li>
-<li>Summarization</li>
-<li>Text generation</li>
-<li>Named entity recognition</li>
-<li>Speech recognition</li>
-<li>Text-to-speech</li>
-</ul>
-<p><a href="https://huggingface.co/models">Models</a></p>
-<p><a href="https://huggingface.co/datasets">Datasets</a></p>
-<p><a href="https://huggingface.co/spaces">Spaces</a></p>
-<h3 id="Example:-Summarization">Example: Summarization<a class="anchor-link" href="#Example:-Summarization">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">summarizer</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">"summarization"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">"facebook/bart-large-cnn"</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">"mps"</span><span class="p">)</span>
-
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"""</span>
-<span class="s2">Hugging Face, Inc. is an American company incorporated under the Delaware General Corporation Law[1] and based in New York City that develops computation tools for building applications using machine learning. It is most notable for its transformers library built for natural language processing applications and its platform that allows users to share machine learning models and datasets and showcase their work.</span>
-<span class="s2">The company was founded in 2016 by French entrepreneurs Clément Delangue, Julien Chaumond, and Thomas Wolf in New York City, originally as a company that developed a chatbot app targeted at teenagers.[2] The company was named after the HUGGING FACE emoji. After open sourcing the model behind the chatbot, the company pivoted to focus on being a platform for machine learning.</span>
-
-<span class="s2">In March 2021, Hugging Face raised US$40 million in a Series B funding round.[3]</span>
-
-<span class="s2">On April 28, 2021, the company launched the BigScience Research Workshop in collaboration with several other research groups to release an open large language model.[4] In 2022, the workshop concluded with the announcement of BLOOM, a multilingual large language model with 176 billion parameters.[5][6]</span>
-
-<span class="s2">In December 2022, the company acquired Gradio, an open source library built for developing machine learning applications in Python.[7]</span>
-
-<span class="s2">On May 5, 2022, the company announced its Series C funding round led by Coatue and Sequoia.[8] The company received a $2 billion valuation.</span>
-
-<span class="s2">On August 3, 2022, the company announced the Private Hub, an enterprise version of its public Hugging Face Hub that supports SaaS or on-premises deployment.[9]</span>
-<span class="s2">"""</span>
-
-<span class="n">summarizer_text</span> <span class="o">=</span> <span class="n">summarizer</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">140</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"summary_text"</span><span class="p">]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">summarizer_text</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hugging Face, Inc. was founded in 2016 by French entrepreneurs Clément Delangue, Julien Chaumond, and Thomas Wolf. The company was named after the HUGGING FACE emoji. In March 2021, Hugging Face raised US$40 million in a Series B funding round. In May 2022, the company announced its Series C funding round led by Coatue and Sequoia.
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Example:-Conversational-Chatbot">Example: Conversational Chatbot<a class="anchor-link" href="#Example:-Conversational-Chatbot">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [34]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">chat</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"You are a sassy, wise-cracking robot as imagined by Hollywood circa 1986."</span><span class="p">},</span>
-    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Hey, can you tell me any fun things to do in New York?"</span><span class="p">}</span>
-<span class="p">]</span>
-
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">pipeline</span>
-
-<span class="n">pipe</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">"text-generation"</span><span class="p">,</span> <span class="s2">"Qwen/Qwen2.5-1.5B-Instruct"</span><span class="p">,</span> <span class="n">torch_dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">,</span> <span class="n">device_map</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="n">max_new_tokens</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'generated_text'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">'content'</span><span class="p">])</span>
-
-<span class="n">chat</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'generated_text'</span><span class="p">]</span>
-<span class="n">chat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Wait, what's so wild about soup cans?"</span><span class="p">}</span>
-<span class="p">)</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="n">max_new_tokens</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'generated_text'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">'content'</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>Some parameters are on the meta device because they were offloaded to the disk.
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Sure thing! In New York, there's always something happening. For instance, check out the famous Broadway shows and theaters where you'll find some of the best live performances on Earth. Don't miss the iconic Times Square with its bright lights and bustling crowds. If you're up for an adventure, head over to Central Park for a picnic or just to enjoy the green space. And if you love food, don't forget about the culinary delights that NYC has to offer, from fine dining at Michelin-starred restaurants to street food in the heart of the city. Always have a good time!
-Oh, those wonderful soup cans! They’re like the unsung heroes of New York City’s culinary scene. Imagine them: little metal boxes filled with delicious broth and vegetables, sitting innocently on someone's doorstep—just waiting to be opened and enjoyed. These humble cans are the perfect example of how even the simplest items can become something special when shared with others.
-
-They represent the spirit of generosity and community that is quintessentially American. From their humble beginnings as leftovers thrown into garbage bins, they've grown into beloved staples in many households across the Big Apple. The act of opening one of these cans isn’t just a meal—it’s a connection, a conversation starter, and a reminder that sometimes, all it takes is a little kindness to make life sweeter. So next time you see a soup can, remember the story behind it and appreciate not just the food inside but also the warmth and friendship that come with sharing such simple yet thoughtful gestures.
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="ChatBot-UI">ChatBot UI<a class="anchor-link" href="#ChatBot-UI">¶</a></h4>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [41]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">gradio</span> <span class="k">as</span> <span class="nn">gr</span>
-
-<span class="n">pipe</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">"text-generation"</span><span class="p">,</span> <span class="s2">"Qwen/Qwen2.5-1.5B-Instruct"</span><span class="p">,</span> <span class="n">torch_dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">,</span> <span class="n">device_map</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
-<span class="n">chat</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"You are a ChatBot."</span><span class="p">},</span>
-<span class="p">]</span>
-
-<span class="k">def</span> <span class="nf">vanilla_chatbot</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">history</span><span class="p">):</span>
-    <span class="n">chat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
-    <span class="p">)</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="n">max_new_tokens</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
-    <span class="n">chat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'generated_text'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">chat</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'generated_text'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">'content'</span><span class="p">]</span>
-
-<span class="n">demo_chatbot</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">ChatInterface</span><span class="p">(</span><span class="n">vanilla_chatbot</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">"messages"</span><span class="p">)</span>
-
-<span class="n">demo_chatbot</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>Some parameters are on the meta device because they were offloaded to the disk.
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>* Running on local URL:  http://127.0.0.1:7865
-
-To create a public link, set `share=True` in `launch()`.
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div><iframe allow="autoplay; camera; microphone; clipboard-read; clipboard-write;" allowfullscreen="" frameborder="0" height="500" src="http://127.0.0.1:7865/" width="100%"></iframe></div>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[41]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre></pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[{'role': 'system', 'content': 'You are a ChatBot.'}, {'role': 'user', 'content': 'Hi'}, {'role': 'assistant', 'content': 'Hello! How can I assist you today?'}]
-[{'role': 'system', 'content': 'You are a ChatBot.'}, {'role': 'user', 'content': 'Hi'}, {'role': 'assistant', 'content': 'Hello! How can I assist you today?'}, {'role': 'user', 'content': 'What do you know about new york ?'}, {'role': 'assistant', 'content': "New York City is the most populous city in the United States and one of its most important economic, cultural, and political centers. It's home to many famous landmarks such as the Statue of Liberty, Central Park, Times Square, and the Empire State Building.\n\nThe city has a diverse population with people from all over the world living there. New Yorkers are known for their energy, creativity, and love of food.\n\nIn addition to its iconic landmarks, New York City also boasts an array of museums, theaters, and entertainment venues. The city is home to some of the largest financial institutions in the world and is considered the global capital of finance.\n\nOverall, New York City is a vibrant and exciting place that offers something for everyone."}]
-[{'role': 'system', 'content': 'You are a ChatBot.'}, {'role': 'user', 'content': 'Hi'}, {'role': 'assistant', 'content': 'Hello! How can I assist you today?'}, {'role': 'user', 'content': 'What do you know about new york ?'}, {'role': 'assistant', 'content': "New York City is the most populous city in the United States and one of its most important economic, cultural, and political centers. It's home to many famous landmarks such as the Statue of Liberty, Central Park, Times Square, and the Empire State Building.\n\nThe city has a diverse population with people from all over the world living there. New Yorkers are known for their energy, creativity, and love of food.\n\nIn addition to its iconic landmarks, New York City also boasts an array of museums, theaters, and entertainment venues. The city is home to some of the largest financial institutions in the world and is considered the global capital of finance.\n\nOverall, New York City is a vibrant and exciting place that offers something for everyone."}, {'role': 'user', 'content': 'what do you mean by diverse population?'}, {'role': 'assistant', 'content': 'Diverse population refers to the variety of ethnicities, nationalities, religions, genders, ages, abilities, sexual orientations, etc., that make up a particular group or area. In the case of New York City, it means that the population includes people from different backgrounds, cultures, and experiences who come together to form a unique community.\n\nThis diversity creates opportunities for cross-cultural exchange and understanding, as well as challenges related to social justice and inclusion. However, it also requires individuals and communities to work towards creating an inclusive environment where everyone feels valued and respected.'}]
-[{'role': 'system', 'content': 'You are a ChatBot.'}, {'role': 'user', 'content': 'Hi'}, {'role': 'assistant', 'content': 'Hello! How can I assist you today?'}, {'role': 'user', 'content': 'What do you know about new york ?'}, {'role': 'assistant', 'content': "New York City is the most populous city in the United States and one of its most important economic, cultural, and political centers. It's home to many famous landmarks such as the Statue of Liberty, Central Park, Times Square, and the Empire State Building.\n\nThe city has a diverse population with people from all over the world living there. New Yorkers are known for their energy, creativity, and love of food.\n\nIn addition to its iconic landmarks, New York City also boasts an array of museums, theaters, and entertainment venues. The city is home to some of the largest financial institutions in the world and is considered the global capital of finance.\n\nOverall, New York City is a vibrant and exciting place that offers something for everyone."}, {'role': 'user', 'content': 'what do you mean by diverse population?'}, {'role': 'assistant', 'content': 'Diverse population refers to the variety of ethnicities, nationalities, religions, genders, ages, abilities, sexual orientations, etc., that make up a particular group or area. In the case of New York City, it means that the population includes people from different backgrounds, cultures, and experiences who come together to form a unique community.\n\nThis diversity creates opportunities for cross-cultural exchange and understanding, as well as challenges related to social justice and inclusion. However, it also requires individuals and communities to work towards creating an inclusive environment where everyone feels valued and respected.'}, {'role': 'user', 'content': 'list top 5 religions'}, {'role': 'assistant', 'content': 'Here are five major religions:\n\n1. Christianity: A monotheistic religion based on the teachings of Jesus Christ.\n2. Islam: A monotheistic religion based on the teachings of Muhammad.\n3. Hinduism: An ancient religion originating in India that emphasizes harmony between the individual soul (atman) and the universal soul (paramatman).\n4. Buddhism: A religion founded by Siddhartha Gautama, often referred to as the Buddha, which teaches that suffering arises from attachment to desires and ignorance.\n5. Judaism: A monotheistic religion based on the Torah, which was given to Moses at Mount Sinai.'}]
-[{'role': 'system', 'content': 'You are a ChatBot.'}, {'role': 'user', 'content': 'Hi'}, {'role': 'assistant', 'content': 'Hello! How can I assist you today?'}, {'role': 'user', 'content': 'What do you know about new york ?'}, {'role': 'assistant', 'content': "New York City is the most populous city in the United States and one of its most important economic, cultural, and political centers. It's home to many famous landmarks such as the Statue of Liberty, Central Park, Times Square, and the Empire State Building.\n\nThe city has a diverse population with people from all over the world living there. New Yorkers are known for their energy, creativity, and love of food.\n\nIn addition to its iconic landmarks, New York City also boasts an array of museums, theaters, and entertainment venues. The city is home to some of the largest financial institutions in the world and is considered the global capital of finance.\n\nOverall, New York City is a vibrant and exciting place that offers something for everyone."}, {'role': 'user', 'content': 'what do you mean by diverse population?'}, {'role': 'assistant', 'content': 'Diverse population refers to the variety of ethnicities, nationalities, religions, genders, ages, abilities, sexual orientations, etc., that make up a particular group or area. In the case of New York City, it means that the population includes people from different backgrounds, cultures, and experiences who come together to form a unique community.\n\nThis diversity creates opportunities for cross-cultural exchange and understanding, as well as challenges related to social justice and inclusion. However, it also requires individuals and communities to work towards creating an inclusive environment where everyone feels valued and respected.'}, {'role': 'user', 'content': 'list top 5 religions'}, {'role': 'assistant', 'content': 'Here are five major religions:\n\n1. Christianity: A monotheistic religion based on the teachings of Jesus Christ.\n2. Islam: A monotheistic religion based on the teachings of Muhammad.\n3. Hinduism: An ancient religion originating in India that emphasizes harmony between the individual soul (atman) and the universal soul (paramatman).\n4. Buddhism: A religion founded by Siddhartha Gautama, often referred to as the Buddha, which teaches that suffering arises from attachment to desires and ignorance.\n5. Judaism: A monotheistic religion based on the Torah, which was given to Moses at Mount Sinai.'}, {'role': 'user', 'content': 'elaborate on number one '}, {'role': 'assistant', 'content': 'Christianity is a monotheistic religion based on the belief in one God who created the universe and sent his son Jesus Christ to earth to save humanity from sin. Christians believe that Jesus died on the cross to pay for the sins of mankind and that he will return to judge the world. There are several branches of Christianity including Catholicism, Protestantism, Eastern Orthodoxy, and Anglicanism.\n\nJesus is believed to be the Son of God and the Messiah prophesied in the Old Testament. He is seen as both fully human and fully divine, and his teachings are central to Christian faith. Many Christians also follow the Bible as their holy book, though they interpret it differently depending on their denomination.\n\nChristianity has been practiced since around the first century AD and has spread throughout the world, becoming one of the largest religions in terms of followers.'}]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Expose-it-as-an-HF-Space">Expose it as an HF Space<a class="anchor-link" href="#Expose-it-as-an-HF-Space">¶</a></h4><p>Go to <a href="https://huggingface.co/spaces">Hugging Face Spaces</a> and create a new space with "Gradio" as the app type.</p>
-<p>Then copy the code from the Gradio app above and paste it into the app.</p>
 </div>
 </div>
 </div>
@@ -7895,12 +7983,301 @@ To create a public link, set `share=True` in `launch()`.
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span> 
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># we run through the network a sequence of 20 inputs. start with hidden state and output state as 0</span>
+<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">layers</span><span class="p">):</span>
+    <span class="n">hiddens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
+        <span class="n">i_weight</span><span class="p">,</span> <span class="n">h_weight</span><span class="p">,</span> <span class="n">h_bias</span><span class="p">,</span> <span class="n">o_weight</span><span class="p">,</span> <span class="n">o_bias</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i_weight</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o_weight</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">input_x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">,:][</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span> <span class="o">@</span> <span class="n">i_weight</span>
+            <span class="n">hidden_x</span> <span class="o">=</span> <span class="n">input_x</span> <span class="o">+</span> <span class="n">hidden</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),:][</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span> <span class="o">@</span> <span class="n">h_weight</span> <span class="o">+</span> <span class="n">h_bias</span>
+            <span class="c1"># Activation.  tanh avoids outputs getting larger and larger.</span>
+            <span class="n">hidden_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">hidden_x</span><span class="p">)</span>
+            <span class="c1"># Store hidden for use in backprop</span>
+            <span class="n">hidden</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">hidden_x</span>
+
+            <span class="c1"># Output layer</span>
+            <span class="n">output_x</span> <span class="o">=</span> <span class="n">hidden_x</span> <span class="o">@</span> <span class="n">o_weight</span> <span class="o">+</span> <span class="n">o_bias</span>
+            <span class="n">output</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">output_x</span>
+        <span class="c1"># Store hidden and output for use in backprop</span>
+        <span class="n">hiddens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+        <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hiddens</span><span class="p">,</span> <span class="n">outputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Backward-pass">Backward pass<a class="anchor-link" href="#Backward-pass">¶</a></h3><p>NN backpropagation function is:</p>
+<p>$$
+\text{NN} = tanh((Input @ I_w + I_b) + (XH(t_n-1) @ H_w + H_b)) @ O_w + O_b
+$$</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Backward pass" src="./rnn-backpropagation.png"/></p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">hiddens</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
+        <span class="n">i_weight</span><span class="p">,</span> <span class="n">h_weight</span><span class="p">,</span> <span class="n">h_bias</span><span class="p">,</span> <span class="n">o_weight</span><span class="p">,</span> <span class="n">o_bias</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="n">hiddens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">next_h_grad</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">i_weight_grad</span><span class="p">,</span> <span class="n">h_weight_grad</span><span class="p">,</span> <span class="n">h_bias_grad</span><span class="p">,</span> <span class="n">o_weight_grad</span><span class="p">,</span> <span class="n">o_bias_grad</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># Add newaxis in the first dimension</span>
+            <span class="n">out_grad</span> <span class="o">=</span> <span class="n">grad</span><span class="p">[</span><span class="n">j</span><span class="p">,:][</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+
+            <span class="c1"># Output updates</span>
+            <span class="c1"># np.newaxis creates a size 1 axis, in this case transposing matrix</span>
+            <span class="n">o_weight_grad</span> <span class="o">+=</span> <span class="n">hidden</span><span class="p">[</span><span class="n">j</span><span class="p">,:][:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">@</span> <span class="n">out_grad</span>
+            <span class="n">o_bias_grad</span> <span class="o">+=</span> <span class="n">out_grad</span>
+
+            <span class="c1"># Propagate gradient to hidden unit</span>
+            <span class="n">h_grad</span> <span class="o">=</span> <span class="n">out_grad</span> <span class="o">@</span> <span class="n">o_weight</span><span class="o">.</span><span class="n">T</span>
+
+            <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Then we multiply the gradient by the hidden weights to pull gradient from next hidden state to current hidden state</span>
+                <span class="n">hh_grad</span> <span class="o">=</span> <span class="n">next_h_grad</span> <span class="o">@</span> <span class="n">h_weight</span><span class="o">.</span><span class="n">T</span>
+                <span class="c1"># Add the gradients together to combine output contribution and hidden contribution</span>
+                <span class="n">h_grad</span> <span class="o">+=</span> <span class="n">hh_grad</span>
+
+            <span class="c1"># Pull the gradient across the current hidden nonlinearity</span>
+            <span class="c1"># derivative of tanh is 1 - tanh(x) ** 2</span>
+            <span class="c1"># So we take the output of tanh (next hidden state), and plug in</span>
+            <span class="n">tanh_deriv</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">hidden</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]</span> <span class="o">**</span> <span class="mi">2</span>
+
+            <span class="c1"># next_h_grad @ np.diag(tanh_deriv_next) multiplies each element of next_h_grad by the deriv</span>
+            <span class="c1"># Effect is to pull value across nonlinearity</span>
+            <span class="n">h_grad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">h_grad</span><span class="p">,</span> <span class="n">tanh_deriv</span><span class="p">)</span>
+
+            <span class="c1"># Store to compute h grad for previous sequence position</span>
+            <span class="n">next_h_grad</span> <span class="o">=</span> <span class="n">h_grad</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="c1"># If we're not at the very beginning</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Multiply input from previous layer by post-nonlinearity grad at current layer</span>
+                <span class="n">h_weight_grad</span> <span class="o">+=</span> <span class="n">hidden</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">@</span> <span class="n">h_grad</span>
+                <span class="n">h_bias_grad</span> <span class="o">+=</span> <span class="n">h_grad</span>
+
+            <span class="n">i_weight_grad</span> <span class="o">+=</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">,:][:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">@</span> <span class="n">h_grad</span>
+
+        <span class="c1"># Normalize lr by number of sequence elements</span>
+        <span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">i_weight</span> <span class="o">-=</span> <span class="n">i_weight_grad</span> <span class="o">*</span> <span class="n">lr</span>
+        <span class="n">h_weight</span> <span class="o">-=</span> <span class="n">h_weight_grad</span> <span class="o">*</span> <span class="n">lr</span>
+        <span class="n">h_bias</span> <span class="o">-=</span> <span class="n">h_bias_grad</span> <span class="o">*</span> <span class="n">lr</span>
+        <span class="n">o_weight</span> <span class="o">-=</span> <span class="n">o_weight_grad</span> <span class="o">*</span> <span class="n">lr</span>
+        <span class="n">o_bias</span> <span class="o">-=</span> <span class="n">o_bias_grad</span> <span class="o">*</span> <span class="n">lr</span>
+        <span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i_weight</span><span class="p">,</span> <span class="n">h_weight</span><span class="p">,</span> <span class="n">h_bias</span><span class="p">,</span> <span class="n">o_weight</span><span class="p">,</span> <span class="n">o_bias</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">layers</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Training">Training<a class="anchor-link" href="#Training">¶</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [52]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">epochs</span> <span class="o">=</span> <span class="mi">21</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">0.0001</span>
+<span class="n">sequence_len</span> <span class="o">=</span> <span class="mi">13</span>
+
+<span class="n">layer_conf</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span><span class="s2">"input"</span><span class="p">,</span> <span class="s2">"units"</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"rnn"</span><span class="p">,</span> <span class="s2">"hidden"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"output"</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="p">]</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">init_params</span><span class="p">(</span><span class="n">layer_conf</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="n">epoch_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">train_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">sequence_len</span><span class="p">):</span>
+        <span class="n">seq_x</span> <span class="o">=</span> <span class="n">train_x</span><span class="p">[</span><span class="n">j</span><span class="p">:(</span><span class="n">j</span><span class="o">+</span><span class="n">sequence_len</span><span class="p">),]</span>
+        <span class="n">seq_y</span> <span class="o">=</span> <span class="n">train_y</span><span class="p">[</span><span class="n">j</span><span class="p">:(</span><span class="n">j</span><span class="o">+</span><span class="n">sequence_len</span><span class="p">),]</span>
+        <span class="n">hiddens</span><span class="p">,</span> <span class="n">outputs</span> <span class="o">=</span> <span class="n">forward</span><span class="p">(</span><span class="n">seq_x</span><span class="p">,</span> <span class="n">layers</span><span class="p">)</span>
+        <span class="n">grad</span> <span class="o">=</span> <span class="n">mse_grad</span><span class="p">(</span><span class="n">seq_y</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">backward</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">seq_x</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">hiddens</span><span class="p">)</span>
+        <span class="n">epoch_loss</span> <span class="o">+=</span> <span class="n">mse</span><span class="p">(</span><span class="n">seq_y</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">valid_loss</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">valid_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">sequence_len</span><span class="p">):</span>
+            <span class="n">seq_x</span> <span class="o">=</span> <span class="n">valid_x</span><span class="p">[</span><span class="n">j</span><span class="p">:(</span><span class="n">j</span><span class="o">+</span><span class="n">sequence_len</span><span class="p">),]</span>
+            <span class="n">seq_y</span> <span class="o">=</span> <span class="n">valid_y</span><span class="p">[</span><span class="n">j</span><span class="p">:(</span><span class="n">j</span><span class="o">+</span><span class="n">sequence_len</span><span class="p">),]</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">outputs</span> <span class="o">=</span> <span class="n">forward</span><span class="p">(</span><span class="n">seq_x</span><span class="p">,</span> <span class="n">layers</span><span class="p">)</span>
+            <span class="n">valid_loss</span> <span class="o">+=</span> <span class="n">mse</span><span class="p">(</span><span class="n">seq_y</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> train loss </span><span class="si">{</span><span class="n">epoch_loss</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">train_x</span><span class="p">)</span><span class="si">}</span><span class="s2"> valid loss </span><span class="si">{</span><span class="n">valid_loss</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">valid_x</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">60.0</span><span class="p">,</span> <span class="mf">38.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">65.0</span><span class="p">,</span> <span class="mf">39.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">66.0</span><span class="p">,</span> <span class="mf">36.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">64.0</span><span class="p">,</span> <span class="mf">38.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">63.0</span><span class="p">,</span> <span class="mf">38.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">62.0</span><span class="p">,</span> <span class="mf">42.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">61.0</span><span class="p">,</span> <span class="mf">37.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">60.0</span><span class="p">,</span> <span class="mf">36.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">62.0</span><span class="p">,</span> <span class="mf">35.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">67.0</span><span class="p">,</span> <span class="mf">38.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">66.0</span><span class="p">,</span> <span class="mf">41.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">70.0</span><span class="p">,</span> <span class="mf">39.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">62.0</span><span class="p">,</span> <span class="mf">41.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">forward</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="n">layers</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Prediction: </span><span class="si">{</span><span class="n">predictions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> vs actual: 64"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Epoch: 0 train loss 519.6897645583397 valid loss 72.75332393001642
+Prediction: 66.62851833139118 vs actual: 64
+Epoch: 2 train loss 36.42163982733737 valid loss 34.5787728792624
+Prediction: 77.24747225976233 vs actual: 64
+Epoch: 4 train loss 27.382911331350147 valid loss 29.880311580291163
+Prediction: 83.61372429665458 vs actual: 64
+Epoch: 6 train loss 23.86992827107105 valid loss 29.5155110803209
+Prediction: 87.15185060463273 vs actual: 64
+Epoch: 8 train loss 22.097282189052727 valid loss 28.867248732991
+Prediction: 89.56176331634961 vs actual: 64
+Epoch: 10 train loss 21.19754778288571 valid loss 28.319600958096984
+Prediction: 90.9757596641493 vs actual: 64
+Epoch: 12 train loss 20.80703158428252 valid loss 28.007075069070954
+Prediction: 91.67585229723386 vs actual: 64
+Epoch: 14 train loss 20.624720897995743 valid loss 27.795451578250965
+Prediction: 91.98200920596689 vs actual: 64
+Epoch: 16 train loss 20.534074732042967 valid loss 27.6354128815431
+Prediction: 91.98152140187526 vs actual: 64
+Epoch: 18 train loss 20.48957190776276 valid loss 27.51225526508315
+Prediction: 88.98640924101369 vs actual: 64
+Epoch: 20 train loss 20.470074809311015 valid loss 27.428434472209506
+Prediction: 62.98421948718461 vs actual: 64
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [53]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 2022-11-14,60.0,38.0,0.0,65.0</span>
+<span class="c1"># 2022-11-15,65.0,39.0,0.0,66.0</span>
+<span class="c1"># 2022-11-16,66.0,36.0,0.0,64.0</span>
+<span class="c1"># 2022-11-17,64.0,38.0,0.0,63.0</span>
+<span class="c1"># 2022-11-18,63.0,38.0,0.0,62.0</span>
+<span class="c1"># 2022-11-19,62.0,42.0,0.0,61.0</span>
+<span class="c1"># 2022-11-20,61.0,37.0,0.0,60.0</span>
+<span class="c1"># 2022-11-21,60.0,36.0,0.0,62.0</span>
+<span class="c1"># 2022-11-22,62.0,35.0,0.0,67.0</span>
+<span class="c1"># 2022-11-23,67.0,38.0,0.0,66.0</span>
+<span class="c1"># 2022-11-24,66.0,41.0,0.0,70.0</span>
+<span class="c1"># 2022-11-25,70.0,39.0,0.0,62.0</span>
+<span class="c1"># 2022-11-26,62.0,41.0,0.0,64.0</span>
+
+<span class="n">history</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">60.0</span><span class="p">,</span> <span class="mf">38.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">65.0</span><span class="p">,</span> <span class="mf">39.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">66.0</span><span class="p">,</span> <span class="mf">36.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">64.0</span><span class="p">,</span> <span class="mf">38.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">63.0</span><span class="p">,</span> <span class="mf">38.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">62.0</span><span class="p">,</span> <span class="mf">42.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">61.0</span><span class="p">,</span> <span class="mf">37.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">60.0</span><span class="p">,</span> <span class="mf">36.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">62.0</span><span class="p">,</span> <span class="mf">35.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">67.0</span><span class="p">,</span> <span class="mf">38.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">66.0</span><span class="p">,</span> <span class="mf">41.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">70.0</span><span class="p">,</span> <span class="mf">39.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">62.0</span><span class="p">,</span> <span class="mf">41.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
+
+<span class="n">_</span><span class="p">,</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">forward</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="n">layers</span><span class="p">)</span>
+<span class="c1"># print all predictions</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+<span class="c1"># print last prediction</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">predictions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>[[40.10723141]
+ [41.53303368]
+ [42.36439085]
+ [42.42101967]
+ [43.48365448]
+ [44.49978194]
+ [48.4633702 ]
+ [53.26467986]
+ [58.1371818 ]
+ [58.88674495]
+ [59.46713998]
+ [59.24355687]
+ [62.98421949]]
+62.98421948718461
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="References">References<a class="anchor-link" href="#References">¶</a></h2><ul>
+<li><a href="https://github.com/VikParuchuri/zero_to_gpt/blob/master/explanations/rnn.ipynb">https://github.com/VikParuchuri/zero_to_gpt/blob/master/explanations/rnn.ipynb</a></li>
+<li><a href="https://www.youtube.com/watch?v=4wuIOcD1LLI">https://www.youtube.com/watch?v=4wuIOcD1LLI</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 </div>
 </div>
 </div>

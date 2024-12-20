@@ -30,26 +30,26 @@
 
   <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.3.4" />
-<meta property="og:title" content="Learning Neural Nets" />
+<meta property="og:title" content="RNN from scratch" />
 <meta name="author" content="Laurentiu Soica" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="Learning the foundational mathematical framework for AI, Neural Networks, ML and DL." />
-<meta property="og:description" content="Learning the foundational mathematical framework for AI, Neural Networks, ML and DL." />
-<link rel="canonical" href="http://localhost:4000/posts/learning-neural-networks/" />
-<meta property="og:url" content="http://localhost:4000/posts/learning-neural-networks/" />
+<meta name="description" content="RNN from scratch." />
+<meta property="og:description" content="RNN from scratch." />
+<link rel="canonical" href="http://localhost:4000/posts/rnn-from-scratch/" />
+<meta property="og:url" content="http://localhost:4000/posts/rnn-from-scratch/" />
 <meta property="og:site_name" content="Laurentiu SOICA" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2024-10-05T01:08:03+03:00" />
+<meta property="article:published_time" content="2024-12-16T11:08:03+02:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Learning Neural Nets" />
+<meta property="twitter:title" content="RNN from scratch" />
 <meta name="twitter:site" content="@lsoica" />
 <meta name="twitter:creator" content="@lsoica" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Laurentiu Soica","url":"https://github.com/lsoica/"},"dateModified":"2024-12-04T14:18:30+02:00","datePublished":"2024-10-05T01:08:03+03:00","description":"Learning the foundational mathematical framework for AI, Neural Networks, ML and DL.","headline":"Learning Neural Nets","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/learning-neural-networks/"},"url":"http://localhost:4000/posts/learning-neural-networks/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Laurentiu Soica","url":"https://github.com/lsoica/"},"dateModified":"2024-12-16T11:08:03+02:00","datePublished":"2024-12-16T11:08:03+02:00","description":"RNN from scratch.","headline":"RNN from scratch","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/rnn-from-scratch/"},"url":"http://localhost:4000/posts/rnn-from-scratch/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-  <title>Learning Neural Nets | Laurentiu SOICA
+  <title>RNN from scratch | Laurentiu SOICA
   </title>
 
   <!--
@@ -434,7 +434,7 @@
         
           
             
-              <span>Learning Neural Nets</span>
+              <span>RNN from scratch</span>
             
 
           
@@ -502,79 +502,6 @@
 
 
 
-  
-  
-
-  
-    
-      
-      
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-
-  
-
 
 <!-- Add header for code snippets -->
 
@@ -589,71 +516,6 @@
   
   
 
-  
-    
-    
-
-    
-      
-        
-        
-      
-
-      
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-
-      
-      
-      
-
-      
-    
-
-    
   
 
   
@@ -681,9 +543,9 @@
 
 <article class="px-1">
   <header>
-    <h1 data-toc-skip>Learning Neural Nets</h1>
+    <h1 data-toc-skip>RNN from scratch</h1>
     
-      <p class="post-desc fw-light mb-4">Learning the foundational mathematical framework for AI, Neural Networks, ML and DL.</p>
+      <p class="post-desc fw-light mb-4">RNN from scratch.</p>
     
 
     <div class="post-meta text-muted">
@@ -700,41 +562,18 @@
 
 <time
   
-  data-ts="1728079683"
+  data-ts="1734340083"
   data-df="ll"
   
     data-bs-toggle="tooltip" data-bs-placement="bottom"
   
 >
-  Oct  5, 2024
+  Dec 16, 2024
 </time>
 
       </span>
 
       <!-- lastmod date -->
-      
-        <span>
-          Updated
-          <!--
-  Date format snippet
-  See: ${JS_ROOT}/utils/locale-dateime.js
--->
-
-
-
-
-<time
-  
-  data-ts="1733314710"
-  data-df="ll"
-  
-    data-bs-toggle="tooltip" data-bs-placement="bottom"
-  
->
-  Dec  4, 2024
-</time>
-
-        </span>
       
 
       
@@ -781,9 +620,9 @@
   class="readtime"
   data-bs-toggle="tooltip"
   data-bs-placement="bottom"
-  title="463 words"
+  title="0 words"
 >
-  <em>2 min</em> read</span>
+  <em>1 min</em> read</span>
 
         </div>
       </div>
@@ -791,313 +630,12 @@
   </header>
 
   <div class="content">
-    <p><a href="/../../assets/images/ai-ml-basis.png" class="popup img-link  shimmer"><img src="/../../assets/images/ai-ml-basis.png" alt="AI/ML" loading="lazy"></a></p>
+    <div class="jupyter-notebook" style="position: relative; width: 100%; margin: 0 auto;">
+  <div class="jupyter-notebook-iframe-container">
+    <iframe src="../../assets/rnn_from_scratch.ipynb.html" style="position: absolute; top: 0; left: 0; border-style: none;" width="100%" height="100%" onload="this.parentElement.style.paddingBottom = (this.contentWindow.document.documentElement.scrollHeight + 10) + 'px'"></iframe>
+  </div>
+</div>
 
-<h2 id="linear-algebra"><span class="me-2">Linear Algebra</span><a href="#linear-algebra" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
-
-<div class="table-wrapper"><table>
-  <thead>
-    <tr>
-      <th>Link</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><a href="https://www.youtube.com/watch?v=fNk_zzaMoSs&amp;list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab">Linear Algebra</a></td>
-      <td>3Blue1Brown Series on Linear Algebra</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.youtube.com/watch?v=0z6AhrOSrRs">Mathematics for Machine Learning</a></td>
-      <td>Imperial College London Course on  Mathematics for Machine Learning</td>
-    </tr>
-    <tr>
-      <td><a href="https://transformer-circuits.pub/2021/framework/index.html">A Mathematical Framework for Transformer Circuits</a></td>
-      <td>Anthropic’s Mathematical Framework for Transformers</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/jonkrohn/ML-foundations/tree/master">Machine Learning Foundations</a></td>
-      <td>Machine Learning Foundations</td>
-    </tr>
-  </tbody>
-</table></div>
-
-<h2 id="calculus"><span class="me-2">Calculus</span><a href="#calculus" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
-
-<div class="table-wrapper"><table>
-  <thead>
-    <tr>
-      <th>Link</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><a href="https://www.youtube.com/watch?v=WUvTyaaNkzM&amp;list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr">Calculus</a></td>
-      <td>3Blue1Brown’s series on calculus.</td>
-    </tr>
-    <tr>
-      <td><a href="https://openlearninglibrary.mit.edu/courses/course-v1:MITx+18.01.1x+2T2019/course/">MIT Calculus 1A: Differentiation</a></td>
-      <td>Calculus 1A by MIT.</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.thegreatcourses.com/courses/understanding-calculus-problems-solutions-and-tips">Understanding Calculus: Problems, Solutions, and Tips</a></td>
-      <td>A course offering various problems, solutions, and tips for understanding calculus.</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/jonkrohn/ML-foundations/tree/master">Machine Learning Foundations</a></td>
-      <td>Machine Learning Foundations</td>
-    </tr>
-  </tbody>
-</table></div>
-
-<h2 id="differentiable-programming"><span class="me-2">Differentiable Programming</span><a href="#differentiable-programming" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
-
-<div class="table-wrapper"><table>
-  <thead>
-    <tr>
-      <th>Link</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><a href="https://arxiv.org/pdf/2403.14606">Google Deepmind: The Elements of Differentiable Programming</a></td>
-      <td>The mathematical frameworks that underpins “Differentiable Programming”</td>
-    </tr>
-  </tbody>
-</table></div>
-
-<h2 id="neural-networks"><span class="me-2">Neural Networks</span><a href="#neural-networks" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
-
-<div class="table-wrapper"><table>
-  <thead>
-    <tr>
-      <th>Link</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><a href="https://en.wikipedia.org/wiki/Word_n-gram_language_model">Before Language Models - N-Ggram</a></td>
-      <td>An article on the Wikipedia page for Word n-gram language model.</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">Neural Networks</a></td>
-      <td>3Blue1Brown’s series on neural networks.</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/karpathy/nn-zero-to-hero">Karpathy’s Neural Networks: Zero to Hero</a></td>
-      <td>Andrej Karpathy’s series on neural networks</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.youtube.com/watch?v=kCc8FmEb1nY">Build GPT from scratch</a></td>
-      <td>Andrej Karpathy: Let’s build GPT: from scratch, in code, spelled out.</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.youtube.com/@umarjamilai">Umar Jamil’s youtube channel</a></td>
-      <td>Umar Jamil’s youtube channel.</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.youtube.com/@ShawhinTalebi">Shawhin Talebi’s youtube channel</a></td>
-      <td>Shawhin Talebi’s youtube channel.</td>
-    </tr>
-  </tbody>
-</table></div>
-
-<h2 id="architectures"><span class="me-2">Architectures</span><a href="#architectures" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
-
-<div class="table-wrapper"><table>
-  <thead>
-    <tr>
-      <th><strong>Domain</strong></th>
-      <th><strong>Problem</strong></th>
-      <th><strong>Architecture</strong></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Computer Vision</strong></td>
-      <td>Image classification</td>
-      <td>CNNs, ResNet, EfficientNet, Vision Transformers (ViT)</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Object detection</td>
-      <td>YOLO, Faster R-CNN, RetinaNet, DETR</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Image segmentation</td>
-      <td>U-Net, Mask R-CNN, DeepLabV3</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Image generation</td>
-      <td>GANs, Variational Autoencoders (VAEs)</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Style transfer</td>
-      <td>Neural Style Transfer Networks</td>
-    </tr>
-    <tr>
-      <td><strong>Natural Language Processing (NLP)</strong></td>
-      <td>Text classification</td>
-      <td>RNNs, BiLSTMs, Transformers, BERT</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Sentiment analysis</td>
-      <td>RNNs, BiLSTMs, Transformers, BERT</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Machine translation</td>
-      <td>Seq2Seq Models, Transformers, MarianMT, T5</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Text summarization</td>
-      <td>Transformers, BART, Pegasus</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Question answering</td>
-      <td>BERT, RoBERTa, ALBERT</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Text generation</td>
-      <td>GPT, LLaMA</td>
-    </tr>
-    <tr>
-      <td><strong>Speech Processing</strong></td>
-      <td>Speech recognition</td>
-      <td>RNNs with CTC Loss, Wav2Vec 2.0, Conformer</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Speech synthesis</td>
-      <td>Tacotron 2, WaveNet, VITS</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Speaker identification</td>
-      <td>CNNs, ResNet-based models</td>
-    </tr>
-    <tr>
-      <td><strong>Time-Series Analysis</strong></td>
-      <td>Forecasting</td>
-      <td>LSTMs, GRUs, Temporal Fusion Transformer</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Anomaly detection</td>
-      <td>Autoencoders, LSTMs</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Activity recognition</td>
-      <td>CNNs, RNNs, Temporal Convolutional Networks (TCNs)</td>
-    </tr>
-    <tr>
-      <td><strong>Reinforcement Learning</strong></td>
-      <td>Game playing</td>
-      <td>Deep Q-Networks (DQNs), AlphaZero, PPO</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Robotics control</td>
-      <td>Policy Gradient Methods, SAC, TD3</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Strategy optimization</td>
-      <td>A3C, PPO</td>
-    </tr>
-    <tr>
-      <td><strong>Generative Modeling</strong></td>
-      <td>Text-to-image generation</td>
-      <td>Stable Diffusion, DALL-E</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Data augmentation</td>
-      <td>GANs, VAEs</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Synthetic data generation</td>
-      <td>GANs, Diffusion Models</td>
-    </tr>
-    <tr>
-      <td><strong>Medical Applications</strong></td>
-      <td>Disease detection</td>
-      <td>CNNs, Vision Transformers (ViT)</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Medical image segmentation</td>
-      <td>U-Net, SegNet</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Drug discovery</td>
-      <td>Graph Neural Networks (GNNs), Transformer-based models (e.g., MolBERT)</td>
-    </tr>
-    <tr>
-      <td><strong>Graph-Based Problems</strong></td>
-      <td>Social network analysis</td>
-      <td>Graph Neural Networks (GNNs), Graph Convolutional Networks (GCNs)</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Knowledge graph completion</td>
-      <td>Graph Attention Networks (GATs), TransE</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Molecular structure prediction</td>
-      <td>Message Passing Neural Networks (MPNNs)</td>
-    </tr>
-    <tr>
-      <td><strong>Recommendation Systems</strong></td>
-      <td>Product recommendation</td>
-      <td>Collaborative Filtering Models, Autoencoders, Neural Collaborative Filtering (NCF), Transformers</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Content personalization</td>
-      <td>Collaborative Filtering Models, Autoencoders, Transformers</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Collaborative filtering</td>
-      <td>Collaborative Filtering Models, Neural Collaborative Filtering (NCF)</td>
-    </tr>
-    <tr>
-      <td><strong>Control Systems</strong></td>
-      <td>Autonomous driving</td>
-      <td>Convolutional Networks, Reinforcement Learning with sensor integration</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Industrial process optimization</td>
-      <td>Recurrent Neural Networks, Reinforcement Learning</td>
-    </tr>
-    <tr>
-      <td><strong>Multimodal Learning</strong></td>
-      <td>Image and text alignment</td>
-      <td>CLIP, ViLBERT</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>Audio-visual synchronization</td>
-      <td>Multimodal Transformers, Hybrid CNN-RNN Architectures</td>
-    </tr>
-  </tbody>
-</table></div>
 
   </div>
 
@@ -1121,6 +659,11 @@
             href="/tags/neuralnetworks/"
             class="post-tag no-text-decoration"
           >neuralnetworks</a>
+        
+          <a
+            href="/tags/rnn/"
+            class="post-tag no-text-decoration"
+          >rnn</a>
         
       </div>
     
@@ -1156,21 +699,21 @@
 
       
 
-      <a href="https://twitter.com/intent/tweet?text=Learning%20Neural%20Nets%20-%20Laurentiu%20SOICA&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Flearning-neural-networks%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter">
+      <a href="https://twitter.com/intent/tweet?text=RNN%20from%20scratch%20-%20Laurentiu%20SOICA&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Frnn-from-scratch%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter">
         <i class="fa-fw fa-brands fa-square-x-twitter"></i>
       </a>
     
 
       
 
-      <a href="https://www.facebook.com/sharer/sharer.php?title=Learning%20Neural%20Nets%20-%20Laurentiu%20SOICA&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Flearning-neural-networks%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook" aria-label="Facebook">
+      <a href="https://www.facebook.com/sharer/sharer.php?title=RNN%20from%20scratch%20-%20Laurentiu%20SOICA&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Frnn-from-scratch%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook" aria-label="Facebook">
         <i class="fa-fw fab fa-facebook-square"></i>
       </a>
     
 
       
 
-      <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Flearning-neural-networks%2F&text=Learning%20Neural%20Nets%20-%20Laurentiu%20SOICA" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Telegram" aria-label="Telegram">
+      <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Frnn-from-scratch%2F&text=RNN%20from%20scratch%20-%20Laurentiu%20SOICA" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Telegram" aria-label="Telegram">
         <i class="fa-fw fab fa-telegram"></i>
       </a>
     
@@ -1959,11 +1502,6 @@
 
 
 
-  <section id="toc-wrapper" class="d-none ps-0 pe-4">
-    <h2 class="panel-heading ps-3 mb-2">Contents</h2>
-    <nav id="toc"></nav>
-  </section>
-
 
             
           </aside>
@@ -2037,223 +1575,223 @@
   
 
   
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
     
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
 
 
 
@@ -2267,6 +1805,62 @@
   <aside id="related-posts" aria-labelledby="related-label">
     <h3 class="mb-4" id="related-label">Further Reading</h3>
     <nav class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
+      
+        <article class="col">
+          <a href="/posts/lstm/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1728292083"
+  data-df="ll"
+  
+>
+  Oct  7, 2024
+</time>
+
+              <h4 class="pt-0 my-2">LSTM</h4>
+              <div class="text-muted">
+                <p>LSTM.</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+        <article class="col">
+          <a href="/posts/recurrent-neural-networks/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1733821683"
+  data-df="ll"
+  
+>
+  Dec 10, 2024
+</time>
+
+              <h4 class="pt-0 my-2">Recurrent neural networks</h4>
+              <div class="text-muted">
+                <p>Recurrent neural networks.</p>
+              </div>
+            </div>
+          </a>
+        </article>
       
         <article class="col">
           <a href="/posts/autoencoders/" class="post-preview card h-100">
@@ -2296,62 +1890,6 @@
           </a>
         </article>
       
-        <article class="col">
-          <a href="/posts/transformers/" class="post-preview card h-100">
-            <div class="card-body">
-              <!--
-  Date format snippet
-  See: ${JS_ROOT}/utils/locale-dateime.js
--->
-
-
-
-
-<time
-  
-  data-ts="1728983283"
-  data-df="ll"
-  
->
-  Oct 15, 2024
-</time>
-
-              <h4 class="pt-0 my-2">Transformers</h4>
-              <div class="text-muted">
-                <p>Transformers.</p>
-              </div>
-            </div>
-          </a>
-        </article>
-      
-        <article class="col">
-          <a href="/posts/mlp/" class="post-preview card h-100">
-            <div class="card-body">
-              <!--
-  Date format snippet
-  See: ${JS_ROOT}/utils/locale-dateime.js
--->
-
-
-
-
-<time
-  
-  data-ts="1728637683"
-  data-df="ll"
-  
->
-  Oct 11, 2024
-</time>
-
-              <h4 class="pt-0 my-2">Multi Layer Perceptron</h4>
-              <div class="text-muted">
-                <p>MLP.</p>
-              </div>
-            </div>
-          </a>
-        </article>
-      
     </nav>
   </aside>
   <!-- #related-posts -->
@@ -2367,22 +1905,18 @@
 
   
     <a
-      href="/posts/probabilities/"
+      href="/posts/softmax/"
       class="btn btn-outline-primary"
       aria-label="Older"
     >
-      <p>Probabilities</p>
+      <p>SoftMax</p>
     </a>
   
 
   
-    <a
-      href="/posts/lstm/"
-      class="btn btn-outline-primary"
-      aria-label="Newer"
-    >
-      <p>LSTM</p>
-    </a>
+    <div class="btn btn-outline-primary disabled" aria-label="Newer">
+      <p>-</p>
+    </div>
   
 </nav>
 
@@ -3258,16 +2792,9 @@
 
   
 
-  
-    
-
-    
-
-  
 
 
-
-  <script src="https://cdn.jsdelivr.net/combine/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/glightbox@3.3.0/dist/js/glightbox.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/dayjs@1.11.13/dayjs.min.js,npm/dayjs@1.11.13/locale/en.js,npm/dayjs@1.11.13/plugin/relativeTime.js,npm/dayjs@1.11.13/plugin/localizedFormat.js,npm/tocbot@4.29.0/dist/tocbot.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/combine/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/glightbox@3.3.0/dist/js/glightbox.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/dayjs@1.11.13/dayjs.min.js,npm/dayjs@1.11.13/locale/en.js,npm/dayjs@1.11.13/plugin/relativeTime.js,npm/dayjs@1.11.13/plugin/localizedFormat.js"></script>
 
 
 

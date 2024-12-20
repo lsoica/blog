@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-12-13T17:22:48+02:00</updated>
+  <updated>2024-12-20T14:26:14+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>RNN from scratch</title>
+    <link href="http://localhost:4000/posts/rnn-from-scratch/" rel="alternate" type="text/html" title="RNN from scratch" />
+    <published>2024-12-16T11:08:03+02:00</published>
+  
+    <updated>2024-12-16T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/rnn-from-scratch/</id>
+    <content src="http://localhost:4000/posts/rnn-from-scratch/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>RNN from scratch.</summary>
+
+  </entry>
 
   
   <entry>
@@ -119,32 +145,6 @@
   
 
   <summary>Python Pandas.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>LLM Fine-Tuning on Your Own Docs</title>
-    <link href="http://localhost:4000/posts/llm-fine-tuning-on-your-own-docs/" rel="alternate" type="text/html" title="LLM Fine-Tuning on Your Own Docs" />
-    <published>2024-11-20T11:08:03+02:00</published>
-  
-    <updated>2024-11-20T11:08:03+02:00</updated>
-  
-    <id>http://localhost:4000/posts/llm-fine-tuning-on-your-own-docs/</id>
-    <content src="http://localhost:4000/posts/llm-fine-tuning-on-your-own-docs/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Fine-tuning LLMs on your own documents.</summary>
 
   </entry>
 
