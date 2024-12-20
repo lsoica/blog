@@ -10,4 +10,4 @@ pin: false
 media_subpath: '/posts/20241216'
 ---
 
-{% jupyter_notebook "../../assets/rnn_from_scratch.ipynb" %}
+{% jupyter_notebook "../../assets/2024-12/rnn-from-scratch.ipynb" %}
