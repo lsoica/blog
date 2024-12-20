@@ -56,4 +56,6 @@ This work is published under [MIT][mit] License.
 - RNN
 - Pandas
 - Gated recurrent networks
-
+- ProjectIDX (vcode based IDE from google) with CLINE extension (formerly known as ClaudeDev) for agentic workflows
+- Claude 3.5 Sonnet's agentic coding capabilities, https://www-cdn.anthropic.com/fed9cc193a14b84131812372d8d5857f8f304c52/Model_Card_Claude_3_Addendum.pdf
+- https://openrouter.ai/
