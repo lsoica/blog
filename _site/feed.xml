@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2024-12-20T14:28:56+02:00</updated>
+  <updated>2025-02-25T13:14:23+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -13,10 +13,114 @@
   <link rel="alternate" type="text/html" hreflang="en"
     href="http://localhost:4000/"/>
   <generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator>
-  <rights> © 2024 Laurentiu SOICA </rights>
+  <rights> © 2025 Laurentiu SOICA </rights>
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Function Calling with Mistral</title>
+    <link href="http://localhost:4000/posts/Function-Calling-with-Mistral/" rel="alternate" type="text/html" title="Function Calling with Mistral" />
+    <published>2025-02-25T11:08:03+02:00</published>
+  
+    <updated>2025-02-25T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/Function-Calling-with-Mistral/</id>
+    <content src="http://localhost:4000/posts/Function-Calling-with-Mistral/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Function Calling with Mistral.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Building Agents</title>
+    <link href="http://localhost:4000/posts/Building-Agents/" rel="alternate" type="text/html" title="Building Agents" />
+    <published>2025-02-14T11:08:03+02:00</published>
+  
+    <updated>2025-02-14T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/Building-Agents/</id>
+    <content src="http://localhost:4000/posts/Building-Agents/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Building agents.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>ChatGPT-like systems</title>
+    <link href="http://localhost:4000/posts/ChatGPT-like-systems/" rel="alternate" type="text/html" title="ChatGPT-like systems" />
+    <published>2025-02-06T11:08:03+02:00</published>
+  
+    <updated>2025-02-06T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/ChatGPT-like-systems/</id>
+    <content src="http://localhost:4000/posts/ChatGPT-like-systems/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>ChatGPT-like systems.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>DeepSeek Paper</title>
+    <link href="http://localhost:4000/posts/deepseek-paper-copy/" rel="alternate" type="text/html" title="DeepSeek Paper" />
+    <published>2025-02-03T11:08:03+02:00</published>
+  
+    <updated>2025-02-03T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/deepseek-paper-copy/</id>
+    <content src="http://localhost:4000/posts/deepseek-paper-copy/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>DeepSeek Paper.</summary>
+
+  </entry>
 
   
   <entry>
@@ -24,7 +128,7 @@
     <link href="http://localhost:4000/posts/rnn-from-scratch/" rel="alternate" type="text/html" title="RNN from scratch" />
     <published>2024-12-16T11:08:03+02:00</published>
   
-    <updated>2024-12-16T11:08:03+02:00</updated>
+    <updated>2024-12-20T14:29:44+02:00</updated>
   
     <id>http://localhost:4000/posts/rnn-from-scratch/</id>
     <content src="http://localhost:4000/posts/rnn-from-scratch/" />
@@ -41,110 +145,6 @@
   
 
   <summary>RNN from scratch.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>SoftMax</title>
-    <link href="http://localhost:4000/posts/softmax/" rel="alternate" type="text/html" title="SoftMax" />
-    <published>2024-12-11T11:08:03+02:00</published>
-  
-    <updated>2024-12-11T11:08:03+02:00</updated>
-  
-    <id>http://localhost:4000/posts/softmax/</id>
-    <content src="http://localhost:4000/posts/softmax/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>SoftMax.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Cross Entropy Loss</title>
-    <link href="http://localhost:4000/posts/cross-entropy-loss/" rel="alternate" type="text/html" title="Cross Entropy Loss" />
-    <published>2024-12-11T11:08:03+02:00</published>
-  
-    <updated>2024-12-11T11:08:03+02:00</updated>
-  
-    <id>http://localhost:4000/posts/cross-entropy-loss/</id>
-    <content src="http://localhost:4000/posts/cross-entropy-loss/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Cross Entropy Loss.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Recurrent neural networks</title>
-    <link href="http://localhost:4000/posts/recurrent-neural-networks/" rel="alternate" type="text/html" title="Recurrent neural networks" />
-    <published>2024-12-10T11:08:03+02:00</published>
-  
-    <updated>2024-12-10T11:08:03+02:00</updated>
-  
-    <id>http://localhost:4000/posts/recurrent-neural-networks/</id>
-    <content src="http://localhost:4000/posts/recurrent-neural-networks/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Recurrent neural networks.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Python Pandas</title>
-    <link href="http://localhost:4000/posts/pandas/" rel="alternate" type="text/html" title="Python Pandas" />
-    <published>2024-12-06T11:08:03+02:00</published>
-  
-    <updated>2024-12-06T11:08:03+02:00</updated>
-  
-    <id>http://localhost:4000/posts/pandas/</id>
-    <content src="http://localhost:4000/posts/pandas/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Python Pandas.</summary>
 
   </entry>
 
