@@ -1,7 +1,7 @@
----
-title:  "Building Agents"
+
+title:  "Agents building blocks"
 description: >-
-  Building agents.
+  Agents building blocks.
 author: lso
 date:   2025-02-14 11:08:03 +0200
 categories: [Blogging, Tutorial]

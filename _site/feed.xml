@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2025-04-09T18:59:42+03:00</updated>
+  <updated>2025-04-11T17:47:11+03:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -73,13 +73,13 @@
   
   <entry>
     <title>How to build agents with LLMs</title>
-    <link href="http://localhost:4000/posts/building-agents/" rel="alternate" type="text/html" title="How to build agents with LLMs" />
+    <link href="http://localhost:4000/posts/how-to-build-agents-with-llms/" rel="alternate" type="text/html" title="How to build agents with LLMs" />
     <published>2025-03-01T11:08:03+02:00</published>
   
     <updated>2025-03-01T11:08:03+02:00</updated>
   
-    <id>http://localhost:4000/posts/building-agents/</id>
-    <content src="http://localhost:4000/posts/building-agents/" />
+    <id>http://localhost:4000/posts/how-to-build-agents-with-llms/</id>
+    <content src="http://localhost:4000/posts/how-to-build-agents-with-llms/" />
     <author>
       <name>lso</name>
     </author>
@@ -124,27 +124,36 @@
 
   
   <entry>
-    <title>Building Agents</title>
-    <link href="http://localhost:4000/posts/Building-Agents/" rel="alternate" type="text/html" title="Building Agents" />
-    <published>2025-02-14T11:08:03+02:00</published>
+    <title>Agents Building Blocks</title>
+    <link href="http://localhost:4000/posts/Agents-Building-blocks/" rel="alternate" type="text/html" title="Agents Building Blocks" />
+    <published>2025-02-14T00:00:00+02:00</published>
   
-    <updated>2025-02-14T11:08:03+02:00</updated>
+    <updated>2025-02-14T00:00:00+02:00</updated>
   
-    <id>http://localhost:4000/posts/Building-Agents/</id>
-    <content src="http://localhost:4000/posts/Building-Agents/" />
+    <id>http://localhost:4000/posts/Agents-Building-blocks/</id>
+    <content src="http://localhost:4000/posts/Agents-Building-blocks/" />
     <author>
-      <name>lso</name>
+      <name>Laurentiu SOICA</name>
     </author>
 
   
     
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
   
 
-  <summary>Building agents.</summary>
+  <summary>title:  “Agents building blocks”
+description: &amp;amp;gt;-
+  Agents building blocks.
+author: lso
+date:   2025-02-14 11:08:03 +0200
+categories: [Blogging, Tutorial]
+tags: [agents,llm]
+pin: false
+media_subpath: ‘/posts/20250214’
+—
+
+What is an agent?
+
+An agent is an AI model capable of reasoning, planning, and interacting with its environment. We call it Agent because it has agency, aka it has the abilit...</summary>
 
   </entry>
 
