@@ -1,6 +1,40 @@
 [
   
   {
+    "title": "MCP",
+    "url": "/posts/mcp/",
+    "categories": "Blogging, Tutorial",
+    "tags": "mcp, agents, llm",
+    "date": "2025-05-30 12:08:03 +0300",
+    
+
+
+
+
+
+    
+    "snippet": "MCPComponents  Host: The AI application that uses the MCP protocol (ChatGPT, Claude, Cursor, etc.).  Client: called by the host to interact with the MCP server. Each Client maintains a 1:1 connecti...",
+    "content": "MCPComponents  Host: The AI application that uses the MCP protocol (ChatGPT, Claude, Cursor, etc.).  Client: called by the host to interact with the MCP server. Each Client maintains a 1:1 connection with a single Server.  MCP Server: The server that implements the MCP protocol. Provide access to specific external tools, data sources, or services.The Communication ProtocolMCP uses JSON-RPC 2.0 as the message format for all communication between Clients and Servers. JSON-RPC is a lightweight remote procedure call protocol encoded in JSON, which makes it:  Human-readable and easy to debug  Language-agnostic, supporting implementation in any programming environment  Well-established, with clear specifications and widespread adoptionExample of a request:{  \"jsonrpc\": \"2.0\",  \"id\": 1,  \"method\": \"tools/call\",  \"params\": {    \"name\": \"weather\",    \"arguments\": {      \"location\": \"San Francisco\"    }  }}Example of a successful response:{  \"jsonrpc\": \"2.0\",  \"id\": 1,  \"result\": {    \"temperature\": 62,    \"conditions\": \"Partly cloudy\"  }}Example of an error response:{  \"jsonrpc\": \"2.0\",  \"id\": 1,  \"error\": {    \"code\": -32602,    \"message\": \"Invalid params\"  }}Besides request/response pairs, MCP also supports notifications. Notifications are used to send messages from the Server to the Client without expecting a response.Example of a notification:{  \"jsonrpc\": \"2.0\",  \"method\": \"progress\",  \"params\": {    \"message\": \"Processing data...\",    \"percent\": 50  }}Transport mechanismsTwo primary transport mechanisms are supported:      stdio (Standard Input/Output): used for local communication, where the Client and Server run on the same machine. The Host application launches the Server as a subprocess and communicates with it by writing to its standard input (stdin) and reading from its standard output (stdout).        HTTP + SSE (Server-Sent Events) / Streamable HTTP: used for remote communication, where the Client and Server might be on different machines. Communication happens over HTTP, with the Server using Server-Sent Events (SSE) to push updates to the Client over a persistent connection.  Recent updates to the MCP standard have introduced or refined “Streamable HTTP,” which offers more flexibility by allowing servers to dynamically upgrade to SSE for streaming when needed, while maintaining compatibility with serverless environments.Client-Server Interaction Lifecycle  Initialization: The Client connects to the Server and they exchange protocol versions and capabilities, and the Server responds with its supported protocol version and capabilities.  Discovery: The Client requests information about available capabilities and the Server responds with a list of available tools.  Execution: The Client invokes capabilities based on the Host’s needs.  Termination: The connection is gracefully closed when no longer needed and the Server acknowledges the shutdown request.MCP Server CapabilitiesThese capabilities fall into four main categories:  Tools: Tools are executable functions or actions that the AI model can invoke through the MCP protocol.  Resources: Resources provide read-only access to data sources, allowing the AI model to retrieve context without executing complex logic. E.g. accessing files, databases, etc.  Prompts: Prompts are predefined templates or workflows that guide the interaction between the user, the AI model, and the Server’s capabilities.Example of a prompt template for code review:def code_review(code: str, language: str) -&gt; list:    \"\"\"Generate a code review for the provided code snippet.\"\"\"    return [        {            \"role\": \"system\",            \"content\": f\"You are a code reviewer examining {language} code. Provide a detailed review highlighting best practices, potential issues, and suggestions for improvement.\"        },        {            \"role\": \"user\",            \"content\": f\"Please review this {language} code:\\n\\n```{language}\\n{code}\\n```\"        }    ]  Sampling: Sampling allows Servers to request the Client (specifically, the Host application) to perform LLM interactions. It enables server-driven agentic behaviors and potentially recursive or multi-step interactions.Example: A Server might request the Client to analyze data it has processed:def request_sampling(messages, system_prompt=None, include_context=\"none\"):    \"\"\"Request LLM sampling from the client.\"\"\"    # In a real implementation, this would send a request to the client    return {        \"role\": \"assistant\",        \"content\": \"Analysis of the provided data...\"    }How Capabilities Work Together            Capability      Controlled By      Direction      Side Effects      Approval Needed      Typical Use Cases                  Tools      Model (LLM)      Client → Server      Yes (potentially)      Yes      Actions, API calls, data manipulation              Resources      Application      Client → Server      No (read-only)      Typically no      Data retrieval, context gathering              Prompts      code excerpt      Server → Client      No      No (selected by user)      Guided workflows, specialized templates              Sampling      Server      Server → Client → Server      Indirectly      Yes      Multi-step tasks, agentic behaviors      MCP SDKThe Model Context Protocol provides official SDKs for both JavaScript, Python and other languages. This makes it easy to implement MCP clients and servers in your applications. These SDKs handle the low-level protocol details, allowing you to focus on building your application’s capabilities.They handle:  Protocol-level communication  Capability registration and discovery  Message serialization/deserialization  Connection management  Error handlingReferences"
+  },
+  
+  {
+    "title": "AI Coding Tools",
+    "url": "/posts/ai-coding-tools/",
+    "categories": "Blogging, Tutorial",
+    "tags": "agents, llm",
+    "date": "2025-05-20 12:08:03 +0300",
+    
+
+
+
+
+
+    
+    "snippet": "AI Coding ToolsAI coding tools are a type of software that allows developers to write code faster and more efficiently.CursorCursor is a VSCode fork that allows you to write code with AI. This is a...",
+    "content": "AI Coding ToolsAI coding tools are a type of software that allows developers to write code faster and more efficiently.CursorCursor is a VSCode fork that allows you to write code with AI. This is an AI native IDE.WindsurfLike Cursor, Windsurf is a VSCode fork, an AI native IDE.GitHub CopilotSimilar to Cursor and Windsurf, but as an IDE extension instead of a fork. All of Cursor, Windsurf and GitHub Copilot have agent capabilities.Google Jules  Google Jules is an autonomous cloud native AI coding agent that can create PRs in your GitHub repositories based on features you request through natural language.OpenAI’s CodexLike Google Jules, OpenAI’s Codex is an autonomous cloud native AI coding agent that can write code. It’s built on the codex-1 model that is a flavor of the o3 optimized for coding, trained using reinforcement learning.Claude CodeClaude Code is a terminal based AI coding agent that can write code. It can be viewed as a primitive for tooling like semantic linting, code review, etc.References  Cursor  Windsurf  Google Jules  GitHub Copilot  OpenAI’s Codex  Claude Code"
+  },
+  
+  {
     "title": "LLM Visualization",
     "url": "/posts/llm-visualization/",
     "categories": "Blogging, Tutorial",
@@ -49,6 +83,23 @@
     
     "snippet": "AI Applications Observabilityhttps://cloud.langfuse.com/",
     "content": "AI Applications Observabilityhttps://cloud.langfuse.com/"
+  },
+  
+  {
+    "title": "Call and Put Options",
+    "url": "/posts/call-and-put-options/",
+    "categories": "Blogging, Tutorial",
+    "tags": "agents, llm",
+    "date": "2025-04-07 12:08:03 +0300",
+    
+
+
+
+
+
+    
+    "snippet": "Call and Put OptionsCall and put options are a type of financial instrument that allows investors to buy or sell a stock at a fixed price at a future date.A few high level points  Call options give...",
+    "content": "Call and Put OptionsCall and put options are a type of financial instrument that allows investors to buy or sell a stock at a fixed price at a future date.A few high level points  Call options give the buyer the right to buy a stock at a fixed price at a future date.  Put options give the buyer the right to sell a stock at a fixed price at a future date.  The fixed price is called the strike price.  The future date is called the expiration date.  You want to buy a call option if you think the stock will go up (bullish).  You want to buy a put option if you think the stock will go down (bearish).  As a buyer, you pay a premium to the seller for the right to buy or sell the stock.  As a seller, you receive the premium for the right to sell or buy the stock.  As a buyer, you can exercise your option at any time before the expiration date.  As a seller, you are obligated to buy or sell the stock at the strike price on the expiration date.  As a buyer, you cannot lose more than the premium you paid for the option.  As a seller, you can lose virtually unlimited amount of money.ExampleLet’s say you buy a call option for 100 shares of X at a strike price of $100.  The premium is $10 per share.  You pay $1000 for the option.  If the stock price is $100 or less at the expiration date, you lose the premium you paid for the option.  If the stock price is $110 at the expiration date, you are break even as you paid $10 per share and the stock is now $110.  If the stock price is $120 at the expiration date, you make a profit of $10 per share.As the seller, you receive the premium and are obligated to buy or sell the stock at the strike price on the expiration date.  If the stock price is $100 or less at the expiration date, you make a profit of the premium you received for the option.  If the stock price is $110 at the expiration date, you are break even as you received $10 per share and the stock is now $110.  If the stock price is $120 at the expiration date, you lose $10 per share.Now, let’s say you buy a put option for 100 shares of X at a strike price of $100.  The premium is $10 per share.  You pay $1000 for the option.  If the stock price is $100 or more at the expiration date, you lose the premium you paid for the option.  If the stock price is $90 at the expiration date, you are break even as you paid $10 per share and the stock is now $90.  If the stock price is $80 at the expiration date, you make a profit of $10 per share.As the seller, you receive the premium and are obligated to buy or sell the stock at the strike price on the expiration date.  If the stock price is $100 or more at the expiration date, you make a profit of the premium you received for the option.  If the stock price is $90 at the expiration date, you are break even as you received $10 per share and the stock is now $90.  If the stock price is $80 at the expiration date, you lose $10 per share.Call spreadA call spread is a strategy that involves buying a call option and selling a call option with a higher strike price.  You buy a call option with a strike price of $100.  You sell a call option with a strike price of $110.  You pay $10 for the call option with the lower strike price.  You receive $10 for the call option with the higher strike price.Put spreadA put spread is a strategy that involves buying a put option and selling a put option with a lower strike price.  You buy a put option with a strike price of $100.  You sell a put option with a strike price of $90.References  Call and Put Options Explained"
   },
   
   {

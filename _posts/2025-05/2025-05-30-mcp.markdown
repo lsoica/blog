@@ -1,0 +1,164 @@
+---
+title:  "MCP"
+description: >-
+  MCP, the Model Context Protocol, is a protocol for building AI agents.
+author: lso
+date:   2025-05-30 11:08:03 +0200
+categories: [Blogging, Tutorial]
+tags: [mcp, agents,llm]
+pin: false
+media_subpath: '/posts/20250530'
+---
+# MCP
+
+## Components
+
+- Host: The AI application that uses the MCP protocol (ChatGPT, Claude, Cursor, etc.).
+- Client: called by the host to interact with the MCP server. Each Client maintains a 1:1 connection with a single Server.
+- MCP Server: The server that implements the MCP protocol. Provide access to specific external tools, data sources, or services.
+
+## The Communication Protocol
+
+MCP uses JSON-RPC 2.0 as the message format for all communication between Clients and Servers. JSON-RPC is a lightweight remote procedure call protocol encoded in JSON, which makes it:
+
+- Human-readable and easy to debug
+- Language-agnostic, supporting implementation in any programming environment
+- Well-established, with clear specifications and widespread adoption
+
+Example of a request:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "weather",
+    "arguments": {
+      "location": "San Francisco"
+    }
+  }
+}
+```
+
+Example of a successful response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "temperature": 62,
+    "conditions": "Partly cloudy"
+  }
+}
+```
+
+Example of an error response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32602,
+    "message": "Invalid params"
+  }
+}
+```
+
+Besides request/response pairs, MCP also supports notifications. Notifications are used to send messages from the Server to the Client without expecting a response.
+
+Example of a notification:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "progress",
+  "params": {
+    "message": "Processing data...",
+    "percent": 50
+  }
+}
+```
+
+### Transport mechanisms
+
+Two primary transport mechanisms are supported:
+
+- stdio (Standard Input/Output): used for local communication, where the Client and Server run on the same machine. The Host application launches the Server as a subprocess and communicates with it by writing to its standard input (stdin) and reading from its standard output (stdout).
+
+
+- HTTP + SSE (Server-Sent Events) / Streamable HTTP: used for remote communication, where the Client and Server might be on different machines. Communication happens over HTTP, with the Server using [Server-Sent Events (SSE)](https://en.wikipedia.org/wiki/Server-sent_events) to push updates to the Client over a persistent connection.
+
+Recent updates to the MCP standard have introduced or refined "Streamable HTTP," which offers more flexibility by allowing servers to dynamically upgrade to SSE for streaming when needed, while maintaining compatibility with serverless environments.
+
+### Client-Server Interaction Lifecycle
+
+- Initialization: The Client connects to the Server and they exchange protocol versions and capabilities, and the Server responds with its supported protocol version and capabilities.
+- Discovery: The Client requests information about available capabilities and the Server responds with a list of available tools.
+- Execution: The Client invokes capabilities based on the Host's needs.
+- Termination: The connection is gracefully closed when no longer needed and the Server acknowledges the shutdown request.
+
+## MCP Server Capabilities
+
+These capabilities fall into four main categories:
+
+- Tools: Tools are executable functions or actions that the AI model can invoke through the MCP protocol.
+- Resources: Resources provide read-only access to data sources, allowing the AI model to retrieve context without executing complex logic. E.g. accessing files, databases, etc.
+- Prompts: Prompts are predefined templates or workflows that guide the interaction between the user, the AI model, and the Server's capabilities.
+
+Example of a prompt template for code review:
+
+```python
+def code_review(code: str, language: str) -> list:
+    """Generate a code review for the provided code snippet."""
+    return [
+        {
+            "role": "system",
+            "content": f"You are a code reviewer examining {language} code. Provide a detailed review highlighting best practices, potential issues, and suggestions for improvement."
+        },
+        {
+            "role": "user",
+            "content": f"Please review this {language} code:\n\n```{language}\n{code}\n```"
+        }
+    ]
+
+```
+
+- Sampling: Sampling allows Servers to request the Client (specifically, the Host application) to perform LLM interactions. It enables server-driven agentic behaviors and potentially recursive or multi-step interactions.
+
+Example: A Server might request the Client to analyze data it has processed:
+
+```python
+def request_sampling(messages, system_prompt=None, include_context="none"):
+    """Request LLM sampling from the client."""
+    # In a real implementation, this would send a request to the client
+    return {
+        "role": "assistant",
+        "content": "Analysis of the provided data..."
+    }
+```
+
+### How Capabilities Work Together
+
+| Capability | Controlled By | Direction | Side Effects | Approval Needed | Typical Use Cases |
+|------------|---------------|-----------|--------------|-----------------|-------------------|
+| Tools | Model (LLM) | Client → Server | Yes (potentially) | Yes | Actions, API calls, data manipulation |
+| Resources | Application | Client → Server | No (read-only) | Typically no | Data retrieval, context gathering |
+| Prompts | code excerpt | Server → Client | No | No (selected by user) | Guided workflows, specialized templates |
+| Sampling | Server | Server → Client → Server | Indirectly | Yes | Multi-step tasks, agentic behaviors |
+
+## MCP SDK
+
+The Model Context Protocol provides official SDKs for both JavaScript, Python and other languages. This makes it easy to implement MCP clients and servers in your applications. These SDKs handle the low-level protocol details, allowing you to focus on building your application’s capabilities.
+
+They handle:
+
+- Protocol-level communication
+- Capability registration and discovery
+- Message serialization/deserialization
+- Connection management
+- Error handling
+
+## References
