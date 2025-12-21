@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2025-06-01T15:15:13+03:00</updated>
+  <updated>2025-12-21T17:51:09+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,58 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Hugging Face Skills</title>
+    <link href="http://localhost:4000/posts/hugging-face-skills-copy/" rel="alternate" type="text/html" title="Hugging Face Skills" />
+    <published>2025-12-07T11:08:03+02:00</published>
+  
+    <updated>2025-12-07T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/hugging-face-skills-copy/</id>
+    <content src="http://localhost:4000/posts/hugging-face-skills-copy/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Give an AI agent the ability to fine-tune language models.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Courses: React Specialisation</title>
+    <link href="http://localhost:4000/posts/coursera-react-specialisation/" rel="alternate" type="text/html" title="Courses: React Specialisation" />
+    <published>2025-12-07T11:08:03+02:00</published>
+  
+    <updated>2025-12-07T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/coursera-react-specialisation/</id>
+    <content src="http://localhost:4000/posts/coursera-react-specialisation/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>This is a summary of the Coursera React Specialisation Meta course.</summary>
+
+  </entry>
 
   
   <entry>
@@ -93,58 +145,6 @@
   
 
   <summary>LLM Visualization.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Best Models for Coding</title>
-    <link href="http://localhost:4000/posts/best-models-for-coding/" rel="alternate" type="text/html" title="Best Models for Coding" />
-    <published>2025-04-15T12:08:03+03:00</published>
-  
-    <updated>2025-04-15T12:08:03+03:00</updated>
-  
-    <id>http://localhost:4000/posts/best-models-for-coding/</id>
-    <content src="http://localhost:4000/posts/best-models-for-coding/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>Best Models for Coding.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>AI Applications Observability</title>
-    <link href="http://localhost:4000/posts/ai-applications-observability/" rel="alternate" type="text/html" title="AI Applications Observability" />
-    <published>2025-04-08T12:08:03+03:00</published>
-  
-    <updated>2025-04-08T12:08:03+03:00</updated>
-  
-    <id>http://localhost:4000/posts/ai-applications-observability/</id>
-    <content src="http://localhost:4000/posts/ai-applications-observability/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>AI Applications Observability.</summary>
 
   </entry>
 
