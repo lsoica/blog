@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>Laurentiu SOICA</title>
   <subtitle>Laurentiu Soica's Blog.</subtitle>
-  <updated>2025-12-21T17:51:09+02:00</updated>
+  <updated>2026-01-19T13:35:40+02:00</updated>
   <author>
     <name>Laurentiu SOICA</name>
     <uri>http://localhost:4000/</uri>
@@ -13,10 +13,36 @@
   <link rel="alternate" type="text/html" hreflang="en"
     href="http://localhost:4000/"/>
   <generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator>
-  <rights> © 2025 Laurentiu SOICA </rights>
+  <rights> © 2026 Laurentiu SOICA </rights>
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Agentic AI</title>
+    <link href="http://localhost:4000/posts/agentic-ai/" rel="alternate" type="text/html" title="Agentic AI" />
+    <published>2026-01-19T11:08:03+02:00</published>
+  
+    <updated>2026-01-19T11:08:03+02:00</updated>
+  
+    <id>http://localhost:4000/posts/agentic-ai/</id>
+    <content src="http://localhost:4000/posts/agentic-ai/" />
+    <author>
+      <name>lso</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  <summary>Exploring the capabilities of agentic artificial intelligence.</summary>
+
+  </entry>
 
   
   <entry>
@@ -119,32 +145,6 @@
   
 
   <summary>AI coding tools are a type of software that allows developers to write code faster and more efficiently.</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>LLM Visualization</title>
-    <link href="http://localhost:4000/posts/llm-visualization/" rel="alternate" type="text/html" title="LLM Visualization" />
-    <published>2025-04-15T12:08:03+03:00</published>
-  
-    <updated>2025-04-15T12:08:03+03:00</updated>
-  
-    <id>http://localhost:4000/posts/llm-visualization/</id>
-    <content src="http://localhost:4000/posts/llm-visualization/" />
-    <author>
-      <name>lso</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Tutorial" />
-    
-  
-
-  <summary>LLM Visualization.</summary>
 
   </entry>
 
