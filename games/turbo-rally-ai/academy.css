@@ -1,0 +1,167 @@
+/* Layout for the AI Academy page; game styles come from ../turbo-rally/style.css. */
+
+body.academy {
+  justify-content: flex-start;
+  gap: 18px;
+  padding: 44px 16px 32px;
+  background: radial-gradient(circle at top, #1b1f3a, #0a0b14 60%);
+}
+
+.intro { max-width: 1240px; width: 100%; }
+.intro h1 {
+  margin: 0 0 6px;
+  font-size: 30px;
+  font-style: italic;
+  letter-spacing: 1px;
+  color: #fff;
+}
+.intro h1 span {
+  background: linear-gradient(90deg, #ffd84a, #ff7a1a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.intro p { margin: 0; max-width: 820px; color: #aab0d4; line-height: 1.5; }
+
+.lab {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 18px;
+  width: 100%;
+  max-width: 1240px;
+  align-items: start;
+}
+
+.view { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.view .screen { width: 100%; }
+
+/* ---- HUD over the race ---- */
+
+.ai-hud {
+  position: absolute;
+  top: 1.6cqw;
+  left: 2cqw;
+  right: 2cqw;
+  display: flex;
+  gap: 1.2cqw;
+  pointer-events: none;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-weight: bold;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+}
+.ai-hud .right { margin-left: auto; }
+.ai-hud .box b { font-size: 2.6cqw; }
+
+.ai-banner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40%;
+  text-align: center;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-weight: bold;
+  font-size: 4.5cqw;
+  color: #ffd84a;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+.ai-banner small { display: block; font-size: 2.2cqw; color: #fff; }
+
+.view-key { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: -4px 0 0; font-size: 12px; color: #8a90b8; }
+.view-key i { display: inline-block; width: 14px; height: 9px; margin-right: 5px; border-radius: 2px; vertical-align: -1px; }
+.view-key .red { background: #d81e1e; }
+.view-key .ghost { background: rgba(88, 214, 255, 0.45); outline: 1px solid rgba(88, 214, 255, 0.7); }
+.view-key .traffic { background: linear-gradient(90deg, #f0c419 0 33%, #ff7a1a 33% 66%, #f2f2f2 66%); }
+
+/* ---- Controls ---- */
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: space-between; }
+.controls .group { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.controls label { font-size: 13px; color: #8a90b8; margin-right: 2px; }
+.controls button, .controls select {
+  font: inherit;
+  font-size: 14px;
+  color: #fff;
+  background: #2a2f55;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.controls button:hover, .controls select:hover { background: #3a4078; }
+.controls button.selected { border-color: #8c94ff; background: #3a4078; }
+.controls button.primary { background: #d83a1e; min-width: 92px; }
+.controls button.primary:hover { background: #f04a2a; }
+.controls button.danger { background: transparent; border-color: #5b2a3a; color: #e08a9a; }
+.controls button.danger:hover { background: #3a1a24; }
+.controls button.danger.armed { background: #8a1c2c; border-color: #ff6a7a; color: #fff; }
+.controls button:disabled { opacity: 0.4; cursor: default; }
+
+/* ---- Side panel ---- */
+
+.panel { display: flex; flex-direction: column; gap: 14px; }
+.panel section {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px;
+}
+.panel h2 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #8a90b8;
+}
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stats div { display: flex; flex-direction: column; }
+.stats span { font-size: 10px; color: #8a90b8; text-transform: uppercase; letter-spacing: 1px; }
+.stats b { font-size: 20px; font-variant-numeric: tabular-nums; color: #fff; }
+
+.chart, .net { display: block; width: 100%; }
+.chart { height: 150px; }
+.net { height: 230px; }
+
+.legend { margin: 6px 0 0; font-size: 11px; color: #8a90b8; }
+.legend i { display: inline-block; width: 14px; height: 3px; margin: 0 4px 3px 6px; vertical-align: middle; border-radius: 2px; }
+.legend i:first-child { margin-left: 0; }
+.legend .best { background: #ffd84a; }
+.legend .avg { background: #6b7aa8; }
+.legend .ref { background: repeating-linear-gradient(90deg, rgba(255,255,255,0.7) 0 4px, transparent 4px 7px); }
+.legend .pos { background: #4aa3ff; }
+.legend .neg { background: #ff7a4a; }
+
+/* ---- Explanation ---- */
+
+.explain {
+  width: 100%;
+  max-width: 1240px;
+  color: #c9cde6;
+  line-height: 1.6;
+  font-size: 15px;
+}
+.explain h2 { font-size: 18px; color: #fff; margin: 8px 0; }
+.explain p { margin: 0 0 12px; max-width: 900px; }
+.explain b { color: #ffd84a; font-weight: 600; }
+
+@media (max-width: 960px) {
+  .lab { grid-template-columns: 1fr; }
+}
+
+/* This page is for watching, so phones get a normal scrolling layout rather
+   than the game's full-window mode. */
+@media (pointer: coarse) {
+  html, body { overflow: auto; }
+  body.academy { padding: 44px 10px 24px; }
+  body.academy .back { display: block; }
+  body.academy .screen {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+  }
+  .intro h1 { font-size: 24px; }
+}

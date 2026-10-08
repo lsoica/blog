@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Turbo Rally: AI Academy · Laurentiu SOICA</title>
+  <link rel="stylesheet" href="../turbo-rally/style.css" />
+  <link rel="stylesheet" href="academy.css" />
+</head>
+<body class="academy">
+  <nav class="back"><a href="../">← Games</a> · <a href="../turbo-rally/">Play Turbo Rally</a> · <a href="/">Blog</a></nav>
+
+  <header class="intro">
+    <h1>Turbo Rally: <span>AI Academy</span></h1>
+    <p>Forty cars, each driven by its own tiny neural network, learn to race through traffic by evolution. Nobody tells them how to drive: after every round the fastest drivers become parents of the next generation, and every round is on a brand-new track, so they cannot just memorise the road.</p>
+  </header>
+
+  <main class="lab">
+    <section class="view">
+      <div class="screen" id="screen">
+        <canvas id="canvas" width="480" height="270"></canvas>
+        <div class="ai-hud">
+          <div class="box"><span>GEN</span><b id="hud-gen">1</b></div>
+          <div class="box"><span>ALIVE</span><b id="hud-alive">40</b></div>
+          <div class="box"><span>TIME</span><b id="hud-time">0.0</b></div>
+          <div class="box right"><span>BUMPS</span><b id="hud-bumps">0</b></div>
+          <div class="box"><span>RED CAR</span><b id="hud-speed">0</b><span>KM/H</span></div>
+        </div>
+        <div class="ai-banner" id="banner"></div>
+      </div>
+      <p class="view-key">
+        <span><i class="red"></i> the learner you're following</span>
+        <span><i class="ghost"></i> the nearest other learners ahead (see-through: learners can't hit each other)</span>
+        <span><i class="traffic"></i> traffic to get past</span>
+      </p>
+
+      <div class="controls">
+        <div class="group" role="group" aria-label="Training speed">
+          <button id="play" class="primary">❚❚ Pause</button>
+          <button data-speed="1">1×</button>
+          <button data-speed="4" class="selected">4×</button>
+          <button data-speed="16">16×</button>
+          <button data-speed="max">Max</button>
+        </div>
+        <div class="group" role="group" aria-label="Camera">
+          <label>Camera</label>
+          <button data-camera="best" class="selected" title="Follow last generation's winner">Best</button>
+          <button data-camera="pack" title="Ride in the middle of the field">Pack</button>
+          <button data-camera="leader" title="Follow the front car">Leader</button>
+        </div>
+        <div class="group">
+          <label for="stage">Track style</label>
+          <select id="stage"></select>
+          <button id="watch">▶ Watch champion</button>
+          <button id="reset" class="danger" title="Forget all training and start from 40 random drivers">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <section class="stats">
+        <div><span>Generation</span><b id="stat-gen">1</b></div>
+        <div><span>Last gen's best</span><b id="stat-best">–</b></div>
+        <div><span>Champion on test tracks</span><b id="stat-champ">–</b></div>
+        <div><span>Simple rule on test tracks</span><b id="stat-rule">–</b></div>
+      </section>
+
+      <section>
+        <h2>Average speed per generation</h2>
+        <canvas id="chart" class="chart"></canvas>
+        <p class="legend"><i class="best"></i> best car <i class="avg"></i> average car <i class="ref"></i> simple rule · km/h over a 40 s race</p>
+      </section>
+
+      <section>
+        <h2>The red car's brain</h2>
+        <canvas id="net" class="net"></canvas>
+        <p class="legend"><i class="pos"></i> positive weight <i class="neg"></i> negative weight · brighter nodes are more active</p>
+      </section>
+    </aside>
+  </main>
+
+  <article class="explain">
+    <h2>How it works</h2>
+    <p><b>The driver.</b> Each car is steered by a neural network with 11 inputs, 10 hidden neurons and 2 outputs. It sees where it is across the road, how fast it is going, how sharply the road bends 4, 12, 24, 40 and 64 segments ahead, whether a hill is coming, and the traffic: how close the nearest car ahead is, which side of it that car is on, and whether a car is right in its path. Its outputs are steering (left, straight, right) and pedals (accelerate, coast, brake). Those 142 numbers, the network's weights, are all a driver is.</p>
+    <p><b>The race.</b> Every generation gets a brand-new random track (by default in a random style: forest, desert, night, fog, snow or mountains) with 36 slower cars that drift across the road. All forty learners race it at once for 40 seconds, with exactly the physics of the real game; they pass through each other, but not through traffic. The score is the distance covered, which is the same as the average speed, minus a small penalty per collision.</p>
+    <p><b>Evolution.</b> When the race ends, the four best drivers go into the next generation unchanged and two brand-new random drivers join to keep variety. The other 34 are children of good parents: each takes weights from two of them, mixed at random, and a few weights get small random changes (mutations). If no better driver appears for a while, the mutations get bigger.</p>
+    <p><b>Keeping it honest.</b> A simple hand-written rule, "flat out, steer back to the middle", races every generation on the same track and traffic (the dashed line in the chart). Without traffic that rule is already the fastest possible driver on these tracks, so beating it means the network has learned something the rule cannot do: getting past traffic. The champion is chosen on test tracks the population never races on, so it has to drive well on roads it has never seen. "Watch champion" runs it on the real stage of the scenery on screen, with traffic, and compares its time with the simple rule's.</p>
+    <p><b>What to expect.</b> In our tests, champions typically beat the simple rule on unseen test tracks within 20 to 40 generations (around 215 km/h against 180), and finish almost every real stage faster than it. With their traffic sensors switched off, the same drivers crash into traffic and lose most of that advantage, so they really are using what they see. Even good drivers bump into a car about once per race: with 36 cars drifting across the road, a hand-written driver that can see every car's position and where it is about to drift does no better. Now and then a champion still fails on a stage it was not trained on.</p>
+    <p><b>Watching.</b> The red car is the one the camera follows. "Best" (the default) rides with last generation's winner. "Pack" rides in the middle of the field, where you see more of the population, including the new random drivers and mutated children, who crash a lot.</p>
+  </article>
+
+  <script src="../turbo-rally/engine.js"></script>
+  <script src="academy.js"></script>
+</body>
+</html>

@@ -17,3 +17,7 @@ Race an AI on identical piece sequences. Clear 2, 3 or 4 lines at once to send g
 ## [Turbo Rally](/games/turbo-rally/)
 
 A pseudo-3D stage racer in the spirit of the 16-bit classics. Six stages (forest, desert, night, fog, snow and mountain rain), a ticking clock, checkpoints that buy you more time and 19 rival cars to overtake. Arrow keys or WASD on desktop, on-screen pedals on mobile.
+
+## [Turbo Rally: AI Academy](/games/turbo-rally-ai/)
+
+Watch forty cars learn to race Turbo Rally through traffic by neuroevolution. Each car is a tiny neural network that sees the bends and the cars ahead and controls steering and pedals; after every round the fastest drivers become parents of the next generation. Every round is on a brand-new track, a simple hand-written driver races alongside as a yardstick, and the champion is judged on tracks it has never seen.
