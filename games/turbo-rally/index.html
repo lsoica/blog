@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Turbo Rally · Laurentiu SOICA</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -29,25 +29,31 @@
     </div>
 
     <div class="overlay" id="overlay"></div>
+
+    <!-- Kept inside .screen so they stay visible in fullscreen. -->
+    <div class="touch" id="touch">
+      <div class="pad">
+        <button data-key="left" aria-label="Steer left">◀</button>
+        <button data-key="right" aria-label="Steer right">▶</button>
+      </div>
+      <div class="pad">
+        <button data-key="down">BRAKE</button>
+        <button data-key="up" class="gas">GAS</button>
+      </div>
+    </div>
+
+    <button class="fs-button" id="fullscreen" aria-label="Toggle fullscreen" title="Fullscreen (F)"></button>
+
+    <div class="rotate-hint">
+      <div class="phone"></div>
+      <p>Turn your phone sideways to race</p>
+    </div>
   </div>
 
   <p class="help">
     <kbd>↑</kbd>/<kbd>W</kbd> accelerate · <kbd>↓</kbd>/<kbd>S</kbd> brake ·
-    <kbd>←</kbd><kbd>→</kbd>/<kbd>A</kbd><kbd>D</kbd> steer · <kbd>P</kbd> pause · <kbd>M</kbd> sound
+    <kbd>←</kbd><kbd>→</kbd>/<kbd>A</kbd><kbd>D</kbd> steer · <kbd>P</kbd> pause · <kbd>M</kbd> sound · <kbd>F</kbd> fullscreen
   </p>
-
-  <p class="rotate-hint">Turn your phone sideways for a bigger road.</p>
-
-  <div class="touch" id="touch">
-    <div class="pad">
-      <button data-key="left">◀</button>
-      <button data-key="right">▶</button>
-    </div>
-    <div class="pad">
-      <button data-key="down">BRAKE</button>
-      <button data-key="up" class="gas">GAS</button>
-    </div>
-  </div>
 
   <script src="game.js"></script>
 </body>

@@ -12,7 +12,12 @@
   // Constants
   // ---------------------------------------------------------------------------
 
-  const W = 480, H = 270;              // internal resolution, scaled up by CSS
+  // Internal resolution, scaled up by CSS. H is fixed; W follows the screen's
+  // aspect ratio (see resizeView). KX/KY are the horizontal and vertical
+  // projection scales and HORIZON is where a flat road meets the sky; at the
+  // reference 480x270 they are 240, 135 and 135.
+  let W = 480, H = 270;
+  let KX = 240, KY = 135, HORIZON = 135;
   const SEG = 200;                     // segment length (world units)
   const RUMBLE_LENGTH = 3;             // segments per rumble strip colour band
   const ROAD_WIDTH = 2000;             // half the road width (world units)
@@ -543,7 +548,7 @@
     if (backgrounds[themeName]) return backgrounds[themeName];
     const th = THEMES[themeName];
     const sky = makeCanvas(W, H, (g) => {
-      const grad = g.createLinearGradient(0, 0, 0, H * 0.62);
+      const grad = g.createLinearGradient(0, 0, 0, HORIZON + KY * 0.24);
       grad.addColorStop(0, th.sky[0]);
       grad.addColorStop(1, th.sky[1]);
       g.fillStyle = grad;
@@ -552,16 +557,17 @@
         const rng = mulberry32(7);
         for (let i = 0; i < 120; i++) {
           g.fillStyle = `rgba(255,255,255,${0.3 + rng() * 0.7})`;
-          g.fillRect(Math.floor(rng() * W), Math.floor(rng() * H * 0.55), 1, 1);
+          g.fillRect(Math.floor(rng() * W), Math.floor(rng() * (HORIZON + KY * 0.1)), 1, 1);
         }
-        ellipse(g, '#f2f0d8', W * 0.78, H * 0.16, 11, 11);
-        ellipse(g, th.sky[0], W * 0.78 + 5, H * 0.16 - 3, 9, 9);
+        const moonY = Math.max(16, HORIZON - KY * 0.68);
+        ellipse(g, '#f2f0d8', W * 0.78, moonY, 11, 11);
+        ellipse(g, th.sky[0], W * 0.78 + 5, moonY - 3, 9, 9);
       }
     });
     backgrounds[themeName] = {
       sky,
-      far: silhouetteLayer(themeName.length * 17 + 3, th.far, H * 0.56, H * 0.3, { snowcaps: th.snowcaps }),
-      near: silhouetteLayer(themeName.length * 31 + 9, th.near, H * 0.62, H * 0.14, { treeline: th.treeline }),
+      far: silhouetteLayer(themeName.length * 17 + 3, th.far, HORIZON + KY * 0.12, KY * 0.6, { snowcaps: th.snowcaps }),
+      near: silhouetteLayer(themeName.length * 31 + 9, th.near, HORIZON + KY * 0.24, KY * 0.28, { treeline: th.treeline }),
     };
     return backgrounds[themeName];
   }
@@ -774,12 +780,12 @@
   const KEYS = {
     arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right',
     arrowup: 'up', w: 'up', arrowdown: 'down', s: 'down',
-    p: 'pause', escape: 'pause', m: 'mute', enter: 'enter',
+    p: 'pause', escape: 'pause', m: 'mute', enter: 'enter', f: 'fullscreen',
   };
   const CODES = {
     ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
     ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down',
-    KeyP: 'pause', Escape: 'pause', KeyM: 'mute', Enter: 'enter',
+    KeyP: 'pause', Escape: 'pause', KeyM: 'mute', Enter: 'enter', KeyF: 'fullscreen',
   };
   const keyAction = (e) => KEYS[(e.key || '').toLowerCase()] ?? CODES[e.code];
 
@@ -791,6 +797,7 @@
     if (e.repeat) return;
     if (a === 'pause') togglePause();
     else if (a === 'mute') sound.toggleMute();
+    else if (a === 'fullscreen') toggleFullscreen();
     else if (a === 'enter') overlayPrimary?.();
   });
   document.addEventListener('keyup', (e) => {
@@ -1094,9 +1101,9 @@
     p.camera.y = p.world.y - camY;
     p.camera.z = p.world.z - camZ;
     p.screen.scale = CAMERA_DEPTH / p.camera.z;
-    p.screen.x = Math.round(W / 2 + (p.screen.scale * p.camera.x * W) / 2);
-    p.screen.y = Math.round(H / 2 - (p.screen.scale * p.camera.y * H) / 2);
-    p.screen.w = Math.round((p.screen.scale * ROAD_WIDTH * W) / 2);
+    p.screen.x = Math.round(W / 2 + p.screen.scale * p.camera.x * KX);
+    p.screen.y = Math.round(HORIZON - p.screen.scale * p.camera.y * KY);
+    p.screen.w = Math.round(p.screen.scale * ROAD_WIDTH * KX);
   }
 
   function quad(color, x1, y1, x2, y2, x3, y3, x4, y4) {
@@ -1150,7 +1157,7 @@
 
   // Draws a sprite with its anchor at (x, y), clipped below clipY (hill crests).
   function drawSprite(spr, scale, x, y, offsetX, offsetY, clipY, alpha = 1) {
-    const destW = spr.worldW * scale * (W / 2);
+    const destW = spr.worldW * scale * KX;
     const destH = destW * (spr.canvas.height / spr.canvas.width);
     const dx = x + destW * offsetX;
     const dy = y + destH * offsetY;
@@ -1201,7 +1208,7 @@
     if (game.shake > 0) ctx.translate((Math.random() - 0.5) * 6 * game.shake / 0.3, (Math.random() - 0.5) * 4 * game.shake / 0.3);
 
     ctx.drawImage(bg.sky, 0, 0);
-    const lift = clamp(-playerY * 0.0006, -18, 18);
+    const lift = clamp(-playerY * 0.0006, -18, 18) * (KY / 135);
     drawLayer(bg.far, game.skyOffset, lift * 0.5);
     drawLayer(bg.near, game.nearOffset, lift);
 
@@ -1230,14 +1237,14 @@
         const fade = th.fogDensity > 10 ? clamp(seg.fog * 1.2, 0, 1) : 1;
         for (const car of seg.cars) {
           const scale = lerp(seg.p1.screen.scale, seg.p2.screen.scale, car.percent);
-          const sx = lerp(seg.p1.screen.x, seg.p2.screen.x, car.percent) + (scale * car.offset * ROAD_WIDTH * W) / 2;
+          const sx = lerp(seg.p1.screen.x, seg.p2.screen.x, car.percent) + scale * car.offset * ROAD_WIDTH * KX;
           const sy = lerp(seg.p1.screen.y, seg.p2.screen.y, car.percent);
           tailLightGlow(drawSprite(car.sprite, scale, sx, sy, -0.5, -1, seg.clip, fade));
         }
         for (const s of seg.sprites) {
           const spr = SPRITES[s.name];
           const scale = seg.p1.screen.scale;
-          const sx = seg.p1.screen.x + (scale * s.offset * ROAD_WIDTH * W) / 2;
+          const sx = seg.p1.screen.x + scale * s.offset * ROAD_WIDTH * KX;
           drawSprite(spr, scale, sx, seg.p1.screen.y, s.center ? -0.5 : s.offset < 0 ? -1 : 0, -1, seg.clip, fade);
         }
       }
@@ -1245,7 +1252,7 @@
     }
 
     if (th.night) {
-      const grad = ctx.createRadialGradient(W / 2, H * 0.95, 30, W / 2, H * 0.7, W * 0.75);
+      const grad = ctx.createRadialGradient(W / 2, H * 0.95, 30, W / 2, H * 0.7, Math.max(W, H) * 0.75);
       grad.addColorStop(0, 'rgba(0,0,8,0)');
       grad.addColorStop(1, 'rgba(0,0,8,0.55)');
       ctx.fillStyle = grad;
@@ -1260,7 +1267,7 @@
     const camY = lerp(playerSeg.p1.camera.y, playerSeg.p2.camera.y, playerPct);
     const speedPct = game.speed / MAX_SPEED;
     const bounce = speedPct > 0 ? (Math.random() < 0.5 ? -1 : 1) * Math.random() * speedPct * 1.2 : 0;
-    const y = H / 2 - (scale * camY * H) / 2 + bounce;
+    const y = HORIZON - scale * camY * KY + bounce;
     const spr = game.steer < 0 ? PLAYER_SPRITES.left : game.steer > 0 ? PLAYER_SPRITES.right : PLAYER_SPRITES.straight;
     tailLightGlow(drawSprite(spr, scale, W / 2, y, -0.5, -1));
   }
@@ -1383,7 +1390,8 @@
     showOverlay({
       title: 'TURBO RALLY',
       body: `<p>Six stages, one clock. Reach each checkpoint before time runs out, and overtake as many of the ${RIVAL_COUNT} rivals as you can.</p>`
-        + (progress.best ? `<p class="stats">BEST SCORE ${progress.best}</p>` : ''),
+        + (progress.best ? `<p class="stats">BEST SCORE ${progress.best}</p>` : '')
+        + '<p class="hint"><a href="../">← Back to games</a></p>',
       buttons: [
         [{ label: 'START RACE', primary: true, action: () => { game.score = 0; startStage(0); } }],
         stageButtons,
@@ -1506,6 +1514,68 @@
     };
   }
 
+  // ---------------------------------------------------------------------------
+  // Screen size, fullscreen and orientation
+  // ---------------------------------------------------------------------------
+
+  const screenEl = $('screen');
+
+  // Match the internal resolution to the screen's shape so the game can fill
+  // any window. Wider screens see more to the sides; narrower ones (down to
+  // 16:9) keep the reference framing and gain sky.
+  function resizeView() {
+    const rect = screenEl.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const w = clamp(Math.round((270 * rect.width) / rect.height), 160, 720);
+    if (w === canvas.width) return;
+    W = w;
+    H = 270;
+    KX = Math.min(W, (H * 16) / 9) / 2;
+    KY = (KX * 9) / 16;
+    HORIZON = H - KY;
+    canvas.width = W;
+    canvas.height = H;
+    ctx.imageSmoothingEnabled = false; // resizing a canvas resets its context
+    for (const k of Object.keys(backgrounds)) delete backgrounds[k];
+    if (game.theme) resetWeather();
+  }
+  new ResizeObserver(resizeView).observe(screenEl);
+
+  // Phones are landscape-only: pause a race if the phone is turned upright.
+  const portrait = matchMedia('(pointer: coarse) and (orientation: portrait)');
+  portrait.addEventListener('change', () => {
+    if (portrait.matches && (game.state === 'racing' || game.state === 'countdown')) togglePause();
+  });
+
+  const fsButton = $('fullscreen');
+  const fsSupported = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+  const fsElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+  fsButton.hidden = !fsSupported; // iPhone Safari only allows fullscreen video
+
+  function toggleFullscreen() {
+    if (!fsSupported) return;
+    if (fsElement()) {
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      return;
+    }
+    const request = screenEl.requestFullscreen || screenEl.webkitRequestFullscreen;
+    const result = request.call(screenEl, { navigationUI: 'hide' });
+    // Orientation lock only works while fullscreen, and only on some phones.
+    const lock = () => screen.orientation?.lock?.('landscape').catch(() => {});
+    if (result && result.then) result.then(lock, () => {});
+    else lock();
+  }
+
+  fsButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sound.init();
+    toggleFullscreen();
+  });
+  for (const ev of ['fullscreenchange', 'webkitfullscreenchange']) {
+    document.addEventListener(ev, () => fsButton.classList.toggle('active', !!fsElement()));
+  }
+
+  resizeView();
   startAttract();
   showTitle();
   requestAnimationFrame((t) => { last = t; frame(t); });
