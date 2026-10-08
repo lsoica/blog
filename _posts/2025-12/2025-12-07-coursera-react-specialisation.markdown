@@ -427,6 +427,7 @@ Formik is a popular React library for building and managing forms. It simplifies
 
 Example of using Formik to create a simple form:
 
+{% raw %}
 ```javascript
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 function MyForm() {
@@ -454,6 +455,7 @@ function MyForm() {
   );
 }
 ```
+{% endraw %}
 
 ### Yup
 
@@ -471,6 +473,7 @@ const validationSchema = Yup.object().shape({
 
 And integrating it with Formik:
 
+{% raw %}
 ```javascript
 <Formik
   initialValues={{ name: '', age: '' }}
@@ -479,6 +482,7 @@ And integrating it with Formik:
   {/* form components */}
 </Formik>
 ```
+{% endraw %}
 
 ## Testing
 

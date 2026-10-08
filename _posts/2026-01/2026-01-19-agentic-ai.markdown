@@ -275,6 +275,7 @@ This pattern is used to refine AI models through feedback loops. It involves a g
 
 Also called Reflection or Self-Refinement pattern, it is particularly useful in scenarios where continuous improvement of model outputs is required, such as content generation or decision-making tasks.
 
+{% raw %}
 ```python
 grades = Literal[
     "ultra-conservative", 
@@ -529,6 +530,7 @@ state = optimizer_workflow.invoke({
     )
 })
 ```
+{% endraw %}
 
 ### Orchestrator-Worker Design Pattern
 

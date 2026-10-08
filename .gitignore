@@ -1,9 +1,9 @@
 # Bundler cache
 .bundle
 vendor
-Gemfile.lock
 
-# Jekyll cache
+# Jekyll build output and cache (Render builds the site)
+_site
 .jekyll-cache
 .jekyll-metadata
 
