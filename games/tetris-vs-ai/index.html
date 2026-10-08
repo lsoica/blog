@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Tetris vs. AI · Laurentiu SOICA</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="back"><a href="../">← Games</a> · <a href="/">Blog</a></nav>
+
+  <main class="arena">
+    <section class="player">
+      <header>
+        <h2>You</h2>
+        <span>Lines <b id="h-lines">0</b></span>
+        <span>Sent <b id="h-sent">0</b></span>
+      </header>
+      <div class="field">
+        <div class="side">
+          <h3>Hold</h3>
+          <canvas id="h-hold" width="100" height="80"></canvas>
+          <h3>Next</h3>
+          <canvas id="h-next" width="100" height="240"></canvas>
+        </div>
+        <div class="meter" title="Incoming garbage"><div id="h-meter"></div></div>
+        <canvas id="h-board" class="board" width="300" height="600"></canvas>
+      </div>
+    </section>
+
+    <div class="vs">
+      <div class="vs-label">VS</div>
+      <div><span>Level</span><b id="level">1</b></div>
+      <div><span>Record</span><b id="record">0–0</b></div>
+    </div>
+
+    <section class="player">
+      <header>
+        <h2>AI <small id="ai-level">Normal</small></h2>
+        <span>Lines <b id="a-lines">0</b></span>
+        <span>Sent <b id="a-sent">0</b></span>
+      </header>
+      <div class="field">
+        <canvas id="a-board" class="board" width="300" height="600"></canvas>
+        <div class="meter" title="Incoming garbage"><div id="a-meter"></div></div>
+        <div class="side ai-side">
+          <h3>Next</h3>
+          <canvas id="a-next" width="100" height="240"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <div id="overlay" class="overlay">
+      <h1 id="overlay-title">TETRIS <span>vs.</span> AI</h1>
+      <p id="overlay-msg">Clear 2, 3 or 4 lines at once to send garbage rows to the AI. Last one standing wins.</p>
+      <div class="difficulty" id="difficulty">
+        <button data-level="easy">Easy</button>
+        <button data-level="normal">Normal</button>
+        <button data-level="hard">Hard</button>
+        <button data-level="insane">Insane</button>
+      </div>
+      <button id="start" class="primary">Start</button>
+      <p class="hint">Enter to start · P / Esc to pause</p>
+    </div>
+  </main>
+
+  <p class="help">
+    <kbd>←</kbd><kbd>→</kbd> move · <kbd>↓</kbd> soft drop · <kbd>Space</kbd> hard drop ·
+    <kbd>↑</kbd>/<kbd>X</kbd> rotate ⟳ · <kbd>Z</kbd> rotate ⟲ · <kbd>C</kbd>/<kbd>Shift</kbd> hold
+  </p>
+
+  <div class="touch" id="touch">
+    <button data-action="left">◀</button>
+    <button data-action="rotate">⟳</button>
+    <button data-action="right">▶</button>
+    <button data-action="hold">Hold</button>
+    <button data-action="soft">▼</button>
+    <button data-action="hard">⤓</button>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
