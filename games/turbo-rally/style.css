@@ -1,0 +1,241 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #07080f;
+  color: #e6e8f2;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 100vh;
+  padding: 36px 0 12px;
+}
+
+.back {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  font-size: 13px;
+  color: #8a90b8;
+}
+.back a { color: #aab0d4; text-decoration: none; }
+.back a:hover { color: #fff; }
+
+.screen {
+  position: relative;
+  width: min(1100px, 100vw, calc((100vh - 120px) * 16 / 9));
+  aspect-ratio: 16 / 9;
+  container-type: inline-size;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 0 40px rgba(90, 110, 255, 0.25);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ---- HUD ---- */
+
+.hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-weight: bold;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+}
+.hud.hidden { display: none; }
+
+.hud-top, .hud-bottom {
+  position: absolute;
+  left: 2cqw;
+  right: 2cqw;
+  display: flex;
+  align-items: center;
+  gap: 1.5cqw;
+}
+.hud-top { top: 1.6cqw; }
+.hud-bottom { bottom: 1.6cqw; align-items: flex-end; }
+
+.box {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8cqw;
+  padding: 0.4cqw 1.2cqw;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 0.6cqw;
+}
+.box span { font-size: 1.6cqw; color: #ffd84a; }
+.box b { font-size: 3cqw; color: #fff; font-variant-numeric: tabular-nums; }
+
+.time b { font-size: 4.2cqw; color: #ffd84a; min-width: 4.5cqw; text-align: right; }
+.time.low b { color: #ff4a4a; animation: blink 0.5s steps(2) infinite; }
+.pos { margin-left: auto; }
+.stage-label {
+  flex: 1;
+  text-align: center;
+  font-size: 2cqw;
+  letter-spacing: 0.3cqw;
+  color: #fff;
+}
+.speed b { min-width: 6cqw; text-align: right; }
+.score { margin-left: auto; }
+
+.revs {
+  width: 18cqw;
+  height: 1.8cqw;
+  margin-bottom: 0.9cqw;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 0.4cqw;
+  overflow: hidden;
+}
+.revs div {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #3ad15a 0%, #ffd84a 65%, #ff3a3a 100%);
+  background-size: 18cqw 100%;
+}
+
+.progress {
+  position: absolute;
+  top: 7.6cqw;
+  left: 25%;
+  right: 25%;
+  height: 0.8cqw;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 0.4cqw;
+}
+.progress .fill {
+  height: 100%;
+  width: 0;
+  background: #ffd84a;
+  border-radius: 0.4cqw;
+}
+.progress .tick {
+  position: absolute;
+  top: -0.5cqw;
+  width: 0.4cqw;
+  height: 1.8cqw;
+  background: #fff;
+}
+
+.message {
+  position: absolute;
+  top: 36%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 6cqw;
+  color: #ffd84a;
+  letter-spacing: 0.5cqw;
+}
+.message small { display: block; font-size: 2.6cqw; color: #fff; }
+
+@keyframes blink { 50% { opacity: 0.35; } }
+
+/* ---- Menus ---- */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8cqw;
+  padding: 3cqw;
+  text-align: center;
+  background: rgba(7, 8, 15, 0.72);
+}
+.overlay.hidden { display: none; }
+.overlay h1 {
+  margin: 0;
+  font-size: 8cqw;
+  font-style: italic;
+  letter-spacing: 0.6cqw;
+  background: linear-gradient(180deg, #fff27a, #ff9a1a 55%, #ff3a3a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0.4cqw 0.4cqw 0 rgba(0, 0, 0, 0.7));
+}
+.overlay p { margin: 0; max-width: 70cqw; font-size: max(13px, 1.9cqw); color: #c9cde6; }
+.overlay .stats { font-family: "Courier New", ui-monospace, monospace; font-weight: bold; color: #ffd84a; }
+.overlay .row { display: flex; gap: 1cqw; flex-wrap: wrap; justify-content: center; }
+
+.overlay button {
+  font: inherit;
+  font-size: max(13px, 1.8cqw);
+  cursor: pointer;
+  color: #fff;
+  background: #2a2f55;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.8cqw 1.8cqw;
+}
+.overlay button:hover:not(:disabled) { background: #3a4078; }
+.overlay button:disabled { opacity: 0.35; cursor: default; }
+.overlay button.primary { background: #d83a1e; padding: 1cqw 3.5cqw; font-weight: bold; }
+.overlay button.primary:hover { background: #f04a2a; }
+.overlay .hint { font-size: max(11px, 1.4cqw); color: #8a90b8; }
+
+/* ---- Help & touch ---- */
+
+.help { margin: 0; font-size: 12px; color: #8a90b8; text-align: center; }
+kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #2a2f55;
+  font-size: 11px;
+  font-family: inherit;
+  color: #e6e8f2;
+}
+
+.touch {
+  display: none;
+  width: 100%;
+  max-width: 1100px;
+  justify-content: space-between;
+  padding: 0 12px;
+}
+.touch .pad { display: flex; gap: 10px; }
+.touch button {
+  font: inherit;
+  font-weight: bold;
+  width: 76px;
+  height: 64px;
+  color: #fff;
+  background: #2a2f55;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+}
+.touch button.gas { background: #8a2a1e; }
+.touch button:active { background: #4c55c9; }
+
+.rotate-hint { display: none; margin: 0; font-size: 13px; color: #8a90b8; }
+
+@media (pointer: coarse) and (orientation: portrait) {
+  .rotate-hint { display: block; }
+}
+
+@media (pointer: coarse) {
+  .touch { display: flex; }
+  .help { display: none; }
+}
