@@ -178,7 +178,14 @@
   }
 
   function holdPiece() {
-    if (holdUsed) return;
+    if (holdUsed) {
+      // Only one hold per piece; shake the Hold box so the press isn't silently ignored.
+      const box = holdCtx.canvas.parentElement;
+      box.classList.remove('denied');
+      void box.offsetWidth; // restart the animation
+      box.classList.add('denied');
+      return;
+    }
     const current = piece.type;
     if (hold) spawn(hold); else spawn();
     hold = current;
@@ -308,23 +315,32 @@
     }
   }
 
-  const KEYMAP = {
+  // Match on the character typed first (works on any keyboard layout),
+  // then fall back to the physical key position.
+  const KEYS = {
+    arrowleft: 'left', arrowright: 'right', arrowdown: 'soft', arrowup: 'rotate',
+    x: 'rotate', z: 'rotateCCW', ' ': 'hard', c: 'hold', shift: 'hold',
+    enter: 'start', p: 'pause', escape: 'pause',
+  };
+  const CODES = {
     ArrowLeft: 'left', ArrowRight: 'right', ArrowDown: 'soft',
     ArrowUp: 'rotate', KeyX: 'rotate', KeyZ: 'rotateCCW',
     Space: 'hard', KeyC: 'hold', ShiftLeft: 'hold', ShiftRight: 'hold',
+    Enter: 'start', KeyP: 'pause', Escape: 'pause',
   };
+  const keyAction = (e) => KEYS[(e.key || '').toLowerCase()] ?? CODES[e.code];
 
   document.addEventListener('keydown', (e) => {
-    if (e.code === 'Enter') { primaryAction(); e.preventDefault(); return; }
-    if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); e.preventDefault(); return; }
-    const a = KEYMAP[e.code];
+    const a = keyAction(e);
+    if (a === 'start') { primaryAction(); e.preventDefault(); return; }
+    if (a === 'pause') { togglePause(); e.preventDefault(); return; }
     if (!a) return;
     e.preventDefault();
     if (e.repeat) return; // we handle auto-repeat ourselves
     action(a, true);
   });
   document.addEventListener('keyup', (e) => {
-    const a = KEYMAP[e.code];
+    const a = keyAction(e);
     if (a) action(a, false);
   });
   window.addEventListener('blur', () => {

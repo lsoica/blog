@@ -144,3 +144,12 @@ button:hover { background: #5d66de; }
 }
 .back a { color: #aab0d4; text-decoration: none; }
 .back a:hover { color: #fff; }
+
+.panel section.denied {
+  animation: shake 0.3s;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); border-color: #f03838; }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
