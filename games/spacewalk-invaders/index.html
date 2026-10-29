@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Spacewalk Invaders · Laurentiu SOICA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Chakra+Petch:wght@400;600;700&display=swap" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="wrap">
+  <canvas id="cv" aria-label="Game field"></canvas>
+
+  <div class="band" id="top" hidden>
+    <div class="stat"><span class="lbl">Score</span><span class="val" id="score">0</span></div>
+    <div class="stat" id="wave"><span class="lbl" id="waveLbl">Wave 1</span><span class="val" id="waveName">Lost crew</span></div>
+    <div class="right">
+      <div id="lives" aria-label="Lives"></div>
+      <button class="icon-btn" id="pauseBtn" aria-label="Pause">II</button>
+    </div>
+  </div>
+
+  <div class="band" id="bottom" hidden>
+    <div class="heat">
+      <span class="lbl" id="heatLbl">Ion blaster · Lv 1</span>
+      <div class="bar"><div id="heatFill"></div></div>
+    </div>
+    <div class="br">
+      <div class="stat" id="dust"><span class="lbl">Stardust</span><span class="val" id="dustVal">★ 0</span></div>
+      <button id="hangarBtn" aria-label="Open hangar">HANGAR</button>
+      <button id="novaBtn" aria-label="Fire nova bomb">NOVA ×1</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="titleScr">
+    <div class="card">
+      <h1>Spacewalk Invaders</h1>
+      <p class="tag">Runaway astronauts and comet storms are coming down on the orbit lanes. Survive 10 waves, beat the Black Hole at wave 5 and Zorgath the Alien at wave 10.</p>
+      <dl class="keys">
+        <dt>Move</dt><dd><span class="desk-only">Arrows / WASD, mouse, or drag</span><span class="touch-only">Drag anywhere on the screen</span></dd>
+        <dt>Fire</dt><dd><span class="desk-only">Space, hold click, or keep a finger down</span><span class="touch-only">Fires while your finger is down</span></dd>
+        <dt>Nova</dt><dd><span class="desk-only">B, or the </span>Nova button</dd>
+        <dt>Hangar</dt><dd><span class="desk-only">U, or the </span>Hangar button: spend stardust on upgrades</dd>
+        <dt>Pause</dt><dd><span class="desk-only">P or Esc · M mutes sound</span><span class="touch-only">The II button, top right</span></dd>
+      </dl>
+      <p class="small tip">Collect the yellow stardust and spend it on shields, thrusters, coolant, fire rate and more. Orange capsules give the Ion blaster, cyan give the Plasma lance.</p>
+      <div class="row"><button class="cta" id="contTitleBtn" hidden>Continue</button><button class="cta" id="startBtn">Launch</button><button id="muteBtn1">Sound: on</button></div>
+      <p class="small" id="bestTitle"></p>
+      <p class="site-nav"><a href="../">← Games</a> · <a href="/">Blog</a></p>
+    </div>
+  </div>
+
+  <div class="overlay" id="pauseScr" hidden>
+    <div class="card">
+      <h2>Paused</h2>
+      <div class="row"><button class="cta" id="resumeBtn">Resume</button><button id="muteBtn2">Sound: on</button><button id="quitBtn">Quit to title</button></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="shopScr" hidden>
+    <div class="card shop">
+      <div class="shop-head">
+        <div><span class="lbl">Ship hangar · game paused</span><h2>Upgrades</h2></div>
+        <div><span class="lbl">Stardust</span><div class="bal" id="shopBal">★ 0</div></div>
+      </div>
+      <div class="upgs" id="upgList"></div>
+      <div class="row"><button class="cta" id="shopClose">Back to the fight</button></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overScr" hidden>
+    <div class="card">
+      <h2 id="overTitle">Ship lost</h2>
+      <div><span class="lbl">Final score</span><div class="big" id="finalScore">0</div></div>
+      <p class="tag" id="overMsg"></p>
+      <div class="row"><button class="cta" id="contBtn" hidden>Continue</button><button class="cta" id="againBtn">Fly again</button></div>
+      <p class="site-nav"><a href="../">← Games</a> · <a href="/">Blog</a></p>
+    </div>
+  </div>
+</div>
+
+  <script src="game.js"></script>
+</body>
+</html>
