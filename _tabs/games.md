@@ -21,3 +21,7 @@ A pseudo-3D stage racer in the spirit of the 16-bit classics. Six stages (forest
 ## [Turbo Rally: AI Academy](/games/turbo-rally-ai/)
 
 Watch forty cars learn to race Turbo Rally through traffic by neuroevolution. Each car is a tiny neural network that sees the bends and the cars ahead and controls steering and pedals; after every round the fastest drivers become parents of the next generation. Every round is on a brand-new track, a simple hand-written driver races alongside as a yardstick, and the champion is judged on tracks it has never seen.
+
+## [Spacewalk Invaders](/games/spacewalk-invaders/)
+
+A space shooter in the spirit of Chicken Invaders. Ten waves of runaway astronauts who throw meteorites, plus comet showers. The Black Hole boss at wave 5 fires a dark laser, and Zorgath the Alien at wave 10 spits green slime and fire meteors. Collect stardust to buy upgrades in the Hangar, and continue from the wave you lost on. Keyboard or mouse on desktop, drag to fly on mobile.
