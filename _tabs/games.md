@@ -24,4 +24,4 @@ Watch forty cars learn to race Turbo Rally through traffic by neuroevolution. Ea
 
 ## [Spacewalk Invaders](/games/spacewalk-invaders/)
 
-A space shooter in the spirit of Chicken Invaders. Ten waves of runaway astronauts who throw meteorites, plus comet showers. The Black Hole boss at wave 5 fires a dark laser, and Zorgath the Alien at wave 10 spits green slime and fire meteors. Collect stardust to buy upgrades in the Hangar, and continue from the wave you lost on. Keyboard or mouse on desktop, drag to fly on mobile.
+A space shooter in the spirit of Chicken Invaders. Ten waves of runaway astronauts who throw meteorites, plus comet showers. The Black Hole boss at wave 5 fires a dark laser, and Zorgath the Alien at wave 10 spits green slime and fire meteors. Collect stardust to buy upgrades in the Hangar, and continue from the wave you lost on. Beat all ten and Endless mode keeps the waves coming, with the bosses returning stronger every five waves. Keyboard or mouse on desktop, drag to fly on mobile.

@@ -188,38 +188,49 @@ function makeAstro(o){const tier=o.tier||0;const hp=[2,3,5,7][tier]+Math.floor(G
 function makeComet(x,y,vx,vy,size){const r=[10,17,27][size]*S;const hp=[1,3,7][size]+Math.floor(G.wave/8);
   const verts=[];for(let i=0;i<9;i++)verts.push(rnd(0.75,1.05));
   return{type:'comet',x,y,vx,vy,r,size,hp,mhp:hp,rot:Math.random()*TAU,vr:rnd(-2,2),verts,flash:0}}
+/* endless mode: after wave 10 the waves are generated. Every 5th wave is a returning boss
+   with more health; the others cycle through the four wave types at a rising level. */
+function waveDef(n){
+  if(n<=LAST_WAVE)return WAVES[n];
+  if(n%5===0){const i=n/5-2,kind=i%2?'hole':'alien',base=kind==='hole'?'The Black Hole':'Zorgath the Alien';
+    return{k:'boss',boss:kind,name:base+' · Lv '+(Math.floor((i+1)/2)+1),pow:1+0.45*i}}
+  const lvl=2+Math.floor((n-11)/5),j=n%5-1;
+  return{k:['grid','comets','swoop','mixed'][j],lvl,name:['Deep-space crew','Meteor storm','Orbit chaos','Everything at once'][j]};
+}
 function nextWave(){
   G.wave++;G.between=false;G.waveT=0;G.spawnQ=[];
   if(P)makeCheck();
-  const w=WAVES[G.wave],lvl=w.lvl||0;
+  if(G.wave>G.bestWave){G.bestWave=G.wave;saveBestWave(G.bestWave)}
+  const w=waveDef(G.wave),lvl=w.lvl||0,pow=w.pow||1;
   G.banner=w.k==='boss'?'Boss':'Wave '+G.wave;G.sub=w.name;G.bannerT=2.6;sfx.wave();
   if(P&&P.shield<P.up.armor){P.shield++}
-  $('waveLbl').textContent='Wave '+G.wave+'/'+LAST_WAVE;$('waveName').textContent=w.name;
+  $('waveLbl').textContent=G.wave>LAST_WAVE?'Wave '+G.wave+' · Endless':'Wave '+G.wave+'/'+LAST_WAVE;$('waveName').textContent=w.name;
   const grid=rows=>{
     const cols=clamp(Math.floor((W-60*S)/(54*S)),4,9),gx=(W-(cols-1)*54*S)/2;
+    rows=Math.min(rows,6);
     for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)
       enemies.push(makeAstro({mode:'grid',hx:gx+c*54*S,hy:G.topH+28*S+r*50*S,x:gx+c*54*S,y:-60-r*60-c*14,delay:(r*cols+c)*0.04,tier:Math.min(3,lvl+(r===0?1:0))}));
   };
   const comets=(n,gap,start)=>{
     for(let i=0;i<n;i++)G.spawnQ.push({at:start+i*gap,fn:()=>{
-      const size=Math.random()<0.22+lvl*0.12?2:Math.random()<0.5?1:0;
+      const size=Math.random()<Math.min(0.6,0.22+lvl*0.12)?2:Math.random()<0.5?1:0;
       const x=rnd(-W*0.1,W*1.1),vx=(W/2-x)*rnd(0.1,0.35)+rnd(-40,40)*S;
       enemies.push(makeComet(x,-40*S,vx,rnd(110,170)*S*(1+lvl*0.2),size))}});
   };
   if(w.k==='grid')grid(3+lvl);
-  else if(w.k==='comets')comets(16+lvl*8,0.75-lvl*0.2,0.6);
+  else if(w.k==='comets')comets(16+lvl*8,Math.max(0.3,0.75-lvl*0.2),0.6);
   else if(w.k==='swoop'){
-    const groups=3+lvl,per=6;
+    const groups=Math.min(7,3+lvl),per=6;
     for(let g=0;g<groups;g++){const dir=g%2?-1:1,base=rnd(70,H*0.4),amp=rnd(30,80)*S,fr=rnd(0.008,0.014)/S,ph=Math.random()*TAU;
       for(let i=0;i<per;i++)G.spawnQ.push({at:0.5+g*2.4,fn:()=>enemies.push(makeAstro({mode:'swoop',dir,s:-i*48*S,base,amp,fr,ph,spd:(150+lvl*25)*S,x:-100,y:-100,tier:Math.min(3,lvl+(g%2))}))});
     }
   }
-  else if(w.k==='mixed'){grid(2+lvl);comets(8+lvl*4,1.6-lvl*0.3,3)}
+  else if(w.k==='mixed'){grid(2+lvl);comets(8+lvl*4,Math.max(0.6,1.6-lvl*0.3),3)}
   else if(w.boss==='hole'){
-    enemies.push({type:'boss',kind:'hole',name:'The Black Hole',x:W/2,y:-120*S,r:44*S,hp:180,mhp:180,t:0,flash:0,
+    enemies.push({type:'boss',kind:'hole',name:w.name,x:W/2,y:-120*S,r:44*S,hp:180*pow,mhp:180*pow,t:0,flash:0,
       laser:{state:'idle',T:2.5,ang:Math.PI/2},meteorT:2});
   }else{
-    enemies.push({type:'boss',kind:'alien',name:'Zorgath the Alien',x:W/2,y:-120*S,r:48*S,hp:260,mhp:260,t:0,flash:0,
+    enemies.push({type:'boss',kind:'alien',name:w.name,x:W/2,y:-120*S,r:48*S,hp:260*pow,mhp:260*pow,t:0,flash:0,
       slimeT:1.6,fireT:3.2,look:Math.PI/2});
   }
 }
@@ -279,7 +290,9 @@ function win(){
   $('overMsg').textContent=`All ${LAST_WAVE} waves cleared. Bonus ${bonus.toLocaleString('en-US')} for ships and stardust left.`+(nb?' New best!':' Best: '+G.best.toLocaleString('en-US')+'.');
   bullets=[];ebul=[];pickups=[];
   G.check=null;saveCheck(null);setOverButtons(false);
-  show('overScr',true);sfx.gift();
+  $('endlessBtn').hidden=false;$('againBtn').textContent='Start over';$('againBtn').className='';
+  $('overMsg').textContent+=' Keep going in Endless mode: the waves never stop and the bosses come back stronger.';
+  show('overScr',true);$('endlessBtn').focus();sfx.gift();
 }
 
 /* ---------- player actions ---------- */
@@ -385,7 +398,7 @@ function update(dt){
   stepWorld(dt,true);
 
   if(!G.between&&enemies.length===0&&G.spawnQ.length===0){G.between=true;G.nextT=2;if(G.wave>0)floatText(W/2,H*0.42,'Wave clear','#a6ff5c')}
-  if(G.between){G.nextT-=dt;if(G.nextT<=0){if(G.wave>=LAST_WAVE)win();else nextWave()}}
+  if(G.between){G.nextT-=dt;if(G.nextT<=0){if(G.wave>=LAST_WAVE&&!G.endless)win();else nextWave()}}
   updHUD(false);
 }
 
@@ -406,7 +419,7 @@ function stepWorld(dt,live){
         e.x=e.dir>0?-40*S+e.s:W+40*S-e.s;e.y=e.base+e.amp*Math.sin(e.s*e.fr+e.ph);
         if(e.s>W+80*S){e.s=0;e.base+=40*S;if(e.base>H*0.6)e.base=70*S}}
       // fire
-      if(live&&e.y>0&&e.y<H*0.75&&ebul.length<10+d*1.5&&Math.random()<(0.07+0.012*d)*dt*(e.mode==='swoop'?1.5:1)){
+      if(live&&e.y>0&&e.y<H*0.75&&ebul.length<10+Math.min(d,16)*1.5&&Math.random()<(0.07+0.012*Math.min(d,16))*dt*(e.mode==='swoop'?1.5:1)){
         let vx=0,vy=(150+d*7)*S;
         if(e.tier>=2&&P){const dx=P.x-e.x,dy=P.y-e.y,l=Math.hypot(dx,dy)||1;vx=dx/l*vy;vy=dy/l*vy}
         const verts=[];for(let i=0;i<7;i++)verts.push(rnd(0.7,1.05));
@@ -682,12 +695,21 @@ function show(id,on){$(id).hidden=!on}
 function loadCheck(){try{return JSON.parse(localStorage.getItem('swi-check')||'null')}catch(e){return null}}
 function saveCheck(c){try{c?localStorage.setItem('swi-check',JSON.stringify(c)):localStorage.removeItem('swi-check')}catch(e){}}
 G.check=loadCheck();
+function loadBestWave(){try{return +localStorage.getItem('swi-bestwave')||0}catch(e){return 0}}
+function saveBestWave(v){try{localStorage.setItem('swi-bestwave',String(v))}catch(e){}}
+G.bestWave=loadBestWave();G.endless=false;
+function goEndless(){
+  G.endless=true;G.state='play';G.between=true;G.nextT=0.8;G.spawnQ=[];enemies=[];
+  P.dead=false;P.inv=1.5;
+  show('overScr',false);show('top',true);show('bottom',true);measureHUD();updHUD(true);
+  floatText(W/2,H*0.42,'Endless mode','#a6ff5c');
+}
 function makeCheck(){G.check={wave:G.wave,score:G.score,dust:G.dust,novas:G.novas,nextLife:G.nextLife,wt:P.wt,lv:P.lv,up:Object.assign({},P.up)};saveCheck(G.check)}
 function start(fromCheck){
   ensureAudio();
   const c=fromCheck===true?G.check:null;
   if(!c){G.check=null;saveCheck(null)}
-  Object.assign(G,{state:'play',score:0,lives:3,wave:0,dust:0,novas:1,t:0,shake:0,flash:0,between:true,nextT:0.4,spawnQ:[],waveT:0,nextLife:20000,bannerT:0});
+  Object.assign(G,{endless:!!(c&&c.wave>LAST_WAVE),state:'play',score:0,lives:3,wave:0,dust:0,novas:1,t:0,shake:0,flash:0,between:true,nextT:0.4,spawnQ:[],waveT:0,nextLife:20000,bannerT:0});
   bullets=[];enemies=[];ebul=[];pickups=[];parts=[];texts=[];P=newPlayer();
   if(c){Object.assign(G,{wave:c.wave-1,score:c.score,dust:c.dust,novas:Math.max(1,c.novas),nextLife:c.nextLife});
     P.wt=c.wt;P.lv=c.lv;P.up=Object.assign(P.up,c.up);P.shield=Math.max(0,P.up.armor-1)}
@@ -699,7 +721,7 @@ function gameOver(){
   G.state='over';G.overT=0;show('top',false);show('bottom',false);
   const nb=G.score>G.best;if(nb){G.best=G.score;saveBest(G.best)}
   $('finalScore').textContent=G.score.toLocaleString('en-US');
-  $('overMsg').textContent=(nb&&G.score>0?'New best! ':'Best: '+G.best.toLocaleString('en-US')+'. ')+'You lost on wave '+G.wave+'. Continue from there with 3 fresh ships, keeping your upgrades and the score and stardust you had when the wave began.';
+  $('overMsg').textContent=(nb&&G.score>0?'New best! ':'Best: '+G.best.toLocaleString('en-US')+'. ')+(G.wave>LAST_WAVE?'Endless: you reached wave '+G.wave+' (best: wave '+G.bestWave+'). ':'You lost on wave '+G.wave+'. ')+'Continue from there with 3 fresh ships, keeping your upgrades and the score and stardust you had when the wave began.';
   bullets=[];ebul=[];pickups=[];enemies=enemies.filter(e=>e.type==='comet');
   setOverButtons(!!G.check);
   show('overScr',true);$(G.check?'contBtn':'againBtn').focus();
@@ -709,20 +731,21 @@ function togglePause(){
   else if(G.state==='pause'){G.state='play';show('pauseScr',false)}
 }
 function setOverButtons(canCont){
+  $('endlessBtn').hidden=true;
   $('contBtn').hidden=!canCont;
   if(canCont)$('contBtn').textContent='Continue from wave '+G.check.wave;
   $('againBtn').textContent=canCont?'Start over':'Fly again';
   $('againBtn').className=canCont?'':'cta';
 }
 $('startBtn').onclick=()=>start(false);$('againBtn').onclick=()=>start(false);
-$('contBtn').onclick=()=>start(true);$('contTitleBtn').onclick=()=>start(true);
+$('contBtn').onclick=()=>start(true);$('endlessBtn').onclick=goEndless;$('contTitleBtn').onclick=()=>start(true);
 $('pauseBtn').onclick=togglePause;$('resumeBtn').onclick=togglePause;
 $('quitBtn').onclick=()=>{G.state='title';show('pauseScr',false);show('top',false);show('bottom',false);enemies=[];bullets=[];ebul=[];pickups=[];P=null;refreshTitle();show('titleScr',true)};
 $('muteBtn1').onclick=toggleMute;$('muteBtn2').onclick=toggleMute;
 $('novaBtn').onclick=()=>{ensureAudio();nova()};
 $('hangarBtn').onclick=()=>{ensureAudio();openShop()};
 $('shopClose').onclick=closeShop;
-function refreshTitle(){$('bestTitle').textContent=G.best?'Best score on this device: '+G.best.toLocaleString('en-US'):'';
+function refreshTitle(){$('bestTitle').textContent=G.best?'Best score on this device: '+G.best.toLocaleString('en-US')+(G.bestWave>LAST_WAVE?' · Best wave: '+G.bestWave:''):'';
   $('contTitleBtn').hidden=!G.check;if(G.check)$('contTitleBtn').textContent='Continue wave '+G.check.wave;
   $('startBtn').textContent=G.check?'New game':'Launch'}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&G.state==='play')togglePause()});
